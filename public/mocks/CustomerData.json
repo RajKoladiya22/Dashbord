@@ -1,0 +1,545 @@
+[
+    {
+        "CustomerData": {
+            "customer": {
+                "adminId": "6123456789abcdef01234567",
+                "companyName": "ABC Corporation",
+                "contactPerson": "John Doe",
+                "mobileNumber": "9876543210",
+                "email": "john.doe@example.com",
+                "tallySerialNo": "123456789",
+                "prime": true,
+                "blacklisted": false,
+                "remark": "Important customer account",
+                "hasPartnerReference": true,
+                "PartnerReferenceDetail": {
+                    "referenceId": "6123456789abcdef01234568",
+                    "Name": "Jane Smith",
+                    "Contact": "9123456780",
+                    "Company": "Zarara",
+                    "email": "Zarara@gmail.com",
+                    "adress": {
+                        "street": "123 Street",
+                        "city": "New York",
+                        "state": "NY"
+                    },
+                    "partnerType": [
+                        "Prime",
+                        "notPrime",
+                        "ok"
+                    ],
+                    "tallySerialNo": "123456789",
+                    "status": "active",
+                    "remark": "Reference notes here"
+                }
+            },
+            "adminCustomFields": [
+                {
+                    "adminId": "60d5f9e6f1f4f5b9c8d8e5b9",
+                    "fieldName": "Category",
+                    "fieldType": "dropdown",
+                    "isRequired": true,
+                    "options": [
+                        "Electronics",
+                        "Clothing",
+                        "Books"
+                    ],
+                    "isMultiSelect": false
+                },
+                {
+                    "adminId": "60d5f9e6f1f4f5b9c8d8e5b9",
+                    "fieldName": "Region",
+                    "fieldType": "text",
+                    "isRequired": false,
+                    "options": [],
+                    "isMultiSelect": false
+                }
+            ],
+            "products": [
+                {
+                    "customerId": "6123456789abcdef01234567",
+                    "adminId": "6123456789abcdef01234567",
+                    "productDetailId": "6123456789abcdef01234567",
+                    "purchaseDate": "2023-04-01T12:00:00.000Z",
+                    "expiryDate": "2023-05-01T12:00:00.000Z",
+                    "renewalDate": "2023-05-10T12:00:00.000Z",
+                    "details": "Purchased during the spring sale.",
+                    "autoUpdated": true,
+                    "updatedBy": "6123456789abcdef01234568",
+                    "renewalApplicable": true,
+                    "renewalCancelled": false,
+                    "renewalHistory": [
+                        {
+                            "lastPurchaseDate": "2023-05-01T12:00:00.000Z",
+                            "LastExpiryDate": "2023-05-01T12:00:00.000Z",
+                            "LastRenewal": "2023-05-01T12:00:00.000Z",
+                            "renewalDate": "2023-05-01T12:00:00.000Z",
+                            "autoRenewed": false,
+                            "renewedBy": "6123456789abcdef01234568",
+                            "notes": "Initial renewal processed manually."
+                        },
+                        {
+                            "lastPurchaseDate": "2023-05-01T12:00:00.000Z",
+                            "LastExpiryDate": "2023-05-01T12:00:00.000Z",
+                            "LastRenewal": "2023-05-01T12:00:00.000Z",
+                            "renewalDate": "2023-05-01T12:00:00.000Z",
+                            "autoRenewed": false,
+                            "renewedBy": "6123456789abcdef01234568",
+                            "notes": "Second renewal processed manually."
+                        }
+                    ],
+                    "productDetail": {
+                        "adminId": "6123456789abcdef01234567",
+                        "name": "UltraWidget 3000",
+                        "price": 199.99,
+                        "description": "A high-quality widget for professional use.",
+                        "link": "https://example.com/products/ultrawidget3000",
+                        "category": "Gadgets",
+                        "tags": [
+                            "premium",
+                            "latest",
+                            "innovative"
+                        ],
+                        "specifications": {
+                            "offer": "20% off",
+                            "skim": "no skim",
+                            "color": "black",
+                            "dimensions": "10x5x2 inches",
+                            "weight": "1.5kg",
+                            "warranty": "2 years"
+                        },
+                        "createdAt": "2023-04-01T12:00:00.000Z",
+                        "updatedAt": "2023-04-01T12:00:00.000Z"
+                    },
+                    "createdAt": "2023-04-01T12:00:00.000Z",
+                    "updatedAt": "2023-04-01T12:00:00.000Z"
+                },
+                {
+                    "customerId": "6123456789abcdef01234567",
+                    "adminId": "6123456789abcdef01234567",
+                    "productDetailId": "6123456789abcdef01234569",
+                    "purchaseDate": "2023-04-02T10:00:00.000Z",
+                    "expiryDate": "2023-05-01T12:00:00.000Z",
+                    "renewalDate": "2023-06-01T10:00:00.000Z",
+                    "details": "Purchased as part of a limited offer.",
+                    "autoUpdated": false,
+                    "updatedBy": "6123456789abcdef01234570",
+                    "renewalApplicable": false,
+                    "renewalCancelled": false,
+                    "renewalHistory": [
+                        {
+                            "lastPurchaseDate": "2023-06-01T10:00:00.000Z",
+                            "LastExpiryDate": "2023-05-01T12:00:00.000Z",
+                            "LastRenewal": "2023-06-01T10:00:00.000Z",
+                            "renewalDate": "2023-06-01T10:00:00.000Z",
+                            "autoRenewed": false,
+                            "renewedBy": "6123456789abcdef01234570",
+                            "notes": "First renewal scheduled manually."
+                        }
+                    ],
+                    "productDetail": {
+                        "adminId": "6123456789abcdef01234567",
+                        "name": "MegaGadget Pro",
+                        "price": 299.99,
+                        "description": "An advanced gadget with multiple features.",
+                        "link": "https://example.com/products/megagadgetpro",
+                        "category": "Electronics",
+                        "tags": [
+                            "advanced",
+                            "pro",
+                            "feature-rich"
+                        ],
+                        "specifications": {
+                            "offer": "10% off",
+                            "color": "silver",
+                            "batteryLife": "12 hours",
+                            "dimensions": "12x6x3 inches",
+                            "weight": "2kg",
+                            "warranty": "1 year"
+                        },
+                        "createdAt": "2023-04-02T10:00:00.000Z",
+                        "updatedAt": "2023-04-02T10:00:00.000Z"
+                    },
+                    "createdAt": "2023-04-02T10:00:00.000Z",
+                    "updatedAt": "2023-04-02T10:00:00.000Z"
+                }
+            ],
+            "createdAt": "2023-04-01T12:00:00.000Z",
+            "updatedAt": "2023-04-01T12:00:00.000Z"
+        }
+    },
+    {
+        "CustomerData": {
+            "customer": {
+                "adminId": "6123456789abcdef11234567",
+                "companyName": "XYZ Enterprises",
+                "contactPerson": "Alice Johnson",
+                "mobileNumber": "9876501234",
+                "email": "alice.johnson@xyzenterprises.com",
+                "tallySerialNo": "987654321",
+                "prime": false,
+                "blacklisted": false,
+                "remark": "New enterprise customer",
+                "hasPartnerReference": false,
+                "PartnerReferenceDetail": null
+            },
+            "adminCustomFields": [
+                {
+                    "adminId": "60d5f9e6f1f4f5b9c8d8e5b9",
+                    "fieldName": "Category",
+                    "fieldType": "dropdown",
+                    "isRequired": true,
+                    "options": [
+                        "Electronics",
+                        "Clothing",
+                        "Books"
+                    ],
+                    "isMultiSelect": false
+                },
+                {
+                    "adminId": "60d5f9e6f1f4f5b9c8d8e5b9",
+                    "fieldName": "Region",
+                    "fieldType": "text",
+                    "isRequired": false,
+                    "options": [],
+                    "isMultiSelect": false
+                }
+            ],
+            "products": [
+                {
+                    "customerId": "6123456789abcdef11234567",
+                    "adminId": "6123456789abcdef11234567",
+                    "productDetailId": "6123456789abcdef11234568",
+                    "purchaseDate": "2023-03-15T09:30:00.000Z",
+                    "expiryDate": "2023-04-15T09:30:00.000Z",
+                    "renewalDate": "2023-04-20T09:30:00.000Z",
+                    "details": "Standard product purchase.",
+                    "autoUpdated": false,
+                    "updatedBy": "6123456789abcdef11234569",
+                    "renewalApplicable": true,
+                    "renewalCancelled": false,
+                    "renewalHistory": [
+                        {
+                            "lastPurchaseDate": "2023-04-15T09:30:00.000Z",
+                            "LastExpiryDate": "2023-04-15T09:30:00.000Z",
+                            "LastRenewal": "2023-04-15T09:30:00.000Z",
+                            "renewalDate": "2023-04-15T09:30:00.000Z",
+                            "autoRenewed": false,
+                            "renewedBy": "6123456789abcdef11234569",
+                            "notes": "Manual renewal applied."
+                        }
+                    ],
+                    "productDetail": {
+                        "adminId": "6123456789abcdef11234567",
+                        "name": "BasicWidget 1000",
+                        "price": 99.99,
+                        "description": "Entry-level widget for everyday use.",
+                        "link": "https://example.com/products/basicwidget1000",
+                        "category": "Utilities",
+                        "tags": [
+                            "economy",
+                            "basic"
+                        ],
+                        "specifications": {
+                            "offer": "5% off",
+                            "color": "blue",
+                            "dimensions": "8x4x2 inches",
+                            "weight": "1kg",
+                            "warranty": "6 months"
+                        },
+                        "createdAt": "2023-03-15T09:30:00.000Z",
+                        "updatedAt": "2023-03-15T09:30:00.000Z"
+                    },
+                    "createdAt": "2023-03-15T09:30:00.000Z",
+                    "updatedAt": "2023-03-15T09:30:00.000Z"
+                }
+            ],
+            "createdAt": "2023-03-15T09:30:00.000Z",
+            "updatedAt": "2023-03-15T09:30:00.000Z"
+        }
+    },
+    {
+        "CustomerData": {
+            "customer": {
+                "adminId": "6123456789abcdef21234567",
+                "companyName": "Acme Corp",
+                "contactPerson": "Robert Smith",
+                "mobileNumber": "9876512345",
+                "email": "robert.smith@acmecorp.com",
+                "tallySerialNo": "456789123",
+                "prime": true,
+                "blacklisted": false,
+                "remark": "Long-term partner",
+                "hasPartnerReference": false,
+                "PartnerReferenceDetail": null
+            },
+            "adminCustomFields": [
+                {
+                    "adminId": "60d5f9e6f1f4f5b9c8d8e5b9",
+                    "fieldName": "Category",
+                    "fieldType": "dropdown",
+                    "isRequired": true,
+                    "options": [
+                        "Electronics",
+                        "Clothing",
+                        "Books"
+                    ],
+                    "isMultiSelect": false
+                },
+                {
+                    "adminId": "60d5f9e6f1f4f5b9c8d8e5b9",
+                    "fieldName": "Region",
+                    "fieldType": "text",
+                    "isRequired": false,
+                    "options": [],
+                    "isMultiSelect": false
+                }
+            ],
+            "products": [
+                {
+                    "customerId": "6123456789abcdef21234567",
+                    "adminId": "6123456789abcdef21234567",
+                    "productDetailId": "6123456789abcdef21234568",
+                    "purchaseDate": "2023-02-20T08:00:00.000Z",
+                    "expiryDate": "2023-03-20T08:00:00.000Z",
+                    "renewalDate": "2023-03-25T08:00:00.000Z",
+                    "details": "Purchased during a seasonal promotion.",
+                    "autoUpdated": true,
+                    "updatedBy": "6123456789abcdef21234569",
+                    "renewalApplicable": true,
+                    "renewalCancelled": false,
+                    "renewalHistory": [
+                        {
+                            "lastPurchaseDate": "2023-03-20T08:00:00.000Z",
+                            "LastExpiryDate": "2023-03-20T08:00:00.000Z",
+                            "LastRenewal": "2023-03-20T08:00:00.000Z",
+                            "renewalDate": "2023-03-20T08:00:00.000Z",
+                            "autoRenewed": true,
+                            "renewedBy": "6123456789abcdef21234569",
+                            "notes": "Auto renewal processed."
+                        }
+                    ],
+                    "productDetail": {
+                        "adminId": "6123456789abcdef21234567",
+                        "name": "AcmeWidget X",
+                        "price": 149.99,
+                        "description": "Reliable widget for industrial applications.",
+                        "link": "https://example.com/products/acmewidgetx",
+                        "category": "Industrial",
+                        "tags": [
+                            "durable",
+                            "reliable"
+                        ],
+                        "specifications": {
+                            "offer": "15% off",
+                            "color": "red",
+                            "dimensions": "9x5x3 inches",
+                            "weight": "1.2kg",
+                            "warranty": "1 year"
+                        },
+                        "createdAt": "2023-02-20T08:00:00.000Z",
+                        "updatedAt": "2023-02-20T08:00:00.000Z"
+                    },
+                    "createdAt": "2023-02-20T08:00:00.000Z",
+                    "updatedAt": "2023-02-20T08:00:00.000Z"
+                }
+            ],
+            "createdAt": "2023-02-20T08:00:00.000Z",
+            "updatedAt": "2023-02-20T08:00:00.000Z"
+        }
+    },
+    {
+        "CustomerData": {
+            "customer": {
+                "adminId": "6123456789abcdef31234567",
+                "companyName": "Tech Solutions",
+                "contactPerson": "Maria Garcia",
+                "mobileNumber": "9876523456",
+                "email": "maria.garcia@techsolutions.com",
+                "tallySerialNo": "321654987",
+                "prime": false,
+                "blacklisted": false,
+                "remark": "Customer referred by partner",
+                "hasPartnerReference": true,
+                "PartnerReferenceDetail": {
+                    "referenceId": "6123456789abcdef31234568",
+                    "Name": "Carlos Ruiz",
+                    "Contact": "9123467890",
+                    "Company": "Innovatech",
+                    "email": "carlos.ruiz@innovatech.com",
+                    "adress": {
+                        "street": "456 Avenue",
+                        "city": "San Francisco",
+                        "state": "CA"
+                    },
+                    "partnerType": [
+                        "Premium",
+                        "Gold"
+                    ],
+                    "tallySerialNo": "321654987",
+                    "status": "active",
+                    "remark": "Preferred partner"
+                }
+            },
+            "adminCustomFields": [
+                {
+                    "adminId": "60d5f9e6f1f4f5b9c8d8e5b9",
+                    "fieldName": "Category",
+                    "fieldType": "dropdown",
+                    "isRequired": true,
+                    "options": [
+                        "Electronics",
+                        "Clothing",
+                        "Books"
+                    ],
+                    "isMultiSelect": false
+                },
+                {
+                    "adminId": "60d5f9e6f1f4f5b9c8d8e5b9",
+                    "fieldName": "Region",
+                    "fieldType": "text",
+                    "isRequired": false,
+                    "options": [],
+                    "isMultiSelect": false
+                }
+            ],
+            "products": [
+                {
+                    "customerId": "6123456789abcdef31234567",
+                    "adminId": "6123456789abcdef31234567",
+                    "productDetailId": "6123456789abcdef31234569",
+                    "purchaseDate": "2023-05-05T11:00:00.000Z",
+                    "expiryDate": "2023-06-05T11:00:00.000Z",
+                    "renewalDate": "2023-06-10T11:00:00.000Z",
+                    "details": "Product purchased with special discount.",
+                    "autoUpdated": false,
+                    "updatedBy": "6123456789abcdef31234570",
+                    "renewalApplicable": true,
+                    "renewalCancelled": false,
+                    "renewalHistory": [
+                        {
+                            "lastPurchaseDate": "2023-06-05T11:00:00.000Z",
+                            "LastExpiryDate": "2023-06-05T11:00:00.000Z",
+                            "LastRenewal": "2023-06-05T11:00:00.000Z",
+                            "renewalDate": "2023-06-05T11:00:00.000Z",
+                            "autoRenewed": false,
+                            "renewedBy": "6123456789abcdef31234570",
+                            "notes": "Renewal processed manually."
+                        }
+                    ],
+                    "productDetail": {
+                        "adminId": "6123456789abcdef31234567",
+                        "name": "SolutionX Pro",
+                        "price": 399.99,
+                        "description": "Advanced tech solution for modern businesses.",
+                        "link": "https://example.com/products/solutionxpro",
+                        "category": "Software",
+                        "tags": [
+                            "advanced",
+                            "innovative"
+                        ],
+                        "specifications": {
+                            "offer": "25% off",
+                            "license": "1 year",
+                            "warranty": "N/A"
+                        },
+                        "createdAt": "2023-05-05T11:00:00.000Z",
+                        "updatedAt": "2023-05-05T11:00:00.000Z"
+                    },
+                    "createdAt": "2023-05-05T11:00:00.000Z",
+                    "updatedAt": "2023-05-05T11:00:00.000Z"
+                }
+            ],
+            "createdAt": "2023-05-05T11:00:00.000Z",
+            "updatedAt": "2023-05-05T11:00:00.000Z"
+        }
+    },
+    {
+        "CustomerData": {
+            "customer": {
+                "adminId": "6123456789abcdef41234567",
+                "companyName": "Global Industries",
+                "contactPerson": "David Lee",
+                "mobileNumber": "9876534567",
+                "email": "david.lee@globalind.com",
+                "tallySerialNo": "564738291",
+                "prime": false,
+                "blacklisted": true,
+                "remark": "Under review for credit issues",
+                "hasPartnerReference": false,
+                "PartnerReferenceDetail": null
+            },
+            "adminCustomFields": [
+                {
+                    "adminId": "60d5f9e6f1f4f5b9c8d8e5b9",
+                    "fieldName": "Category",
+                    "fieldType": "dropdown",
+                    "isRequired": true,
+                    "options": [
+                        "Electronics",
+                        "Clothing",
+                        "Books"
+                    ],
+                    "isMultiSelect": false
+                },
+                {
+                    "adminId": "60d5f9e6f1f4f5b9c8d8e5b9",
+                    "fieldName": "Region",
+                    "fieldType": "text",
+                    "isRequired": false,
+                    "options": [],
+                    "isMultiSelect": false
+                }
+            ],
+            "products": [
+                {
+                    "customerId": "6123456789abcdef41234567",
+                    "adminId": "6123456789abcdef41234567",
+                    "productDetailId": "6123456789abcdef41234568",
+                    "purchaseDate": "2023-01-10T07:45:00.000Z",
+                    "expiryDate": "2023-02-10T07:45:00.000Z",
+                    "renewalDate": "2023-02-15T07:45:00.000Z",
+                    "details": "Initial purchase before credit review.",
+                    "autoUpdated": false,
+                    "updatedBy": "6123456789abcdef41234569",
+                    "renewalApplicable": false,
+                    "renewalCancelled": true,
+                    "renewalHistory": [
+                        {
+                            "lastPurchaseDate": "2023-02-10T07:45:00.000Z",
+                            "LastExpiryDate": "2023-02-10T07:45:00.000Z",
+                            "LastRenewal": "2023-02-10T07:45:00.000Z",
+                            "renewalDate": "2023-02-10T07:45:00.000Z",
+                            "autoRenewed": false,
+                            "renewedBy": "6123456789abcdef41234569",
+                            "notes": "Renewal cancelled due to credit review."
+                        }
+                    ],
+                    "productDetail": {
+                        "adminId": "6123456789abcdef41234567",
+                        "name": "IndustryPro Max",
+                        "price": 499.99,
+                        "description": "Premium solution for large-scale industries.",
+                        "link": "https://example.com/products/industrypromax",
+                        "category": "Enterprise",
+                        "tags": [
+                            "premium",
+                            "enterprise"
+                        ],
+                        "specifications": {
+                            "offer": "No discount",
+                            "support": "24/7",
+                            "warranty": "3 years"
+                        },
+                        "createdAt": "2023-01-10T07:45:00.000Z",
+                        "updatedAt": "2023-01-10T07:45:00.000Z"
+                    },
+                    "createdAt": "2023-01-10T07:45:00.000Z",
+                    "updatedAt": "2023-01-10T07:45:00.000Z"
+                }
+            ],
+            "createdAt": "2023-01-10T07:45:00.000Z",
+            "updatedAt": "2023-01-10T07:45:00.000Z"
+        }
+    }
+]
