@@ -13,7 +13,8 @@ import {
   Alert,
 } from "antd";
 import { EditOutlined, PlusOutlined } from "@ant-design/icons";
-import moment from "moment";
+// import moment from "moment";
+import dayjs from "dayjs";
 import { indianStates, indianCities } from "./data/indianLocations";
 
 const { Option } = Select;
@@ -92,7 +93,7 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
           area: values.area,
           address: values.address,
           joiningDate: values.joiningDate
-            ? moment(values.joiningDate).toISOString()
+            ? dayjs(values.joiningDate).toISOString()
             : undefined,
         },
         adminCustomFields: [],
@@ -106,7 +107,10 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
     console.log("Updated customer data", updatedPayload);
   };
 
-  const handleStatusChange = (changedValue: boolean, fieldName: "prime" | "blacklisted") => {
+  const handleStatusChange = (
+    changedValue: boolean,
+    fieldName: "prime" | "blacklisted"
+  ) => {
     if (changedValue) {
       form.setFieldsValue({
         [fieldName === "prime" ? "blacklisted" : "prime"]: false,
@@ -133,7 +137,9 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
         city: customer.city,
         area: customer.area,
         address: customer.address,
-        joiningDate: customer.joiningDate ? moment(customer.joiningDate) : undefined,
+        joiningDate: customer.joiningDate
+          ? dayjs(customer.joiningDate)
+          : undefined,
       }}
       style={{ maxWidth: "100%", margin: "0 auto" }}
       scrollToFirstError
@@ -146,7 +152,9 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
               <Form.Item
                 name="company"
                 label="Company Name"
-                rules={[{ required: true, message: "Company Name is required!" }]}
+                rules={[
+                  { required: true, message: "Company Name is required!" },
+                ]}
               >
                 <Input placeholder="Enter company name" />
               </Form.Item>
@@ -155,7 +163,9 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
               <Form.Item
                 name="name"
                 label="Contact Person"
-                rules={[{ required: true, message: "Contact Person Name required!" }]}
+                rules={[
+                  { required: true, message: "Contact Person Name required!" },
+                ]}
               >
                 <Input placeholder="Enter contact person name" />
               </Form.Item>
@@ -202,11 +212,15 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
                   onChange={setSelectedState}
                   optionFilterProp="children"
                   filterOption={(input, option: any) =>
-                    (option?.children as string).toLowerCase().includes(input.toLowerCase())
+                    (option?.children as string)
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
                   }
                 >
                   {indianStates.map((state) => (
-                    <Option key={state} value={state}>{state}</Option>
+                    <Option key={state} value={state}>
+                      {state}
+                    </Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -219,12 +233,18 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
                   disabled={!selectedState}
                   optionFilterProp="children"
                   filterOption={(input, option: any) =>
-                    (option?.children as string).toLowerCase().includes(input.toLowerCase())
+                    (option?.children as string)
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
                   }
                 >
-                  {(selectedState ? indianCities[selectedState] : []).map((city) => (
-                    <Option key={city} value={city}>{city}</Option>
-                  ))}
+                  {(selectedState ? indianCities[selectedState] : []).map(
+                    (city) => (
+                      <Option key={city} value={city}>
+                        {city}
+                      </Option>
+                    )
+                  )}
                 </Select>
               </Form.Item>
             </Col>
@@ -248,7 +268,9 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
               <Form.Item
                 name="joiningDate"
                 label="Joining Date"
-                rules={[{ required: true, message: "Joining date is required!" }]}
+                rules={[
+                  { required: true, message: "Joining date is required!" },
+                ]}
               >
                 <DatePicker style={{ width: "100%" }} />
               </Form.Item>
@@ -271,22 +293,26 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
                     <Switch
                       checkedChildren="Prime"
                       unCheckedChildren="Prime"
-                      onChange={(checked) => handleStatusChange(checked, "prime")}
+                      onChange={(checked) =>
+                        handleStatusChange(checked, "prime")
+                      }
                     />
                   </Form.Item>
                   <Form.Item name="blacklisted" valuePropName="checked" noStyle>
                     <Switch
                       checkedChildren="Blacklisted"
                       unCheckedChildren="Blacklisted"
-                      onChange={(checked) => handleStatusChange(checked, "blacklisted")}
+                      onChange={(checked) =>
+                        handleStatusChange(checked, "blacklisted")
+                      }
                     />
                   </Form.Item>
                 </Space>
               </Form.Item>
-              <Alert 
+              <Alert
                 message="Note: Customer can be either Prime or Blacklisted, not both"
-                type="info" 
-                showIcon 
+                type="info"
+                showIcon
                 style={{ marginTop: 16 }}
               />
             </Col>
@@ -294,9 +320,9 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
 
           <Row gutter={24}>
             <Col span={24}>
-              <Form.Item 
-                name="reference" 
-                label="Reference Partner" 
+              <Form.Item
+                name="reference"
+                label="Reference Partner"
                 valuePropName="checked"
                 extra="Enable if customer was referred by a partner"
               >
@@ -311,12 +337,17 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
               prevValues.reference !== currentValues.reference
             }
           >
-            {({ getFieldValue }) => 
+            {({ getFieldValue }) =>
               getFieldValue("reference") && (
                 <Form.Item
                   name="referenceChoice"
                   label="Select Partner"
-                  rules={[{ required: true, message: "Please select a reference partner" }]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select a reference partner",
+                    },
+                  ]}
                 >
                   <Select placeholder="Choose referring partner">
                     <Option value="ref1">Mehul Patel / Shivans Infosys</Option>
@@ -328,10 +359,10 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
           </Form.Item>
 
           <Form.Item name="remark" label="Remarks">
-            <TextArea 
-              showCount 
-              maxLength={100} 
-              placeholder="Enter additional remarks..." 
+            <TextArea
+              showCount
+              maxLength={100}
+              placeholder="Enter additional remarks..."
               style={{ minHeight: 100 }}
             />
           </Form.Item>
@@ -341,16 +372,18 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
         <Card title="Associated Products" bordered={false}>
           <Form.List name="products">
             {(fields, { add, remove }) => (
-              <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 24 }}
+              >
                 {fields.map((field, index) => (
                   <Card
                     key={field.key}
                     title={`Product #${index + 1}`}
                     type="inner"
                     extra={
-                      <Button 
-                        type="link" 
-                        danger 
+                      <Button
+                        type="link"
+                        danger
                         onClick={() => remove(field.name)}
                       >
                         Remove
@@ -363,7 +396,12 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
                           {...field}
                           name={[field.name, "productDetailId"]}
                           label="Product Details"
-                          rules={[{ required: true, message: "Product detail is required" }]}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Product detail is required",
+                            },
+                          ]}
                         >
                           <Select placeholder="Select product">
                             {productOptions.map((option) => (
@@ -379,7 +417,12 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
                           {...field}
                           name={[field.name, "purchaseDate"]}
                           label="Purchase Date"
-                          rules={[{ required: true, message: "Purchase date is required" }]}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Purchase date is required",
+                            },
+                          ]}
                         >
                           <DatePicker style={{ width: "100%" }} />
                         </Form.Item>
@@ -391,7 +434,12 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
                           {...field}
                           name={[field.name, "renewalDate"]}
                           label="Renewal Date"
-                          rules={[{ required: true, message: "Renewal date is required" }]}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Renewal date is required",
+                            },
+                          ]}
                         >
                           <DatePicker style={{ width: "100%" }} />
                         </Form.Item>
@@ -423,9 +471,9 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
         </Card>
 
         <Form.Item {...tailFormItemLayout}>
-          <Button 
-            type="primary" 
-            htmlType="submit" 
+          <Button
+            type="primary"
+            htmlType="submit"
             size="large"
             style={{ width: "100%", maxWidth: 400, margin: "0 auto" }}
           >
