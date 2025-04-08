@@ -13,7 +13,7 @@ const MultiLineChart = ({ data }: ChartProps) => {
   const [refinedData, setRefinedData] = useState<DeliveryAnalytics[]>([]);
 
   useEffect(() => {
-    const formattedData = _.sortBy(data, (item) => {
+    const formattedData = _.sortBy(data, (item:any) => {
       // Map the month names to their corresponding numerical values for sorting
       const monthMap: { [key: string]: number } = {
         January: 1,

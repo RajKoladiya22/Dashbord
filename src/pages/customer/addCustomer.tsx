@@ -5,7 +5,7 @@ import {
 } from '../../components';
 
 // import {addCustomer} from '../../components/Form/index'
-import { HomeOutlined } from '@ant-design/icons';
+// import { HomeOutlined } from '@ant-design/icons';
 import { Helmet } from 'react-helmet-async';
 
 

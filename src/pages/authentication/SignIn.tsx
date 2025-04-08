@@ -18,7 +18,9 @@ import {
   } from '@ant-design/icons';
   import { Logo } from '../../components';
   import { useMediaQuery } from 'react-responsive';
-  import { PATH_AUTH, PATH_DASHBOARD } from '../../constants';
+  import {
+    //  PATH_AUTH, 
+    PATH_DASHBOARD } from '../../constants';
   import { Link, useNavigate } from 'react-router-dom';
   import { useState } from 'react';
   

@@ -18,7 +18,7 @@ const ColumnChart = ({ data }: ColumnChartProps) => {
   const [refinedData, setRefinedData] = useState<StudyStatistics[]>([]);
 
   useEffect(() => {
-    const formattedData = _.sortBy(data, (item) => {
+    const formattedData = _.sortBy(data, (item:any) => {
       // Map the month names to their corresponding numerical values for sorting
       const monthMap: { [key: string]: number } = {
         Jan: 1,

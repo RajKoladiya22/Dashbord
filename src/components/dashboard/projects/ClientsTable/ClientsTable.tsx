@@ -21,12 +21,15 @@ const COLUMNS = [
 
 type Props = {
   data: Clients[];
-} & TableProps<any>;
+} & TableProps<Clients>;
+
+
 
 export const ClientsTable = ({ data, ...others }: Props) => (
   <Table
     dataSource={data}
     columns={COLUMNS}
+    rowKey={(record: Clients): string => record.unit_price.toString()}
     key="client_table"
     size="middle"
     className="overflow-scroll"

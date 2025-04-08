@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ConfigProvider, Layout, Menu, MenuProps, SiderProps } from "antd";
 import {
-  AppstoreAddOutlined,
-  BranchesOutlined,
-  BugOutlined,
-  GithubOutlined,
-  IdcardOutlined,
-  InfoCircleOutlined,
+  // AppstoreAddOutlined,
+  // BranchesOutlined,
+  // BugOutlined,
+  // GithubOutlined,
+  // IdcardOutlined,
+  // InfoCircleOutlined,
   PieChartOutlined,
-  ProductOutlined,
+  // ProductOutlined,
   SecurityScanOutlined,
-  SnippetsOutlined,
+  // SnippetsOutlined,
   UserOutlined,
   ProfileOutlined,
   UserAddOutlined,
@@ -18,13 +18,13 @@ import {
 import { Logo } from "../../components";
 import { Link, useLocation } from "react-router-dom";
 import {
-  PATH_ABOUT,
+  // PATH_ABOUT,
   PATH_AUTH,
-  PATH_CORPORATE,
+  // PATH_CORPORATE,
   PATH_DASHBOARD,
-  PATH_DOCS,
-  PATH_ERROR,
-  PATH_GITHUB,
+  // PATH_DOCS,
+  // PATH_ERROR,
+  // PATH_GITHUB,
   PATH_LANDING,
   PATH_PARTNER_TEAM,
   PATH_USER_PROFILE,

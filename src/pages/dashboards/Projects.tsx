@@ -14,12 +14,12 @@ import { Projects } from '../../types';
 import { useState } from 'react';
 import {
   CloudUploadOutlined,
-  HomeOutlined,
+  // HomeOutlined,
   PieChartOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import { DASHBOARD_ITEMS } from '../../constants';
-import { Link } from 'react-router-dom';
+// import { DASHBOARD_ITEMS } from '../../constants';
+// import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useFetchData } from '../../hooks';
 

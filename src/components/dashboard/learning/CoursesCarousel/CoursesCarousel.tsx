@@ -106,7 +106,7 @@ type Props = {
 } & CardProps;
 
 export const CoursesCarousel = ({ data, loading, error, ...others }: Props) => {
-  const sliderRef = useRef<any>();
+  const sliderRef = useRef<any>(null);
   const isXlScreen = useMediaQuery({ maxWidth: 1200 });
 
   const settings: CarouselProps = {

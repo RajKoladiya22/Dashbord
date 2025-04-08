@@ -3,8 +3,8 @@ import { createBrowserRouter, useLocation } from "react-router-dom";
 import { ProjectsDashboardPage } from "../pages/dashboards";
 import {
   DashboardLayout,
-  CorporateLayout,
-  GuestLayout,
+  // CorporateLayout,
+  // GuestLayout,
   UserAccountLayout,
 } from "../layouts";
 import {
