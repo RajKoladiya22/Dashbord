@@ -12,7 +12,7 @@ import {
   Space,
   Alert,
 } from "antd";
-import { EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 // import moment from "moment";
 import dayjs from "dayjs";
 import { indianStates, indianCities } from "./data/indianLocations";

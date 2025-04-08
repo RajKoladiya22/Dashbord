@@ -94,6 +94,7 @@ export interface CustomerData {
 }
 
 interface UpdateCustomerProps {
+  adminId: string;
   id: string;
   open: boolean;
   onClose: () => void;
@@ -101,7 +102,8 @@ interface UpdateCustomerProps {
 }
 
 export const UpdateCustomerModel: React.FC<UpdateCustomerProps> = ({
-  id,
+  // id,
+  // adminId,
   open,
   onClose,
   customer,

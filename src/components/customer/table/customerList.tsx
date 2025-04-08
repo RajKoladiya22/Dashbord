@@ -45,7 +45,8 @@
 //   setSearchText: (text: string) => void,
 //   searchedColumn: string,
 //   setSearchedColumn: (col: string) => void,
-//   searchInput: React.RefObject<InputRef>
+//   searchInput: React.RefObject<InputRef | null>
+
 // ): TableColumnType<CustomerRow> => ({
 //   filterDropdown: ({
 //     setSelectedKeys,
@@ -393,7 +394,8 @@ const getColumnSearchProps = (
   setSearchText: (text: string) => void,
   searchedColumn: string,
   setSearchedColumn: (col: string) => void,
-  searchInput: React.RefObject<InputRef>,
+  searchInput: React.RefObject<InputRef | null>
+,
   suggestions: { value: string }[]
 ): TableColumnType<CustomerRow> => ({
   filterDropdown: ({
@@ -491,7 +493,8 @@ export const CustomerList: React.FC = () => {
 
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
-  const searchInput = useRef<InputRef>(null);
+  const searchInput = useRef<InputRef>(null); 
+  
 
   const [tableData, setTableData] = useState<CustomerRow[]>([]);
   const [viewCustomer, setViewCustomer] = useState<CustomerRow | null>(null);
