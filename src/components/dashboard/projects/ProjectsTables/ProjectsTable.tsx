@@ -94,13 +94,14 @@ const COLUMNS = [
 
 type Props = {
   data: Projects[];
-} & TableProps<any>;
+} & TableProps<Projects>;
 
 export const ProjectsTable = ({ data, ...others }: Props) => {
   return (
     <Table
       dataSource={data}
       columns={COLUMNS}
+       rowKey={(record: Projects): string => record.project_id.toString()}
       className="overflow-scroll"
       {...others}
     />
