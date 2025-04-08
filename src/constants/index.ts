@@ -25,7 +25,8 @@ import {
     PATH_PARTNER_TEAM,
     PATH_SOCIALS,
     PATH_ABOUT,
-    PATH_CUSTOMER
+    PATH_CUSTOMER,
+    PATH_PRODUCT,
   } from './routes';
   
   const DASHBOARD_ITEMS = [
@@ -41,6 +42,7 @@ import {
   const CUSTOMER_ITEMS = [
     { title: 'addcustomer', path: PATH_CUSTOMER.addcustomer },
     { title: 'customerlist', path: PATH_CUSTOMER.customerlist },
+    { title: 'reminder', path: PATH_CUSTOMER.reminder },
   ];
   
   const CORPORATE_ITEMS = [
@@ -77,6 +79,9 @@ import {
     { title: 'team', path: PATH_PARTNER_TEAM.team },
     { title: 'partner', path: PATH_PARTNER_TEAM.partner },
   ]
+  const PRODUCT_ITEM = [
+    { title: 'product', path: PATH_PRODUCT.root },
+  ]
   
   const ERROR_ITEMS = [
     { title: '400', path: PATH_ERROR.error400 },
@@ -111,6 +116,7 @@ import {
     PATH_START,
     PATH_LANDING,
     PATH_PARTNER_TEAM,
+    PATH_PRODUCT,
     DASHBOARD_ITEMS,
     CORPORATE_ITEMS,
     USER_PROFILE_ITEMS,
@@ -120,6 +126,7 @@ import {
     PATH_ABOUT,
     PATH_CUSTOMER,
     CUSTOMER_ITEMS,
-    PARTNER_TEAM
+    PARTNER_TEAM,
+    PRODUCT_ITEM
   };
   

@@ -18,6 +18,10 @@ import {
   SignUpPage,
   AddCustomerPage,
   CustomerListPage,
+  ReminderPage,
+  TeamPage,
+  PartnerPage,
+  ProductPage,
 } from "../pages";
 
 // Custom scroll restoration function
@@ -110,6 +114,11 @@ const router = createBrowserRouter([
         path: "customerlist",
         element: <CustomerListPage />,
       },
+      {
+        index: true,
+        path: "reminder",
+        element: <ReminderPage />,
+      },
     ],
   },
   // Partner Team
@@ -120,15 +129,29 @@ const router = createBrowserRouter([
     children: [
       {
         path: "team",
-        element: <ProjectsDashboardPage />,
+        element: <TeamPage />,
       },
       {
         path: "partner",
-        element: <ProjectsDashboardPage />,
+        element: <PartnerPage />,
       },
     ],
   },
-  // user Profile
+  // product
+  {
+    path: "/",
+    element: <PageWrapper children={<DashboardLayout />} />,
+    errorElement: <ErrorPage />,
+        children: [
+      {
+        index: true,
+        path: 'product',
+        element: <ProductPage />,
+      },
+
+    ],
+  },
+
   {
     path: "/user-profile",
     element: <PageWrapper children={<UserAccountLayout />} />,
@@ -136,37 +159,10 @@ const router = createBrowserRouter([
     // children: [
     //   {
     //     index: true,
-    //     path: 'details',
-    //     element: <UserProfileDetailsPage />,
+    //     path: 'user-profile',
+    //     element: <UserAccountLayout />,
     //   },
-    //   {
-    //     path: 'preferences',
-    //     element: <UserProfilePreferencesPage />,
-    //   },
-    //   {
-    //     path: 'information',
-    //     element: <UserProfileInformationPage />,
-    //   },
-    //   {
-    //     path: 'security',
-    //     element: <UserProfileSecurityPage />,
-    //   },
-    //   {
-    //     path: 'activity',
-    //     element: <UserProfileActivityPage />,
-    //   },
-    //   {
-    //     path: 'actions',
-    //     element: <UserProfileActionsPage />,
-    //   },
-    //   {
-    //     path: 'help',
-    //     element: <UserProfileHelpPage />,
-    //   },
-    //   {
-    //     path: 'feedback',
-    //     element: <UserProfileFeedbackPage />,
-    //   },
+     
     // ],
   },
   // errors

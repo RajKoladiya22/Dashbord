@@ -24,6 +24,7 @@ function path(root: string, sublink: string) {
   const ROOTS_ERRORS = '/errors';
   const ROOTS_ABOUT = '/about';
   const ROOTS_CUSTOMER = '/customer';
+  const ROOTS_PRODUCT = '/product';
   
   export const PATH_LANDING = {
     root: ROOTS_LANDING,
@@ -31,6 +32,10 @@ function path(root: string, sublink: string) {
     pricing: '/pricing',
     about: '/about',
     contact: '/contact',
+  };
+  
+  export const PATH_PRODUCT = {
+    root: ROOTS_PRODUCT,
   };
   
   export const PATH_DASHBOARD = {
@@ -49,6 +54,7 @@ function path(root: string, sublink: string) {
     root: ROOTS_CUSTOMER,
     addcustomer: path(ROOTS_CUSTOMER, '/addcustomer'),
     customerlist: path(ROOTS_CUSTOMER, '/customerlist'),
+    reminder: path(ROOTS_CUSTOMER, '/reminder'),
   };
   
   export const PATH_PARTNER_TEAM = {

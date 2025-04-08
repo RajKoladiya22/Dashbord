@@ -21,5 +21,7 @@ export * from './Nprogress';
 export * from './dashboard';
 export * from './Container';
 export * from './customer/index.ts';
+export * from './partnerr_team';
+export * from './Product';
 
 

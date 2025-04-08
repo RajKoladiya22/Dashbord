@@ -14,6 +14,7 @@ import {
   UserOutlined,
   ProfileOutlined,
   UserAddOutlined,
+  ShoppingOutlined 
 } from "@ant-design/icons";
 import { Logo } from "../../components";
 import { Link, useLocation } from "react-router-dom";
@@ -29,6 +30,7 @@ import {
   PATH_PARTNER_TEAM,
   PATH_USER_PROFILE,
   PATH_CUSTOMER,
+  PATH_PRODUCT,
 } from "../../constants";
 import { COLOR } from "../../App.tsx";
 
@@ -72,7 +74,7 @@ const items: MenuProps["items"] = [
       null
     ),
     getItem(
-      <Link to={PATH_CUSTOMER.addcustomer}>Reminder</Link>,
+      <Link to={PATH_CUSTOMER.reminder}>Reminder</Link>,
       "reminder",
       null
     ),
@@ -86,6 +88,11 @@ const items: MenuProps["items"] = [
       null
     ),
   ]),
+  getItem(
+    <Link to={PATH_PRODUCT.root}>Prroduct</Link>,
+    "product",
+    <ShoppingOutlined  />
+  ),
   getItem(
     <Link to={PATH_USER_PROFILE.root}>User profile</Link>,
     "user-profile",
