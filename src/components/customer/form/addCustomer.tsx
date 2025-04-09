@@ -327,14 +327,11 @@
 //   );
 // };
 
-
 // ****************** //
 //   //////////////
 //   //  FINAL   //
 //   //////////////
 // ****************** //
-
-
 
 // import React, { useState } from "react";
 // import {
@@ -539,10 +536,10 @@
 //                   </Form.Item>
 //                 </Space>
 //               </Form.Item>
-//               <Alert 
+//               <Alert
 //                 message="Note: Customer can be either Prime or Blacklisted, not both"
-//                 type="info" 
-//                 showIcon 
+//                 type="info"
+//                 showIcon
 //                 style={{ marginTop: 16 }}
 //               />
 //             </Col>
@@ -550,9 +547,9 @@
 
 //           <Row gutter={24}>
 //             <Col span={24}>
-//               <Form.Item 
-//                 name="reference" 
-//                 label="Reference Partner" 
+//               <Form.Item
+//                 name="reference"
+//                 label="Reference Partner"
 //                 valuePropName="checked"
 //                 extra="Enable if customer was referred by a partner"
 //               >
@@ -567,7 +564,7 @@
 //               prevValues.reference !== currentValues.reference
 //             }
 //           >
-//             {({ getFieldValue }) => 
+//             {({ getFieldValue }) =>
 //               getFieldValue('reference') && (
 //                 <Form.Item
 //                   name="referenceChoice"
@@ -584,10 +581,10 @@
 //           </Form.Item>
 
 //           <Form.Item name="remark" label="Remarks">
-//             <TextArea 
-//               showCount 
-//               maxLength={100} 
-//               placeholder="Enter additional remarks..." 
+//             <TextArea
+//               showCount
+//               maxLength={100}
+//               placeholder="Enter additional remarks..."
 //               style={{ minHeight: 100 }}
 //             />
 //           </Form.Item>
@@ -604,9 +601,9 @@
 //                     title={`Product #${index + 1}`}
 //                     type="inner"
 //                     extra={
-//                       <Button 
-//                         type="link" 
-//                         danger 
+//                       <Button
+//                         type="link"
+//                         danger
 //                         onClick={() => remove(field.name)}
 //                       >
 //                         Remove
@@ -679,9 +676,9 @@
 //         </Card>
 
 //         <Form.Item {...tailFormItemLayout}>
-//           <Button 
-//             type="primary" 
-//             htmlType="submit" 
+//           <Button
+//             type="primary"
+//             htmlType="submit"
 //             size="large"
 //             style={{ width: '100%', maxWidth: 400, margin: '0 auto' }}
 //           >
@@ -692,7 +689,6 @@
 //     </Form>
 //   );
 // };
-
 
 import React, { useState } from "react";
 import {
@@ -706,7 +702,8 @@ import {
   Switch,
   Card,
   Space,
-  Alert
+  Alert,
+  message,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { indianStates, indianCities } from "./data/indianLocations";
@@ -732,13 +729,15 @@ const productOptions = [
 export const AddCustomer: React.FC = () => {
   const [form] = Form.useForm();
   const [selectedState, setSelectedState] = useState<string | undefined>();
+  const [loading, setLoading] = useState(false);
 
   const onFinish = (values: any) => {
+    setLoading(true);
+
     // Construct payload as per your sample structure
     const payload = {
       CustomerData: {
         customer: {
-          // You can adjust these fields as required
           adminId: "dummy-admin-id",
           companyName: values.company,
           contactPerson: values.name,
@@ -751,13 +750,12 @@ export const AddCustomer: React.FC = () => {
           hasPartnerReference: values.reference,
           PartnerReferenceDetail: values.reference
             ? {
-                referenceId: values.referenceChoice, // using selected reference as id
+                referenceId: values.referenceChoice,
                 Name: values.referenceChoice,
-                // Additional partner details can be added as needed
               }
             : null,
         },
-        adminCustomFields: [], // Add your custom fields here
+        adminCustomFields: [],
         products: values.products || [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -776,11 +774,23 @@ export const AddCustomer: React.FC = () => {
     URL.revokeObjectURL(url);
 
     console.log("Customer data saved", payload);
+
+    // Simulate a delay and then stop the loading state with a success message
+    setTimeout(() => {
+      setLoading(false);
+      form.resetFields();
+      message.success("Customer saved successfully!");
+    }, 1000);
   };
 
-  const handleStatusChange = (changedValue: boolean, fieldName: "prime" | "blacklisted") => {
+  const handleStatusChange = (
+    changedValue: boolean,
+    fieldName: "prime" | "blacklisted"
+  ) => {
     if (changedValue) {
-      form.setFieldsValue({ [fieldName === "prime" ? "blacklisted" : "prime"]: false });
+      form.setFieldsValue({
+        [fieldName === "prime" ? "blacklisted" : "prime"]: false,
+      });
     }
   };
 
@@ -793,7 +803,7 @@ export const AddCustomer: React.FC = () => {
       style={{ maxWidth: "100%", margin: "0 auto" }}
       scrollToFirstError
     >
-      <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+      <Space direction="vertical" size="middle" style={{ display: "flex", margin: '0' }}>
         {/* Basic Information Card */}
         <Card title="Basic Information" bordered={false}>
           <Row gutter={24}>
@@ -801,7 +811,9 @@ export const AddCustomer: React.FC = () => {
               <Form.Item
                 name="company"
                 label="Company Name"
-                rules={[{ required: true, message: "Company Name is required!" }]}
+                rules={[
+                  { required: true, message: "Company Name is required!" },
+                ]}
               >
                 <Input placeholder="Enter company name" />
               </Form.Item>
@@ -810,7 +822,9 @@ export const AddCustomer: React.FC = () => {
               <Form.Item
                 name="name"
                 label="Contact Person"
-                rules={[{ required: true, message: "Contact Person Name required!" }]}
+                rules={[
+                  { required: true, message: "Contact Person Name required!" },
+                ]}
               >
                 <Input placeholder="Enter contact person name" />
               </Form.Item>
@@ -857,11 +871,15 @@ export const AddCustomer: React.FC = () => {
                   onChange={setSelectedState}
                   optionFilterProp="children"
                   filterOption={(input, option: any) =>
-                    (option?.children as string).toLowerCase().includes(input.toLowerCase())
+                    (option?.children as string)
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
                   }
                 >
                   {indianStates.map((state) => (
-                    <Option key={state} value={state}>{state}</Option>
+                    <Option key={state} value={state}>
+                      {state}
+                    </Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -874,12 +892,18 @@ export const AddCustomer: React.FC = () => {
                   disabled={!selectedState}
                   optionFilterProp="children"
                   filterOption={(input, option: any) =>
-                    (option?.children as string).toLowerCase().includes(input.toLowerCase())
+                    (option?.children as string)
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
                   }
                 >
-                  {(selectedState ? indianCities[selectedState] : []).map((city) => (
-                    <Option key={city} value={city}>{city}</Option>
-                  ))}
+                  {(selectedState ? indianCities[selectedState] : []).map(
+                    (city) => (
+                      <Option key={city} value={city}>
+                        {city}
+                      </Option>
+                    )
+                  )}
                 </Select>
               </Form.Item>
             </Col>
@@ -903,7 +927,9 @@ export const AddCustomer: React.FC = () => {
               <Form.Item
                 name="joiningDate"
                 label="Joining Date"
-                rules={[{ required: true, message: "Joining date is required!" }]}
+                rules={[
+                  { required: true, message: "Joining date is required!" },
+                ]}
               >
                 <DatePicker style={{ width: "100%" }} />
               </Form.Item>
@@ -926,22 +952,26 @@ export const AddCustomer: React.FC = () => {
                     <Switch
                       checkedChildren="Prime"
                       unCheckedChildren="Prime"
-                      onChange={(checked) => handleStatusChange(checked, "prime")}
+                      onChange={(checked) =>
+                        handleStatusChange(checked, "prime")
+                      }
                     />
                   </Form.Item>
                   <Form.Item name="blacklisted" valuePropName="checked" noStyle>
                     <Switch
                       checkedChildren="Blacklisted"
                       unCheckedChildren="Blacklisted"
-                      onChange={(checked) => handleStatusChange(checked, "blacklisted")}
+                      onChange={(checked) =>
+                        handleStatusChange(checked, "blacklisted")
+                      }
                     />
                   </Form.Item>
                 </Space>
               </Form.Item>
-              <Alert 
+              <Alert
                 message="Note: Customer can be either Prime or Blacklisted, not both"
-                type="info" 
-                showIcon 
+                type="info"
+                showIcon
                 style={{ marginTop: 16 }}
               />
             </Col>
@@ -949,9 +979,9 @@ export const AddCustomer: React.FC = () => {
 
           <Row gutter={24}>
             <Col span={24}>
-              <Form.Item 
-                name="reference" 
-                label="Reference Partner" 
+              <Form.Item
+                name="reference"
+                label="Reference Partner"
                 valuePropName="checked"
                 extra="Enable if customer was referred by a partner"
               >
@@ -966,12 +996,17 @@ export const AddCustomer: React.FC = () => {
               prevValues.reference !== currentValues.reference
             }
           >
-            {({ getFieldValue }) => 
+            {({ getFieldValue }) =>
               getFieldValue("reference") && (
                 <Form.Item
                   name="referenceChoice"
                   label="Select Partner"
-                  rules={[{ required: true, message: "Please select a reference partner" }]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select a reference partner",
+                    },
+                  ]}
                 >
                   <Select placeholder="Choose referring partner">
                     <Option value="ref1">Mehul Patel / Shivans Infosys</Option>
@@ -983,10 +1018,10 @@ export const AddCustomer: React.FC = () => {
           </Form.Item>
 
           <Form.Item name="remark" label="Remarks">
-            <TextArea 
-              showCount 
-              maxLength={100} 
-              placeholder="Enter additional remarks..." 
+            <TextArea
+              showCount
+              maxLength={100}
+              placeholder="Enter additional remarks..."
               style={{ minHeight: 100 }}
             />
           </Form.Item>
@@ -996,16 +1031,18 @@ export const AddCustomer: React.FC = () => {
         <Card title="Associated Products" bordered={false}>
           <Form.List name="products">
             {(fields, { add, remove }) => (
-              <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 24 }}
+              >
                 {fields.map((field, index) => (
                   <Card
                     key={field.key}
                     title={`Product #${index + 1}`}
                     type="inner"
                     extra={
-                      <Button 
-                        type="link" 
-                        danger 
+                      <Button
+                        type="link"
+                        danger
                         onClick={() => remove(field.name)}
                       >
                         Remove
@@ -1018,7 +1055,12 @@ export const AddCustomer: React.FC = () => {
                           {...field}
                           name={[field.name, "productDetailId"]}
                           label="Product Details"
-                          rules={[{ required: true, message: "Product detail is required" }]}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Product detail is required",
+                            },
+                          ]}
                         >
                           <Select placeholder="Select product">
                             {productOptions.map((option) => (
@@ -1034,23 +1076,81 @@ export const AddCustomer: React.FC = () => {
                           {...field}
                           name={[field.name, "purchaseDate"]}
                           label="Purchase Date"
-                          rules={[{ required: true, message: "Purchase date is required" }]}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Purchase date is required",
+                            },
+                          ]}
                         >
                           <DatePicker style={{ width: "100%" }} />
                         </Form.Item>
                       </Col>
                     </Row>
+                    {/* Renewal Switch */}
                     <Row gutter={24}>
                       <Col xs={24} sm={12}>
                         <Form.Item
                           {...field}
-                          name={[field.name, "renewalDate"]}
-                          label="Renewal Date"
-                          rules={[{ required: true, message: "Renewal date is required" }]}
+                          name={[field.name, "renewal"]}
+                          label="Renewal"
+                          valuePropName="checked"
                         >
-                          <DatePicker style={{ width: "100%" }} />
+                          <Switch />
                         </Form.Item>
                       </Col>
+                    </Row>
+                    {/* Conditionally show Expiry Date and Renewal Date based on renewal switch */}
+                    <Form.Item
+                      noStyle
+                      shouldUpdate={(prevValues, currentValues) =>
+                        prevValues.products?.[field.name]?.renewal !==
+                        currentValues.products?.[field.name]?.renewal
+                      }
+                    >
+                      {({ getFieldValue }) => {
+                        const renewalValue = getFieldValue([
+                          "products",
+                          field.name,
+                          "renewal",
+                        ]);
+                        return renewalValue ? (
+                          <Row gutter={24}>
+                            <Col xs={24} sm={12}>
+                              <Form.Item
+                                {...field}
+                                name={[field.name, "expiryDate"]}
+                                label="Expiry Date"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Expiry date is required",
+                                  },
+                                ]}
+                              >
+                                <DatePicker style={{ width: "100%" }} />
+                              </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={12}>
+                              <Form.Item
+                                {...field}
+                                name={[field.name, "renewalDate"]}
+                                label="Renewal Date"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Renewal date is required",
+                                  },
+                                ]}
+                              >
+                                <DatePicker style={{ width: "100%" }} />
+                              </Form.Item>
+                            </Col>
+                          </Row>
+                        ) : null;
+                      }}
+                    </Form.Item>
+                    <Row gutter={24}>
                       <Col xs={24} sm={12}>
                         <Form.Item
                           {...field}
@@ -1077,12 +1177,13 @@ export const AddCustomer: React.FC = () => {
           </Form.List>
         </Card>
 
-        <Form.Item {...tailFormItemLayout}>
-          <Button 
-            type="primary" 
-            htmlType="submit" 
+        <Form.Item {...tailFormItemLayout} >
+          <Button
+            type="primary"
+            htmlType="submit"
             size="large"
-            style={{ width: "100%", maxWidth: 400, margin: "0 auto" }}
+            loading={loading}
+            style={{ width: "100%", maxWidth: '100%', }}
           >
             Save Customer
           </Button>

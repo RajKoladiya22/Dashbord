@@ -3,6 +3,7 @@ import themeReducer, { ThemeState } from './theme/themeSlice';
 import { persistReducer, persistStore, PersistConfig } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import customerReducer from './slice/customer/addcustomerSlice';
+import { authSlice } from './slice/auth/loginSlice';
 
 // Define the state shape
 interface RootState {
@@ -14,6 +15,7 @@ interface RootState {
 const rootReducer = combineReducers({
   theme: themeReducer,
   customer: customerReducer,
+  auth: authSlice,
 });
 
 // Persist config with RootState
@@ -39,3 +41,6 @@ export const persistor = persistStore(store);
 
 // Type for RootState
 export type { RootState };
+
+export type AppDispatch = typeof store.dispatch;
+
