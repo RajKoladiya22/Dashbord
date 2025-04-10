@@ -95,7 +95,7 @@ export const UserAccountLayout = () => {
 
   return (
     <>
-      <AppLayout>
+      {/* <AppLayout> */}
         <Card
           className="user-profile-card-nav card"
           actions={[
@@ -137,10 +137,10 @@ export const UserAccountLayout = () => {
             </Col>
           </Row>
         </Card>
-        <div style={{ marginTop: '1.5rem' }}>
+        {/* <div style={{ marginTop: '1.5rem' }}>
           <Outlet />
-        </div>
-      </AppLayout>
+        </div> */}
+      {/* </AppLayout> */}
     </>
   );
 };

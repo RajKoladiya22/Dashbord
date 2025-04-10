@@ -4,3 +4,4 @@ export * from './customer'
 export * from './partnerr_team'
 export * from './product'
 export * from './errors';
+export { HomePage } from './home';

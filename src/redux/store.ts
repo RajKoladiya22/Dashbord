@@ -3,19 +3,20 @@ import themeReducer, { ThemeState } from './theme/themeSlice';
 import { persistReducer, persistStore, PersistConfig } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import customerReducer from './slice/customer/addcustomerSlice';
-import { authSlice } from './slice/auth/loginSlice';
+import authReducer from './slice/auth/loginSlice';
 
 // Define the state shape
 interface RootState {
   theme: ThemeState;
   customer: ReturnType<typeof customerReducer>;
+  auth: ReturnType<typeof authReducer>;
 }
 
 // Combine reducers
 const rootReducer = combineReducers({
   theme: themeReducer,
   customer: customerReducer,
-  auth: authSlice,
+  auth: authReducer,
 });
 
 // Persist config with RootState

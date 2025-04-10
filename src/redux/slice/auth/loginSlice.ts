@@ -17,6 +17,7 @@ export interface AuthResponse {
     last_name: string;
     email: string;
     username: string;
+    role: string;
     // add other user properties if needed
   };
 }
@@ -48,17 +49,18 @@ export const loginUser = createAsyncThunk(
           headers: {
             'Content-Type': 'application/json',
           },
+          withCredentials: true, // Ensure cookies are sent with the request
         }
       );
 
-    //   console.log(response);
+      console.log(response);
       
 
       return response.data;
     } catch (error: any) {
       // Return a rejected promise with a custom error message.
     //   console.log(error);
-      
+      console.log(error)
       return rejectWithValue(error.response?.data || 'Login failed');
     }
   }

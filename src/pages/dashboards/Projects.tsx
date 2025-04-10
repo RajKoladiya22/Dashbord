@@ -11,7 +11,9 @@ import {
 import { Column } from '@ant-design/charts';
 
 import { Projects } from '../../types';
-import { useState } from 'react';
+import { 
+  // useEffect,
+   useState } from 'react';
 import {
   CloudUploadOutlined,
   // HomeOutlined,
@@ -22,6 +24,7 @@ import {
 // import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useFetchData } from '../../hooks';
+// import axios from 'axios';
 
 const RevenueColumnChart = () => {
   const data = [
@@ -178,6 +181,27 @@ export const ProjectsDashboardPage = () => {
   const onProjectsTabChange = (key: string) => {
     setProjectsTabKey(key);
   };
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get('http://localhost:5000/api/protected', 
+  //         {
+  //           withCredentials: true
+  //         }
+  //       );
+  //       console.log("API Response", response.data);
+        
+  //       // setData(response.data.message);
+  //     } catch (err) {
+  //       console.log("API",err);
+        
+  //       // setError(err.response?.data?.message || 'Error fetching data');
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   return (
     <div>

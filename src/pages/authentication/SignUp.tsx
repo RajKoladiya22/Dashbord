@@ -18,21 +18,26 @@ import {
 } from "@ant-design/icons";
 import { Logo } from "../../components";
 import { useMediaQuery } from "react-responsive";
-import {
-  // PATH_AUTH,
-  PATH_DASHBOARD,
-} from "../../constants";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useSelector } from "react-redux";
+import {useAppDispatch} from '../../hooks'
+import { RootState } from "../../redux/store";
+import { signupUser, SignUpData } from "../../redux/slice/auth/registerSlice"; // Adjust the path according to your folder structure
 
 const { Title, Text } = Typography;
 
 type FieldType = {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  password?: string;
-  cPassword?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  contactNumber: string;
+  companyName: string;
+  password: string;
+  cPassword: string;
+  // Optionally, add address fields if you want the user to enter them
+  street?: string;
+  city?: string;
+  state?: string;
   terms?: boolean;
 };
 
@@ -42,24 +47,51 @@ export const SignUpPage = () => {
   } = theme.useToken();
   const isMobile = useMediaQuery({ maxWidth: 769 });
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const dispatch =useAppDispatch();
 
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-    setLoading(true);
+  // Get loading state from the Redux store.
+  const { loading } = useSelector((state: RootState) => state.auth);
 
-    message.open({
-      type: "success",
-      content: "Account signup successful",
-    });
+  const onFinish = (values: FieldType) => {
+    // Check that password and confirm password match
+    if (values.password !== values.cPassword) {
+      message.error("Passwords do not match!");
+      return;
+    }
 
-    setTimeout(() => {
-      navigate(PATH_DASHBOARD.default);
-    }, 5000);
+    // Construct sign-up payload
+    // If address fields are not provided in the UI, you can set a default value.
+    const signupData: SignUpData = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      password: values.password,
+      contactNumber: values.contactNumber,
+      companyName: values.companyName,
+      address: {
+        street: values.street || "Default Street",
+        city: values.city || "Default City",
+        state: values.state || "Default State",
+      },
+      planStatus: "free trial", // You can change this if needed
+      role: "admin",
+    };
+
+    // Dispatch the signupUser async thunk.
+    dispatch(signupUser(signupData))
+      .unwrap()
+      .then(() => {
+        message.success("Account signup successful. Please sign in.");
+        navigate("/auth/signin");
+      })
+      .catch((error: any) => {
+        message.error("Signup failed: " + error);
+      });
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
+    message.error("Please complete all required fields correctly.");
   };
 
   return (
@@ -94,8 +126,6 @@ export const SignUpPage = () => {
           <Flex gap={4}>
             <Text>Already have an account?</Text>
             <Link to="/auth/signin">Sign in here</Link>
-
-            {/* <Link href={PATH_AUTH.signin}>Sign in here</Link> */}
           </Flex>
           <Flex
             vertical={isMobile}
@@ -120,6 +150,7 @@ export const SignUpPage = () => {
             requiredMark={false}
           >
             <Row gutter={[8, 0]}>
+              {/* First name & Last name */}
               <Col xs={24} lg={12}>
                 <Form.Item<FieldType>
                   label="First name"
@@ -145,18 +176,74 @@ export const SignUpPage = () => {
                   <Input />
                 </Form.Item>
               </Col>
-              <Col xs={24}>
+              {/* Email & Contact number */}
+              <Col xs={24} lg={12}>
                 <Form.Item<FieldType>
                   label="Email"
                   name="email"
                   rules={[
-                    { required: true, message: "Please input your email" },
+                    { required: true, message: "Please input your email!" },
                   ]}
                 >
                   <Input />
                 </Form.Item>
               </Col>
+              <Col xs={24} lg={12}>
+                <Form.Item<FieldType>
+                  label="Contact number"
+                  name="contactNumber"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your contact number!",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              {/* Company name */}
               <Col xs={24}>
+                <Form.Item<FieldType>
+                  label="Company name"
+                  name="companyName"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your company name!",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              {/* Optionally, add address fields */}
+              <Col xs={24} lg={8}>
+                <Form.Item<FieldType>
+                  label="Street"
+                  name="street"
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={8}>
+                <Form.Item<FieldType>
+                  label="City"
+                  name="city"
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={8}>
+                <Form.Item<FieldType>
+                  label="State"
+                  name="state"
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              {/* Password & Confirm Password */}
+              <Col xs={24} lg={12}>
                 <Form.Item<FieldType>
                   label="Password"
                   name="password"
@@ -167,20 +254,21 @@ export const SignUpPage = () => {
                   <Input.Password />
                 </Form.Item>
               </Col>
-              <Col xs={24}>
+              <Col xs={24} lg={12}>
                 <Form.Item<FieldType>
                   label="Confirm password"
                   name="cPassword"
                   rules={[
                     {
                       required: true,
-                      message: "Please ensure passwords match!",
+                      message: "Please confirm your password!",
                     },
                   ]}
                 >
                   <Input.Password />
                 </Form.Item>
               </Col>
+              {/* Terms and conditions */}
               <Col xs={24}>
                 <Form.Item<FieldType> name="terms" valuePropName="checked">
                   <Flex>
@@ -195,7 +283,8 @@ export const SignUpPage = () => {
                 type="primary"
                 htmlType="submit"
                 size="middle"
-                loading={loading}
+                loading={loading} // loading is now controlled by Redux auth slice
+                disabled={loading} // button disabled while submitting
               >
                 Submit
               </Button>

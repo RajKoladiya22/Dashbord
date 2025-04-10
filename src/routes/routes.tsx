@@ -4,7 +4,7 @@ import { ProjectsDashboardPage } from "../pages/dashboards";
 import {
   DashboardLayout,
   // CorporateLayout,
-  // GuestLayout,
+  GuestLayout,
   UserAccountLayout,
 } from "../layouts";
 import {
@@ -14,6 +14,7 @@ import {
   Error500Page,
   Error503Page,
   ErrorPage,
+  HomePage,
   SignInPage,
   SignUpPage,
   AddCustomerPage,
@@ -22,6 +23,7 @@ import {
   TeamPage,
   PartnerPage,
   ProductPage,
+
 } from "../pages";
 
 // Custom scroll restoration function
@@ -55,6 +57,19 @@ const PageWrapper = ({ children }: PageProps) => {
 
 // Create the router
 const router = createBrowserRouter([
+  // GuestLayout
+  {
+    path: '/',
+    element: <PageWrapper children={<GuestLayout />} />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        path: '',
+        element: <HomePage />,
+      },
+    ],
+  },
   // auth
   {
     path: "/auth",
@@ -139,31 +154,29 @@ const router = createBrowserRouter([
   },
   // product
   {
-    path: "/",
+    path: "/product",
     element: <PageWrapper children={<DashboardLayout />} />,
     errorElement: <ErrorPage />,
-        children: [
+    children: [
       {
         index: true,
-        path: 'product',
+        path: "",
         element: <ProductPage />,
       },
-
     ],
   },
-
+  // user-profile
   {
     path: "/user-profile",
-    element: <PageWrapper children={<UserAccountLayout />} />,
+    element: <PageWrapper children={<DashboardLayout />} />,
     errorElement: <ErrorPage />,
-    // children: [
-    //   {
-    //     index: true,
-    //     path: 'user-profile',
-    //     element: <UserAccountLayout />,
-    //   },
-     
-    // ],
+    children: [
+      {
+        index: true,
+        path: "",
+        element: <UserAccountLayout />,
+      },
+    ],
   },
   // errors
   {
