@@ -16,13 +16,17 @@ import {
   GoogleOutlined,
   TwitterOutlined,
 } from "@ant-design/icons";
+import {
+  PATH_DASHBOARD,
+} from "../../constants";
 import { Logo } from "../../components";
 import { useMediaQuery } from "react-responsive";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {useAppDispatch} from '../../hooks'
 import { RootState } from "../../redux/store";
-import { signupUser, SignUpData } from "../../redux/slice/auth/registerSlice"; // Adjust the path according to your folder structure
+import { signupUser } from "../../redux/slice/auth/registerSlice"; // Adjust the path according to your folder structure
+import { SignUpData } from "../../redux/types";
 
 const { Title, Text } = Typography;
 
@@ -81,8 +85,8 @@ export const SignUpPage = () => {
     dispatch(signupUser(signupData))
       .unwrap()
       .then(() => {
-        message.success("Account signup successful. Please sign in.");
-        navigate("/auth/signin");
+        message.success("Account signup successful");
+        navigate(PATH_DASHBOARD.home);
       })
       .catch((error: any) => {
         message.error("Signup failed: " + error);

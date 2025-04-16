@@ -1,13 +1,22 @@
 import { useState } from "react";
-import { Button, Modal, Form, Input, Select, message } from "antd";
+import { Button, Modal, Form, Input, 
+  // Select,
+   message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { createPartner } from "../../../redux/slice/auth/partnerRegisterSlice";
+import { useAppDispatch } from "../../../hooks";
+import { fetchPartners } from "../../../redux/slice/partner/partnerMemberSlice";
+import { PartnerData } from "../../../redux/types";
 
-const { Option } = Select;
+// const { Option } = Select;
 
 export const AddPartnerButton = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, 
+    // setLoading
+  ] = useState(false);
   const [form] = Form.useForm();
+  const dispatch = useAppDispatch();
 
   const showModal = () => setIsModalVisible(true);
 
@@ -16,19 +25,31 @@ export const AddPartnerButton = () => {
     form.resetFields();
   };
 
-  const onFinish = async (values: any) => {
-    setLoading(true);
-    try {
-      console.log("Partner created:", values);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      message.success("Partner created successfully!");
-      form.resetFields();
-      setIsModalVisible(false);
-    } catch (error) {
-      message.error("Failed to create partner.");
-    } finally {
-      setLoading(false);
+  const onFinish = (values: PartnerData) => {
+    if (values.password !== values.confirmPassword) {
+      message.error("Passwords do not match!");
+      return;
     }
+
+    const signupData: PartnerData = {
+      partner_name: values.partner_name,
+      company_name: values.company_name,
+      email: values.email,
+      password: values.password,
+    };
+
+    dispatch(createPartner(signupData))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchPartners())
+        message.success("Team member created successfully!");
+        form.resetFields();
+        setIsModalVisible(false);
+      })
+      .catch((error) => {
+        
+        message.error(error);
+      });
   };
 
   return (
@@ -46,7 +67,7 @@ export const AddPartnerButton = () => {
         <Form form={form} layout="vertical" onFinish={onFinish}>
           {/* companyName */}
           <Form.Item
-            name="companyName"
+            name="company_name"
             label="Company Name"
             rules={[
               { required: true, message: "Please input the company name!" },
@@ -56,7 +77,7 @@ export const AddPartnerButton = () => {
           </Form.Item>
           {/* Partner Name */}
           <Form.Item
-            name="partnerName"
+            name="partner_name"
             label="Partner Name"
             rules={[
               { required: true, message: "Please input the partner name!" },
@@ -65,7 +86,7 @@ export const AddPartnerButton = () => {
             <Input placeholder="Partner Name"/>
           </Form.Item>
           {/* contactNumber */}
-          <Form.Item
+          {/* <Form.Item
             name="contactNumber"
             label="Contact Number"
             rules={[
@@ -76,7 +97,7 @@ export const AddPartnerButton = () => {
             ]}
           >
             <Input placeholder="Optional" />
-          </Form.Item>
+          </Form.Item> */}
           {/* email */}
           <Form.Item
             name="email"
@@ -118,7 +139,7 @@ export const AddPartnerButton = () => {
             <Input.Password />
           </Form.Item>
           {/* partnerType */}
-          <Form.Item
+          {/* <Form.Item
             name="partnerType"
             label="Partner Type"
             rules={[
@@ -129,9 +150,9 @@ export const AddPartnerButton = () => {
               <Option value="vendor">Vendor</Option>
               <Option value="reseller">Reseller</Option>
               <Option value="affiliate">Affiliate</Option>
-              {/* Add more types as needed */}
+          
             </Select>
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={loading} block>

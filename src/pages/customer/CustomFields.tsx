@@ -1,33 +1,24 @@
 import { Row } from 'antd';
 import {
   PageHeader,
-  CustomerList
+  CustomFieldsList
 } from '../../components';
 import { Helmet } from 'react-helmet-async';
 
 
-export const CustomerListPage = () => {
+export const CustomFieldsListPage = () => {
 
 
   return (
     <div>
       <Helmet>
-        <title>Customer | CPM Dashboard</title>
+        <title>CustomFields | CPM Dashboard</title>
       </Helmet>
       <PageHeader
-        title="Add New Customer"
+        title="Custom Fields"
         breadcrumbs={[
-
           {
-            title: (
-              <>
-                <span>Customer</span>
-              </>
-            ),
-          
-          },
-          {
-            title: 'Add Customer',
+            title: 'Custom Fields',
             
           },
         ]}
@@ -38,7 +29,7 @@ export const CustomerListPage = () => {
           { xs: 8, sm: 16, md: 24, lg: 32 },
         ]}
       >
-        <CustomerList />
+        <CustomFieldsList />
       </Row>
     </div>
   );

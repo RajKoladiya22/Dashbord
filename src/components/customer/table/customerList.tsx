@@ -701,7 +701,6 @@
 //   );
 // };
 
-
 import React, { useRef, useState, useEffect } from "react";
 import {
   SearchOutlined,
@@ -715,7 +714,7 @@ import {
 } from "@ant-design/icons";
 // Import the correct type for AutoComplete's ref.
 // Adjust the path if needed depending on your antd version.
-import type {  TableColumnsType, TableColumnType, InputRef } from "antd";
+import type { TableColumnsType, TableColumnType, InputRef } from "antd";
 import {
   Button,
   AutoComplete,
@@ -729,8 +728,7 @@ import type { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
 import { useFetchData } from "../../../hooks";
 import { CustomerDetailModal, UpdateCustomerModel } from "../model";
-
-
+import { Link } from "react-router-dom";
 
 // Customer interface remains unchanged.
 interface Customer {
@@ -778,7 +776,12 @@ interface CustomerRow {
 
 type DataIndex = keyof Pick<
   CustomerRow,
-  "companyName" | "contactPerson" | "mobileNumber" | "email" | "remark" | "status"
+  | "companyName"
+  | "contactPerson"
+  | "mobileNumber"
+  | "email"
+  | "remark"
+  | "status"
 >;
 
 // Note the change: We now expect a BaseSelectRef for AutoComplete
@@ -807,7 +810,7 @@ const getColumnSearchProps = (
         options={suggestions}
         onChange={(value) => setSelectedKeys(value ? [value] : [])}
         onKeyDown={(e) => {
-          if (e.key === 'Enter') {
+          if (e.key === "Enter") {
             confirm();
             setSearchText(selectedKeys[0] as string);
             setSearchedColumn(dataIndex);
@@ -895,7 +898,9 @@ export const CustomerList: React.FC = () => {
 
   const [tableData, setTableData] = useState<CustomerRow[]>([]);
   const [viewCustomer, setViewCustomer] = useState<CustomerRow | null>(null);
-  const [updateCustomer, setUpdateCustomer] = useState<CustomerRow | null>(null);
+  const [updateCustomer, setUpdateCustomer] = useState<CustomerRow | null>(
+    null
+  );
 
   useEffect(() => {
     if (customersData && Array.isArray(customersData)) {
@@ -1034,7 +1039,11 @@ export const CustomerList: React.FC = () => {
               okText="Yes"
               cancelText="No"
             >
-              <Button color="volcano" variant="outlined" icon={<DeleteOutlined />}>
+              <Button
+                color="volcano"
+                variant="outlined"
+                icon={<DeleteOutlined />}
+              >
                 Delete
               </Button>
             </Popconfirm>
@@ -1066,8 +1075,10 @@ export const CustomerList: React.FC = () => {
           title="Customer List"
           extra={
             <Space>
-              <Button icon={<CloudUploadOutlined />}>Import</Button>
-              <Button icon={<PlusOutlined />}>New Customer</Button>
+              {/* <Button icon={<CloudUploadOutlined />}>Import</Button> */}
+              <Link to="/customer/addcustomer">
+                <Button icon={<PlusOutlined />}>New Customer</Button>
+              </Link>
             </Space>
           }
         >
@@ -1096,7 +1107,10 @@ export const CustomerList: React.FC = () => {
         <UpdateCustomerModel
           customer={updateCustomer}
           open={true}
-          onClose={() => setUpdateCustomer(null)} adminId={""} id={""}        />
+          onClose={() => setUpdateCustomer(null)}
+          adminId={""}
+          id={""}
+        />
       )}
     </>
   );

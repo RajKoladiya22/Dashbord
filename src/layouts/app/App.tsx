@@ -10,9 +10,9 @@ import {
   theme,
   Tooltip,
   Switch,
-} from 'antd';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+} from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import {
   AppstoreOutlined,
   LogoutOutlined,
@@ -24,25 +24,27 @@ import {
   UserOutlined,
   MoonOutlined,
   SunOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 import {
   CSSTransition,
   SwitchTransition,
   TransitionGroup,
-} from 'react-transition-group';
-import { useMediaQuery } from 'react-responsive';
-import SideNav from './SideNav.tsx';
-import HeaderNav from './HeaderNav.tsx';
-import FooterNav from './FooterNav.tsx';
-import { NProgress } from '../../components';
-import { PATH_LANDING } from '../../constants';
-import { useSelector, useDispatch } from 'react-redux';
-import { toggleTheme } from '../../redux/theme/themeSlice.ts';
-import { RootState } from '../../redux/store.ts';
-import "./style.css"
+} from "react-transition-group";
+import { useMediaQuery } from "react-responsive";
+import SideNav from "./SideNav.tsx";
+import HeaderNav from "./HeaderNav.tsx";
+import FooterNav from "./FooterNav.tsx";
+import { NProgress } from "../../components";
+import { PATH_LANDING } from "../../constants";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleTheme } from "../../redux/theme/themeSlice.ts";
+import { RootState } from "../../redux/store.ts";
+import "./style.css";
+import { useAppDispatch } from "../../hooks/dispatch.ts";
+import { logout } from "../../redux/slice/auth/loginSlice.ts";
+import { useAuth } from "../../context";
 
 const { Content } = Layout;
-
 
 type AppLayoutProps = {
   children: ReactNode;
@@ -50,8 +52,10 @@ type AppLayoutProps = {
 
 export const AppLayout = ({ children }: AppLayoutProps) => {
   const {
-    token: { borderRadius }, 
+    token: { borderRadius },
   } = theme.useToken();
+  const { user } = useAuth();
+  const dispatchh = useAppDispatch();
   const isMobile = useMediaQuery({ maxWidth: 769 });
   const [collapsed, setCollapsed] = useState(true);
   const [navFill, setNavFill] = useState(false);
@@ -62,38 +66,40 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const floatBtnRef = useRef(null);
   const dispatch = useDispatch();
   const { mytheme } = useSelector((state: RootState) => state.theme);
-  const items: MenuProps['items'] = [
+  const items: MenuProps["items"] = [
     {
-      key: 'user-profile-link',
-      label: 'profile',
+      key: "user-profile-link",
+      // label: 'profile',
+      label: `${user?.username}`,
       icon: <UserOutlined />,
     },
     {
-      key: 'user-settings-link',
-      label: 'settings',
+      key: "user-settings-link",
+      label: "settings",
       icon: <SettingOutlined />,
     },
     {
-      key: 'user-help-link',
-      label: 'help center',
+      key: "user-help-link",
+      label: "help center",
       icon: <QuestionOutlined />,
     },
     {
-      type: 'divider',
+      type: "divider",
     },
     {
-      key: 'user-logout-link',
-      label: 'logout',
+      key: "user-logout-link",
+      label: "logout",
       icon: <LogoutOutlined />,
       danger: true,
       onClick: () => {
         message.open({
-          type: 'loading',
-          content: 'signing you out',
+          type: "loading",
+          content: "signing you out",
         });
 
         setTimeout(() => {
-          navigate(PATH_LANDING.root);
+          dispatchh(logout());
+          navigate(PATH_LANDING.root, { replace: true });
         }, 1000);
       },
     },
@@ -104,7 +110,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   }, [isMobile]);
 
   useEffect(() => {
-    window.addEventListener('scroll', () => {
+    window.addEventListener("scroll", () => {
       if (window.scrollY > 5) {
         setNavFill(true);
       } else {
@@ -118,7 +124,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
       <NProgress isAnimating={isLoading} key={location.key} />
       <Layout
         style={{
-          minHeight: '100vh',
+          minHeight: "100vh",
           // backgroundColor: 'white',
         }}
       >
@@ -129,14 +135,14 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           onCollapse={(value) => setCollapsed(value)}
           className="custom-scrollbar"
           style={{
-            overflow: 'auto',
-            position: 'fixed',
+            overflow: "auto",
+            position: "fixed",
             left: 0,
             top: 0,
             bottom: 0,
-            background: 'none',
-            border: 'none',
-            transition: 'all .2s',
+            background: "none",
+            border: "none",
+            transition: "all .2s",
           }}
         />
         <Layout
@@ -148,23 +154,23 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         >
           <HeaderNav
             style={{
-              marginLeft: collapsed ? 0 : '200px',
-              padding: '0 2rem 0 0',
-              background: navFill ? 'rgba(255, 255, 255, .5)' : 'none',
-              backdropFilter: navFill ? 'blur(8px)' : 'none',
-              boxShadow: navFill ? '0 0 8px 2px rgba(0, 0, 0, 0.05)' : 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              position: 'sticky',
+              marginLeft: collapsed ? 0 : "200px",
+              padding: "0 2rem 0 0",
+              background: navFill ? "rgba(255, 255, 255, .5)" : "none",
+              backdropFilter: navFill ? "blur(8px)" : "none",
+              boxShadow: navFill ? "0 0 8px 2px rgba(0, 0, 0, 0.05)" : "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              position: "sticky",
               top: 0,
               zIndex: 1,
               gap: 8,
-              transition: 'all .25s',
+              transition: "all .25s",
             }}
           >
             <Flex align="center">
-              <Tooltip title={`${collapsed ? 'Expand' : 'Collapse'} Sidebar`}>
+              <Tooltip title={`${collapsed ? "Expand" : "Collapse"} Sidebar`}>
                 <Button
                   type="text"
                   icon={
@@ -172,7 +178,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                   }
                   onClick={() => setCollapsed(!collapsed)}
                   style={{
-                    fontSize: '16px',
+                    fontSize: "16px",
                     width: 64,
                     height: 64,
                   }}
@@ -181,8 +187,8 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               <Input.Search
                 placeholder="search"
                 style={{
-                  width: isMobile ? '100%' : '400px',
-                  marginLeft: isMobile ? 0 : '.5rem',
+                  width: isMobile ? "100%" : "400px",
+                  marginLeft: isMobile ? 0 : ".5rem",
                 }}
                 size="middle"
               />
@@ -199,18 +205,18 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                   className=" hidden sm:inline py-1"
                   checkedChildren={<MoonOutlined />}
                   unCheckedChildren={<SunOutlined />}
-                  checked={mytheme === 'light' ? true : false}
+                  checked={mytheme === "light" ? true : false}
                   onClick={() => dispatch(toggleTheme())}
                 />
               </Tooltip>
-              <Dropdown menu={{ items }} trigger={['click']}>
+              <Dropdown menu={{ items }} trigger={["click"]}>
                 <Flex>
                   <img
                     src="/me.jpg"
                     alt="user profile photo"
                     height={36}
                     width={36}
-                    style={{ borderRadius, objectFit: 'cover' }}
+                    style={{ borderRadius, objectFit: "cover" }}
                   />
                 </Flex>
               </Dropdown>
@@ -218,11 +224,11 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           </HeaderNav>
           <Content
             style={{
-              margin: `0 0 0 ${collapsed ? 0 : '200px'}`,
+              margin: `0 0 0 ${collapsed ? 0 : "200px"}`,
               // background: '#ebedf0',
               borderRadius: collapsed ? 0 : borderRadius,
-              transition: 'all .25s',
-              padding: '24px 32px',
+              transition: "all .25s",
+              padding: "24px 32px",
               minHeight: 360,
             }}
           >
@@ -242,7 +248,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                   unmountOnExit
                 >
                   {() => (
-                    <div ref={nodeRef} style={{ background: 'none' }}>
+                    <div ref={nodeRef} style={{ background: "none" }}>
                       {children}
                     </div>
                   )}
@@ -255,9 +261,9 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           </Content>
           <FooterNav
             style={{
-              textAlign: 'center',
-              marginLeft: collapsed ? 0 : '200px',
-              background: 'none',
+              textAlign: "center",
+              marginLeft: collapsed ? 0 : "200px",
+              background: "none",
             }}
           />
         </Layout>

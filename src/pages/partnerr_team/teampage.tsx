@@ -1,6 +1,6 @@
-import { Card, Col, Row, Space } from 'antd';
-import { Helmet } from 'react-helmet-async';
-import { PageHeader, TeamList, AddInTeamButton } from '../../components';
+import { Card, Col, Row, Space } from "antd";
+import { Helmet } from "react-helmet-async";
+import { PageHeader, TeamList, AddInTeamButton } from "../../components";
 
 export const TeamPage = () => {
   return (
@@ -15,7 +15,7 @@ export const TeamPage = () => {
             title: <span>Partner-Team</span>,
           },
           {
-            title: 'Team',
+            title: "Team",
           },
         ]}
       />

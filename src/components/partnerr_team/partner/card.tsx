@@ -1,14 +1,46 @@
-import { useState } from 'react';
-import { Card, Avatar, Row, Col, Modal } from 'antd';
-import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
+import { useEffect, useState } from "react";
+import { Card, Avatar, Row, Col, Modal, Spin, Alert, Empty } from "antd";
+import {
+  EditOutlined,
+  EllipsisOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { fetchPartners } from "../../../redux/slice/partner/partnerMemberSlice";
+import { useAppDispatch } from "../../../hooks";
+import { PartnerData } from "../../../redux/types";
 
 const { Meta } = Card;
 
 export const PartnerList = () => {
+  // const rawPartnerData = useSelector((state: RootState) => state.partnerMember?.Partner);
+  const { Partner, loading, error } = useSelector(
+    (state: RootState) => state.partnerMember
+  );
+  // console.log("loading", loading);
+  // console.log("error", error);
+
+  const patnerMembers: PartnerData[] = Array.isArray(Partner)
+    ? Partner
+    : Partner && "data" in Partner && Array.isArray(Partner)
+    ? Partner
+    : [];
+  const dispatch = useAppDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCard, setSelectedCard] = useState(0);
+  const [teamMemberData, setTeamMemberData] = useState<PartnerData | null>(
+    null
+  );
 
-  const showModal = (cardIndex : any) => {
+  // console.log("patnerMembers----->", patnerMembers);
+
+  useEffect(() => {
+    dispatch(fetchPartners());
+  }, [dispatch]);
+
+  const showModal = (partner: PartnerData, cardIndex: any) => {
+    setTeamMemberData(partner);
     setSelectedCard(cardIndex);
     setIsModalVisible(true);
   };
@@ -19,43 +51,71 @@ export const PartnerList = () => {
   };
 
   return (
-    <Row gutter={[16, 16]} justify="center">
-      {[...Array(5)].map((_, index) => (
-        <Col key={index} xs={24} sm={12} md={8} lg={6} xl={4}>
-          <Card
-            hoverable
-            style={{ maxWidth: 300, margin: 'auto' }}
-            onClick={() => showModal(index)}
-            cover={
-              <img
-                alt={`example ${index + 1}`}
-                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-              />
-            }
-            actions={[
-              <SettingOutlined key="setting" onClick={(e) => e.stopPropagation()} />,
-              <EditOutlined key="edit" onClick={(e) => e.stopPropagation()} />,
-              <EllipsisOutlined key="ellipsis" onClick={(e) => e.stopPropagation()} />,
-            ]}
+    <Spin spinning={loading} tip="Loading team members...">
+      {error && (
+        <Alert
+          message="Error"
+          description={error}
+          type="error"
+          showIcon
+          style={{ marginBottom: 16 }}
+        />
+      )}
+      {!loading && !error && patnerMembers?.length === 0 ? (
+        <Empty description="No partner members found." />
+      ) : (
+        <Row gutter={[16, 16]} justify="center">
+          {patnerMembers?.map((partner: PartnerData, index: number) => (
+            <Col key={index} xs={24} sm={12} md={8} lg={6} xl={4}>
+              <Card
+                hoverable
+                style={{ maxWidth: 300, margin: "auto" }}
+                onClick={() => showModal(partner, index)}
+                cover={
+                  <img
+                    alt={`example ${index + 1}`}
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+                }
+                actions={[
+                  <SettingOutlined
+                    key="setting"
+                    onClick={(e) => e.stopPropagation()}
+                  />,
+                  <EditOutlined
+                    key="edit"
+                    onClick={(e) => e.stopPropagation()}
+                  />,
+                  <EllipsisOutlined
+                    key="ellipsis"
+                    onClick={(e) => e.stopPropagation()}
+                  />,
+                ]}
+              >
+                <Meta
+                  avatar={
+                    <Avatar
+                      src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                    />
+                  }
+                  title={`${partner.partner_name}`}
+                  description={`${partner.company_name}`}
+                />
+              </Card>
+            </Col>
+          ))}
+          <Modal
+            title={`Details for Card ${selectedCard + 1}`}
+            open={isModalVisible}
+            onCancel={handleCancel}
+            footer={null}
           >
-            <Meta
-              avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-              title={`Card title ${index + 1}`}
-              description="This is the description"
-            />
-          </Card>
-        </Col>
-      ))}
-      <Modal
-        title={`Details for Card ${selectedCard + 1}`}
-        open={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
-      >
-        <p>More information about Card {selectedCard + 1}.</p>
-      </Modal>
-    </Row>
+            <h3> Partner Name: {teamMemberData?.partner_name}</h3>
+            <h3> Company Name: {teamMemberData?.company_name}</h3>
+            <h3> Email: {teamMemberData?.email}</h3>
+          </Modal>
+        </Row>
+      )}
+    </Spin>
   );
 };
-
-

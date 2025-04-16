@@ -12,7 +12,7 @@ import {
   SwitchTransition,
   TransitionGroup,
 } from 'react-transition-group';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Links, Outlet, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import {
   AppstoreAddOutlined,
@@ -172,8 +172,8 @@ export const GuestLayout = () => {
             backgroundColor: 'rgba(52, 152, 219, 0.2)',
           }}
         >
-          AntD Dashboard &copy; {new Date().getFullYear()} Created by Design
-          Sparx
+          CPM Dashboard &copy; {new Date().getFullYear()} Created by Design &nbsp;
+          <a href="https://www.magicallysoft.com" target='_blanck'>MagicallySoft</a>
         </Footer>
       </Layout>
       <Drawer title="Menu" placement="left" onClose={onClose} open={open}>

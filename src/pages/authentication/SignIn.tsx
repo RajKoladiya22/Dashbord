@@ -47,7 +47,7 @@ export const SignInPage = () => {
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values: FieldType) => {
-    console.log("Login request:", values);
+    // console.log("Login request:", values);
     setLoading(true);
 
     try {
@@ -62,11 +62,11 @@ export const SignInPage = () => {
 
       message.success("Login successful");
       // Navigate to the dashboard after successful login.
-      navigate(PATH_DASHBOARD.home);
+      navigate(PATH_DASHBOARD.home); 
     } catch (error: any) {
-      console.log(error);
+      // console.log(error);
       
-      message.error(`${error.error}`);
+      message.error(`${error}`);
     } finally {
       setLoading(false);
     }

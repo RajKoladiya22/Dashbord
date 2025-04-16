@@ -1,107 +1,111 @@
-// import axios, {
-//     AxiosRequestConfig,
-//     AxiosResponse,
-//     AxiosError,
-//   } from "axios";
-//   import { logoutUser } from "../redux/actions/auth/authActions";
-//   import { toast } from "react-toastify";
-//   import jwtDecode from "jwt-decode";
-  
-//   // Define the shape of your decoded token (at minimum, we need the "exp" property)
-//   interface DecodedToken {
-//     exp: number;
-//     [key: string]: any;
-//   }
-  
-//   const axiosInstance = axios.create({
-//     baseURL: "http://localhost:8051/api",
-//     // baseURL: "https://cpm-seven.vercel.app/api",
-//   });
-  
-//   // Request Interceptor: Check token expiry before sending requests
-//   axiosInstance.interceptors.request.use(
-//     async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
-//       const token = localStorage.getItem("userToken");
-  
-//       // If there's no token and we're not on login/register endpoints, force logout.
-//       if (
-//         !token &&
-//         config.url &&
-//         !config.url.includes("/auth/login") &&
-//         !config.url.includes("/auth/register")
-//       ) {
-//         const reduxStoreModule = await import("../redux/store");
-//         const store = reduxStoreModule.default;
-//         store.dispatch(logoutUser());
-//         return Promise.reject(new Error("No token found"));
-//       }
-  
-//       if (token) {
-//         try {
-//           const decoded = jwtDecode<DecodedToken>(token);
-//           const isExpired = decoded.exp < Date.now() / 1000;
-  
-//           if (isExpired) {
-//             // Token expired: clear storage and dispatch logout
-//             localStorage.removeItem("userToken");
-//             localStorage.removeItem("userData");
-//             if (axiosInstance.defaults.headers.common) {
-//               delete axiosInstance.defaults.headers.common["Authorization"];
-//             }
-  
-//             const reduxStoreModule = await import("../redux/store");
-//             const store = reduxStoreModule.default;
-//             store.dispatch(logoutUser());
-  
-//             return Promise.reject(new Error("Token expired"));
-//           }
-  
-//           // Ensure headers exist before adding the Authorization header
-//           if (!config.headers) {
-//             config.headers = {};
-//           }
-//           config.headers.Authorization = `Bearer ${token}`;
-//         } catch (error) {
-//           localStorage.removeItem("userToken");
-//           return Promise.reject(error);
-//         }
-//       }
-//       return config;
-//     },
-//     (error: any) => Promise.reject(error)
-//   );
-  
-//   axiosInstance.interceptors.response.use(
-//     (response: AxiosResponse) => response,
-//     async (error: AxiosError): Promise<any> => {
-//       // Handle 401 Unauthorized errors
-//       if (error.response?.status === 401) {
-//         if (
-//           error.config &&
-//           error.config.url &&
-//           !error.config.url.includes("/auth/login")
-//         ) {
-//           const reduxStoreModule = await import("../redux/store");
-//           const store = reduxStoreModule.default;
-  
-//           if (store?.dispatch) {
-//             console.log("Dispatching logout from response interceptor");
-//             store.dispatch(logoutUser());
-//           }
-//           localStorage.removeItem("userToken");
-//           localStorage.removeItem("userData");
-//           if (axiosInstance.defaults.headers.common) {
-//             delete axiosInstance.defaults.headers.common["Authorization"];
-//           }
-  
-//           // Optionally show a toast notification
-//           // toast.error("Session expired. Please log in again.");
-//           return Promise.reject(error);
-//         }
-//       }
-//       return Promise.reject(error);
-//     }
-//   );
-  
-//   export default axiosInstance;
-  
+// src/axiosInstance.ts
+import axios, {
+  InternalAxiosRequestConfig,
+  AxiosResponse,
+  AxiosError,
+} from "axios";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
+import { logout } from "../redux/slice/auth/loginSlice";
+
+interface DecodedToken {
+  exp: number;
+  [key: string]: any;
+}
+
+const axiosInstance = axios.create({
+  baseURL: "http://localhost:5000/api",
+  withCredentials: true, // Ensures cookies are sent with requests if needed.
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+/**
+ * Request Interceptor
+ * Retrieves the token from cookies, checks if it's valid and not expired,
+ * sets the Authorization header if valid. Otherwise, dispatches logout,
+ * clears the token from cookies, and redirects to /auth/signin.
+ */
+axiosInstance.interceptors.request.use(
+  async (
+    config: InternalAxiosRequestConfig
+  ): Promise<InternalAxiosRequestConfig> => {
+    const token = Cookies.get("xRo%pAkEjfmJ");
+    // const token1 = Cookies.get("token");
+    // console.log("Token",token);
+    
+    // If no token is present (and endpoint is not sign-in/sign-up)
+    if (
+      !token &&
+      config.url &&
+      !config.url.includes("/auth/signin") &&
+      !config.url.includes("/auth/signup")
+    ) {
+      const { store } = await import("../redux/store");
+      store.dispatch(logout());
+      // window.location.href = '/auth/signin';
+      return Promise.reject(new Error("No token found"));
+    }
+
+    // If token is present, check its validity.
+    if (token) {
+      try {
+        const decoded: DecodedToken = jwtDecode(token);
+        // console.log("decoded--->", decoded);
+
+        const currentTime = Date.now();
+        // decoded.exp is in seconds; convert to milliseconds
+        if (currentTime >= decoded.exp * 1000) {
+          // If token has expired, remove from cookies and logout.
+          Cookies.remove("xRo%pAkEjfmJ");
+          Cookies.remove("rJmkUxzNakU");
+          const { store } = await import("../redux/store");
+          store.dispatch(logout());
+          // window.location.href = '/auth/signin';
+          return Promise.reject(new Error("Token expired"));
+        }
+        // Attach the valid token to the Authorization header.
+        config.headers = config.headers || {};
+        config.headers["Authorization"] = `Bearer ${token}`;
+      } catch (error) {
+        // On token decoding error, clear token and logout.
+        Cookies.remove("xRo%pAkEjfmJ");
+        Cookies.remove("rJmkUxzNakU");
+        const { store } = await import("../redux/store");
+        store.dispatch(logout());
+        // window.location.href = '/auth/signin';
+        return Promise.reject(new Error("Invalid token"));
+      }
+    }
+    return config;
+  },
+  (error: any) => Promise.reject(error)
+);
+
+/**
+ * Response Interceptor
+ * Listens for 401 Unauthorized responses and handles them by clearing the token,
+ * dispatching a logout, and redirecting to the sign-in page.
+ */
+axiosInstance.interceptors.response.use(
+  (response: AxiosResponse): AxiosResponse => response,
+  async (error: AxiosError): Promise<any> => {
+    if (
+      error.response?.status === 401 &&
+      error.config &&
+      error.config.url &&
+      !error.config.url.includes("/auth/signin")
+    ) {
+      const { store } = await import("../redux/store");
+      store.dispatch(logout());
+      Cookies.remove("rJmkUxzNakU");
+      Cookies.remove("xRo%pAkEjfmJ");
+      // window.location.href = '/auth/signin';
+      return Promise.reject(error);
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default axiosInstance;

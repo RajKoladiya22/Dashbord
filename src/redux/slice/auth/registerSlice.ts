@@ -1,43 +1,7 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
-
-// Define the sign-up payload interface.
-export interface SignUpData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  contactNumber: string;
-  companyName: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-  };
-  planStatus: string; // e.g., 'active', 'inactive', 'free trial'
-  role: string;       // e.g., 'admin'
-}
-
-// Define the interface for the expected response payload.
-export interface AuthResponse {
-  token: string;
-  user: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    username: string;
-    role: string;
-    // add other user properties if needed
-  };
-}
-
-// Define the auth slice state.
-interface AuthState {
-  currentUser: AuthResponse | null;
-  loading: boolean;
-  error: string | null;
-}
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
+import { SignUpData, AuthResponse, AuthState } from "../../types";
+import Cookies from "js-cookie";
 
 // Initial state for authentication.
 const initialState: AuthState = {
@@ -48,30 +12,36 @@ const initialState: AuthState = {
 
 // Async thunk to handle sign-up.
 export const signupUser = createAsyncThunk(
-  'auth/signupUser',
+  "auth/signupUser",
   async (signupData: SignUpData, { rejectWithValue }) => {
     try {
       // Send POST request to the sign-up API.
       const response = await axios.post<AuthResponse>(
-        'http://localhost:5000/api/auth/signup',
+        "http://localhost:5000/api/auth/signup",
         signupData,
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
+      Cookies.set("xRo%pAkEjfmJ", response.data.data.token, {
+        // httpOnly: true,
+        expires: 1, // Expires in 1 day; adjust as necessary.
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+      });
       return response.data;
     } catch (error: any) {
       // Return a rejected promise with a custom error message.
-      return rejectWithValue(error.response?.data || 'Signup failed');
+      return rejectWithValue(error.response?.data || "Signup failed");
     }
   }
 );
 
 // Create the auth slice.
 export const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     // Synchronous logout action.
@@ -79,6 +49,9 @@ export const authSlice = createSlice({
       state.currentUser = null;
       state.error = null;
       state.loading = false;
+
+      Cookies.remove("xRo%pAkEjfmJ");
+      Cookies.remove("rJmkUxzNakU");
     },
   },
   extraReducers: (builder) => {
@@ -87,10 +60,13 @@ export const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(signupUser.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
-        state.loading = false;
-        state.currentUser = action.payload;
-      })
+      .addCase(
+        signupUser.fulfilled,
+        (state, action: PayloadAction<AuthResponse>) => {
+          state.loading = false;
+          state.currentUser = action.payload;
+        }
+      )
       .addCase(signupUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
