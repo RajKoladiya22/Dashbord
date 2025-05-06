@@ -36,7 +36,7 @@ axiosInstance.interceptors.request.use(
   ): Promise<InternalAxiosRequestConfig> => {
     const token = Cookies.get("xRo%pAkEjfmJ");
     // const token1 = Cookies.get("token");
-    // console.log("Token",token);
+    console.log("Token",token);
     
     // If no token is present (and endpoint is not sign-in/sign-up)
     if (
