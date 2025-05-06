@@ -6,9 +6,10 @@ import {
 } from '../../components';
 
 import { Helmet } from 'react-helmet-async';
+import React from 'react';
 
 
-export const PartnerPage = () => {
+export const PartnerPage : React.FC = React.memo(() =>{
 
 
   return (
@@ -56,4 +57,4 @@ export const PartnerPage = () => {
       </Row>
     </div>
   );
-};
+});

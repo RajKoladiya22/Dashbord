@@ -4,22 +4,26 @@ import { persistReducer, persistStore, PersistConfig } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import customerReducer from './slice/customer/addcustomerSlice';
 import authReducer from './slice/auth/loginSlice';
+import userReducer from './slice/user/userProfileSlice';
 import teamReducer from './slice/auth/teamRegisterSlice';
 import teamMemberReducer from './slice/team/teamMemberSlice'
 import partnerMemberReducer from './slice/partner/partnerMemberSlice'
 import partnerReducer from './slice/auth/partnerRegisterSlice';
 import customFieldsReducer from './slice/customer/customfieldSlice'
+import productsReducer from './slice/products/productSlice'
 
 // Define the state shape
 interface RootState {
   theme: ThemeState;
   customer: ReturnType<typeof customerReducer>;
   auth: ReturnType<typeof authReducer>;
+  profile: ReturnType<typeof userReducer>;
   team: ReturnType<typeof teamReducer>; 
   teamMember : ReturnType<typeof teamMemberReducer>
   partner: ReturnType<typeof partnerReducer>; 
   partnerMember: ReturnType<typeof partnerMemberReducer>; 
   customFields: ReturnType<typeof customFieldsReducer>;
+  products: ReturnType<typeof productsReducer>;
 }
 
 // Combine reducers
@@ -27,11 +31,13 @@ const rootReducer = combineReducers({
   theme: themeReducer,
   customer: customerReducer,
   auth: authReducer,
+  profile: userReducer,
   team: teamReducer, 
   teamMember: teamMemberReducer,
   partner: partnerReducer, 
   partnerMember: partnerMemberReducer, 
   customFields: customFieldsReducer,
+  products: productsReducer,
 });
 
 // Persist config with RootState
@@ -50,7 +56,10 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
+      // Faster dev experience without full disable
+      // ignoredActions: ['persist/PERSIST'],
     }),
+    // devTools: process.env.NODE_ENV !== 'production',
 });
 
 // Persistor

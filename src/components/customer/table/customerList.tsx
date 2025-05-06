@@ -704,7 +704,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import {
   SearchOutlined,
-  CloudUploadOutlined,
+  // CloudUploadOutlined,
   PlusOutlined,
   EyeOutlined,
   CheckCircleOutlined,
@@ -726,38 +726,41 @@ import {
 } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
-import { useFetchData } from "../../../hooks";
+import { useAppDispatch } from "../../../hooks";
 import { CustomerDetailModal, UpdateCustomerModel } from "../model";
 import { Link } from "react-router-dom";
+import { listCustomers } from "../../../redux/slice/customer/addcustomerSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 // Customer interface remains unchanged.
-interface Customer {
-  adminId: string;
-  companyName: string;
-  contactPerson: string;
-  mobileNumber: string;
-  email: string;
-  tallySerialNo: string;
-  prime: boolean;
-  blacklisted: boolean;
-  remark: string;
-  PartnerReferenceDetail?: {
-    referenceId: string;
-    Name: string;
-    Contact: string;
-    Company: string;
-    email: string;
-    adress: {
-      street: string;
-      city: string;
-      state: string;
-    };
-    partnerType: string[];
-    tallySerialNo: string;
-    status: string;
-    remark: string;
-  };
-}
+// interface Customer {
+//   adminId: string;
+//   companyName: string;
+//   contactPerson: string;
+//   mobileNumber: string;
+//   email: string;
+//   tallySerialNo: string;
+//   prime: boolean;
+//   blacklisted: boolean;
+//   remark: string;
+//   PartnerReferenceDetail?: {
+//     referenceId: string;
+//     Name: string;
+//     Contact: string;
+//     Company: string;
+//     email: string;
+//     adress: {
+//       street: string;
+//       city: string;
+//       state: string;
+//     };
+//     partnerType: string[];
+//     tallySerialNo: string;
+//     status: string;
+//     remark: string;
+//   };
+// }
 
 // Add adminId to the CustomerRow interface so it’s available where needed.
 interface CustomerRow {
@@ -889,7 +892,17 @@ const getColumnSearchProps = (
 });
 
 export const CustomerList: React.FC = () => {
-  const { data: customersData } = useFetchData("../mocks/CustomerData.json");
+  const dispatch = useAppDispatch();
+  // const { data: customersData } = useFetchData("../mocks/CustomerData.json");
+  const { customers, 
+    // loading, error 
+  } = useSelector(
+    (state: RootState) => state.customer
+  );
+  const customersData = customers
+  console.log("Customer--->", customers);
+  // console.log("loading--->", loading);
+  // console.log("error--->", error);
 
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -904,8 +917,8 @@ export const CustomerList: React.FC = () => {
 
   useEffect(() => {
     if (customersData && Array.isArray(customersData)) {
-      const rows = customersData.map((item: any, index: number) => {
-        const customer: Customer = item.CustomerData.customer;
+      const rows = customersData.map((customer: any, index: number) => {
+        // const customer: Customer = item.CustomerData.customer;
         return {
           key: index.toString(),
           // Add adminId so the type matches CustomerData requirements.
@@ -1053,6 +1066,9 @@ export const CustomerList: React.FC = () => {
     },
   ];
 
+  useEffect(() => {
+    dispatch(listCustomers());
+  }, []);
   return (
     <>
       <style>
@@ -1081,6 +1097,7 @@ export const CustomerList: React.FC = () => {
               </Link>
             </Space>
           }
+          bordered={false}
         >
           <Table<CustomerRow>
             columns={columns}

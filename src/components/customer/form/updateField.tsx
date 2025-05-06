@@ -6,12 +6,12 @@ const { Option } = Select;
 
 export interface FieldData {
   id: string;
-  admin_id: string;
-  field_name: string;
-  field_type: string;
-  is_required: boolean;
+  adminId: string;
+  fieldName: string;
+  fieldType: string;
+  isRequired: boolean;
   options: string[];
-  is_multi_select: boolean;
+  isMultiSelect: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -40,12 +40,12 @@ export const UpdateFieldForm: React.FC<UpdateFieldFormProps> = ({
   useEffect(() => {
     if (updateField) {
       form.setFieldsValue({
-        fieldName: updateField.field_name,
-        fieldType: updateField.field_type,
-        isRequired: updateField.is_required,
+        fieldName: updateField.fieldName,
+        fieldType: updateField.fieldType,
+        isRequired: updateField.isRequired,
         // Convert options array to comma-separated string.
         options: updateField.options.join(", "),
-        isMultiSelect: updateField.is_multi_select,
+        isMultiSelect: updateField.isMultiSelect,
       });
     }
   }, [updateField, form]);

@@ -1,6 +1,8 @@
 // src/redux/teamMemberSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { TeamMemberData, TeamMemberListResponse, TeamState } from "../../types";
+import { TeamMemberData,
+  //  TeamMemberListResponse,
+    TeamState } from "../../APITypes";
 import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState: TeamState = {
@@ -24,8 +26,8 @@ export const fetchTeamMembers = createAsyncThunk<
       status: number;
       success: boolean;
       message: string;
-      data: { teamMember: TeamMemberData[] };
-    }>('/team/members');
+      data: { teamMembers: TeamMemberData[] };
+    }>('/team-members');
     // console.log(response);
     
     
@@ -34,7 +36,7 @@ export const fetchTeamMembers = createAsyncThunk<
       throw new Error('Failed to fetch team members');
     }
     // Parse the JSON response.
-    return response.data.data.teamMember;
+    return response.data.data.teamMembers;
   } catch (error: any) {
     // console.log("ERROR--->", error);
     

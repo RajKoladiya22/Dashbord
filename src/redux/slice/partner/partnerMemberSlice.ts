@@ -1,6 +1,6 @@
 // src/redux/teamMemberSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { PartnerData, PartnerState } from "../../types";
+import { PartnerData, PartnerState } from "../../APITypes";
 import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState: PartnerState = {
@@ -26,9 +26,9 @@ export const fetchPartners = createAsyncThunk<
       success: boolean;
       message: string;
       data: { partners: PartnerData[] };
-    }>("/partner/members");
+    }>("/partner");
 
-    // console.log(response);
+    // console.log("PartnerData---->\n",response);
 
     // Check for HTTP errors.
     if (response.status !== 200 || !response.data.success) {

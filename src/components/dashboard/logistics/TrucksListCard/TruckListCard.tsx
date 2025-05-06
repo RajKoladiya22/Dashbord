@@ -43,9 +43,9 @@ export const TruckListCard = ({ data, loading, error, ...others }: Props) => {
           className="available-truck-list"
           size="large"
           pagination={{
-            onChange: (page) => {
-              console.log(page);
-            },
+            // onChange: (page) => {
+            // //  console.log(page);
+            // },
             pageSize: 5,
             align: 'center',
           }}

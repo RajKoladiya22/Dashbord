@@ -24,9 +24,9 @@ export const DeliveryRequestCard = ({ data, ...others }: Props) => {
         size="large"
         className="delivery-request-list"
         pagination={{
-          onChange: (page) => {
-            console.log(page);
-          },
+          // onChange: (page) => {
+          // //  console.log(page);
+          // },
           pageSize: 5,
           align: 'center',
         }}

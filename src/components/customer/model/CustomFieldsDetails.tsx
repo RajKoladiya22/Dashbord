@@ -4,12 +4,12 @@ import { Modal, Card, Row, Col } from "antd";
 interface FieldRow {
   //   key: string;
   id: string;
-  admin_id: string;
-  field_name: string;
-  field_type: string;
-  is_required: boolean;
+  adminId: string;
+  fieldName: string;
+  fieldType: string;
+  isRequired: boolean;
   options: string[];
-  is_multi_select: boolean;
+  isMultiSelect: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -37,23 +37,23 @@ export const FieldDetailModal: React.FC<FieldDetailModalProps> = ({
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12}>
             <p>
-              <strong>Field Name:</strong> {field.field_name}
+              <strong>Field Name:</strong> {field.fieldName}
             </p>
           </Col>
           <Col xs={24} sm={12}>
             <p>
-              <strong>Field Type:</strong> {field.field_type}
+              <strong>Field Type:</strong> {field.fieldType}
             </p>
           </Col>
           <Col xs={24} sm={12}>
             <p>
-              <strong>Required:</strong> {field.is_required ? "Yes" : "No"}
+              <strong>Required:</strong> {field.isRequired ? "Yes" : "No"}
             </p>
           </Col>
           <Col xs={24} sm={12}>
             <p>
               <strong>Multi-select:</strong>{" "}
-              {field.is_multi_select ? "Yes" : "No"}
+              {field.isMultiSelect ? "Yes" : "No"}
             </p>
           </Col>
           {Array.isArray(field.options) && field.options.length > 0 && (

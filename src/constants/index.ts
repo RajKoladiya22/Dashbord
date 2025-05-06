@@ -27,6 +27,7 @@ import {
     PATH_ABOUT,
     PATH_CUSTOMER,
     PATH_PRODUCT,
+    PATH_CUSTOMFIELD
   } from './routes';
   
   const DASHBOARD_ITEMS = [
@@ -44,6 +45,10 @@ import {
     { title: 'customerlist', path: PATH_CUSTOMER.customerlist },
     { title: 'reminder', path: PATH_CUSTOMER.reminder },
   ];
+  const CUSTOMFIELD_ITEMS = [
+    { title: 'addcustomer', path: PATH_CUSTOMFIELD.root },
+  ];
+
   
   const CORPORATE_ITEMS = [
     { title: 'about', path: PATH_CORPORATE.about },
@@ -117,6 +122,7 @@ import {
     PATH_LANDING,
     PATH_PARTNER_TEAM,
     PATH_PRODUCT,
+    PATH_CUSTOMFIELD,
     DASHBOARD_ITEMS,
     CORPORATE_ITEMS,
     USER_PROFILE_ITEMS,
@@ -127,6 +133,7 @@ import {
     PATH_CUSTOMER,
     CUSTOMER_ITEMS,
     PARTNER_TEAM,
-    PRODUCT_ITEM
+    PRODUCT_ITEM,
+    CUSTOMFIELD_ITEMS
   };
   

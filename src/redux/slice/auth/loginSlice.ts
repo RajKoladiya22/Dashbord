@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
-import { AuthResponse, LoginCredentials, AuthState } from "../../types";
+import { AuthResponse, LoginCredentials, AuthState } from "../../APITypes";
 import axiosInstance from "../../../utils/axiosInstance";
 import Cookies from 'js-cookie';
 
@@ -22,7 +21,7 @@ export const loginUser = createAsyncThunk(
         credentials
       );
 
-      // console.log(response.data);
+      // console.log("---Login Response--->", response.data);
 
 
       // Save token and user data in cookies:

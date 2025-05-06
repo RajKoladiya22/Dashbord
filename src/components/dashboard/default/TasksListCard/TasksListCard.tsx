@@ -51,9 +51,9 @@ export const TasksListCard = ({ data, error, loading, ...others }: Props) => {
             xxl: 4,
           }}
           pagination={{
-            onChange: (page) => {
-              console.log(page);
-            },
+            // onChange: (page) => {
+            // //  console.log(page);
+            // },
             pageSize: 6,
             align: 'center',
           }}

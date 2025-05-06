@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { fetchPartners } from "../../../redux/slice/partner/partnerMemberSlice";
 import { useAppDispatch } from "../../../hooks";
-import { PartnerData } from "../../../redux/types";
+import { PartnerData } from "../../../redux/APITypes";
 
 const { Meta } = Card;
 
@@ -18,7 +18,7 @@ export const PartnerList = () => {
   const { Partner, loading, error } = useSelector(
     (state: RootState) => state.partnerMember
   );
-  // console.log("loading", loading);
+  // console.log("Partner", Partner);
   // console.log("error", error);
 
   const patnerMembers: PartnerData[] = Array.isArray(Partner)
@@ -98,8 +98,8 @@ export const PartnerList = () => {
                       src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
                     />
                   }
-                  title={`${partner.partner_name}`}
-                  description={`${partner.company_name}`}
+                  title={`${partner.firstName}`}
+                  description={`${partner.companyName}`}
                 />
               </Card>
             </Col>
@@ -110,8 +110,8 @@ export const PartnerList = () => {
             onCancel={handleCancel}
             footer={null}
           >
-            <h3> Partner Name: {teamMemberData?.partner_name}</h3>
-            <h3> Company Name: {teamMemberData?.company_name}</h3>
+            <h3> Partner Name: {teamMemberData?.firstName}</h3>
+            <h3> Company Name: {teamMemberData?.companyName}</h3>
             <h3> Email: {teamMemberData?.email}</h3>
           </Modal>
         </Row>

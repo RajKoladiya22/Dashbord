@@ -13,11 +13,14 @@ interface DecodedToken {
   [key: string]: any;
 }
 
+const STATIC_API_KEY = "Q0@gZ@dY7[jGQ/GRc@D9KSCX#U2Yz";
+
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "http://localhost:3000/api/v1",
   withCredentials: true, // Ensures cookies are sent with requests if needed.
   headers: {
     "Content-Type": "application/json",
+    "x-api-key": STATIC_API_KEY,
   },
 });
 

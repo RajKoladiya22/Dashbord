@@ -10,9 +10,16 @@ import {
   theme,
   Tooltip,
   Switch,
+  // Skeleton,
 } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import React, {
+  ReactNode,
+  // Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   AppstoreOutlined,
   LogoutOutlined,
@@ -34,6 +41,9 @@ import { useMediaQuery } from "react-responsive";
 import SideNav from "./SideNav.tsx";
 import HeaderNav from "./HeaderNav.tsx";
 import FooterNav from "./FooterNav.tsx";
+// const SideNav   = React.lazy(() => import('./SideNav'));
+// const HeaderNav = React.lazy(() => import('./HeaderNav'));
+// const FooterNav = React.lazy(() => import('./FooterNav'));
 import { NProgress } from "../../components";
 import { PATH_LANDING } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
@@ -43,6 +53,7 @@ import "./style.css";
 import { useAppDispatch } from "../../hooks/dispatch.ts";
 import { logout } from "../../redux/slice/auth/loginSlice.ts";
 import { useAuth } from "../../context";
+import { throttle } from "lodash";
 
 const { Content } = Layout;
 
@@ -50,7 +61,7 @@ type AppLayoutProps = {
   children: ReactNode;
 };
 
-export const AppLayout = ({ children }: AppLayoutProps) => {
+export const AppLayout = React.memo(({ children }: AppLayoutProps) => {
   const {
     token: { borderRadius },
   } = theme.useToken();
@@ -70,7 +81,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     {
       key: "user-profile-link",
       // label: 'profile',
-      label: `${user?.username}`,
+      label: <Link to={"/user-profile"}>{user?.firstName}</Link>,
       icon: <UserOutlined />,
     },
     {
@@ -110,6 +121,15 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   }, [isMobile]);
 
   useEffect(() => {
+    const handleScroll = throttle(() => {
+      setNavFill(window.scrollY > 5);
+    }, 100); // once every 100ms
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 5) {
         setNavFill(true);
@@ -128,6 +148,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           // backgroundColor: 'white',
         }}
       >
+        {/* <Suspense fallback={null}> */}
         <SideNav
           trigger={null}
           collapsible
@@ -145,6 +166,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             transition: "all .2s",
           }}
         />
+        {/* </Suspense> */}
         <Layout
           style={
             {
@@ -152,6 +174,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             }
           }
         >
+          {/* <Suspense fallback={null}> */}
           <HeaderNav
             style={{
               marginLeft: collapsed ? 0 : "200px",
@@ -222,6 +245,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               </Dropdown>
             </Flex>
           </HeaderNav>
+          {/* </Suspense> */}
           <Content
             style={{
               margin: `0 0 0 ${collapsed ? 0 : "200px"}`,
@@ -259,6 +283,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               <FloatButton.BackTop />
             </div>
           </Content>
+          {/* <Suspense fallback={null}> */}
           <FooterNav
             style={{
               textAlign: "center",
@@ -266,8 +291,11 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               background: "none",
             }}
           />
+          {/* </Suspense> */}
         </Layout>
       </Layout>
     </>
   );
-};
+});
+// export default AppLayout;
+export default React.memo(AppLayout);

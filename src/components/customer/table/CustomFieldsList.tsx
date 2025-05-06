@@ -12,8 +12,9 @@ import {
   Modal,
   Col,
 } from "antd";
-import type { TableColumnsType, 
-  // InputRef 
+import type {
+  TableColumnsType,
+  // InputRef
 } from "antd";
 import {
   EyeOutlined,
@@ -39,12 +40,12 @@ import {
 // Define the interface for your custom field row.
 export interface AdminCustomField {
   id: string;
-  admin_id: string;
-  field_name: string;
-  field_type: string;
-  is_required: boolean;
+  adminId: string;
+  fieldName: string;
+  fieldType: string;
+  isRequired: boolean;
   options: string[];
-  is_multi_select: boolean;
+  isMultiSelect: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -60,7 +61,7 @@ const getColumnSearchProps = (
   setSearchedColumn: (col: string) => void,
   // searchInput: React.RefObject<InputRef | null>,
   searchInput: React.RefObject<HTMLInputElement | null>,
-  suggestions: { value: string | null }[] | null
+  // suggestions: { value: string | null }[] | null
 ): TableColumnsType<AdminCustomField>[number] => ({
   filterDropdown: ({
     setSelectedKeys,
@@ -72,7 +73,7 @@ const getColumnSearchProps = (
     <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
       {/* You can use an input here directly if you don't want AutoComplete */}
       <input
-      ref={searchInput}
+        ref={searchInput}
         placeholder={`Search ${dataIndex}`}
         value={selectedKeys[0] as string}
         // options={suggestions}
@@ -86,10 +87,10 @@ const getColumnSearchProps = (
             setSearchedColumn(dataIndex);
           }
         }}
-        
         style={{ marginBottom: 8, display: "block", width: "100%" }}
         // ref={searchInput as React.RefObject<HTMLInputElement>}
       />
+      
       <Space>
         <Button
           type="primary"
@@ -150,6 +151,7 @@ const getColumnSearchProps = (
     ) : (
       text
     ),
+    
 });
 
 export const CustomFieldsList: React.FC = () => {
@@ -170,7 +172,7 @@ export const CustomFieldsList: React.FC = () => {
   const handleDelete = (record: AdminCustomField) => {
     Modal.confirm({
       title: "Are you sure you want to delete this field?",
-      content: `Field Name: ${record.field_name}`,
+      content: `Field Name: ${record.fieldName}`,
       okText: "Yes",
       okType: "danger",
       cancelText: "No",
@@ -204,36 +206,36 @@ export const CustomFieldsList: React.FC = () => {
     dispatch(fetchAdminCustomFields());
   }, [dispatch]);
 
-  const getSuggestions = (dataIndex: DataIndex): { value: string }[] => {
-    const uniqueValues = Array.from(
-      new Set(customFields.map((item) => item[dataIndex]?.toString() || ""))
-    );
-    return uniqueValues.map((val) => ({ value: val }));
-  };
+  // const getSuggestions = (dataIndex: DataIndex): { value: string }[] => {
+  //   const uniqueValues = Array.from(
+  //     new Set(customFields.map((item) => item[dataIndex]?.toString() || ""))
+  //   );
+  //   return uniqueValues.map((val) => ({ value: val }));
+  // };
 
   const columns: TableColumnsType<AdminCustomField> = [
     {
       title: "Field Name",
-      dataIndex: "field_name",
+      dataIndex: "fieldName",
       key: "field_name",
       ...getColumnSearchProps(
-        "field_name",
+        "fieldName",
         searchText,
         setSearchText,
         searchedColumn,
         setSearchedColumn,
         searchInput,
-        getSuggestions("field_name")
+        // getSuggestions("fieldName")
       ),
     },
     {
       title: "Field Type",
-      dataIndex: "field_type",
+      dataIndex: "fieldType",
       key: "field_type",
     },
     {
       title: "Required",
-      dataIndex: "is_required",
+      dataIndex: "isRequired",
       key: "is_required",
       render: (val: boolean) => (val ? "Yes" : "No"),
     },

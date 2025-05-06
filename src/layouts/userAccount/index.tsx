@@ -1,158 +1,344 @@
-// import { AppLayout } from '../app';
+// import {
+//   Col,
+//   Descriptions,
+//   DescriptionsProps,
+//   Image,
+//   Row,
+//   theme,
+//   Typography,
+// } from "antd";
+// import { Card } from "../../components";
+// import { useStylesContext } from "../../context";
+
+// const { Link } = Typography;
+
+// import "./styles.css";
+// import {
+//   useEffect,
+// } from "react";
+// import { useSelector } from "react-redux";
+// import { RootState } from "../../redux/store";
+// import { useAppDispatch } from "../../hooks";
+// import { fetchUserProfile } from "../../redux/slice/user/userProfileSlice";
+
+// export const UserAccountLayout = () => {
+//   const {
+//     token: { borderRadius },
+//   } = theme.useToken();
+//   const dispatch = useAppDispatch();
+//   const { profile } = useSelector((state: RootState) => state.profile);
+//   const stylesContext = useStylesContext();
+
+//   const DESCRIPTION_ITEMS: DescriptionsProps["items"] = [
+//     {
+//       key: "first-name",
+//       label: "First Name",
+//       children: <span>{profile?.first_name}</span>,
+//     },
+//     {
+//       key: "last-name",
+//       label: "Last Name",
+//       children: <span>{profile?.last_name}</span>,
+//     },
+//     {
+//       key: "company_name",
+//       label: "Company Name",
+//       children: <span>{profile?.company_name}</span>,
+//     },
+//     {
+//       key: "email",
+//       label: "Email",
+//       children: <Link href={`mailto:${profile?.email}`}>{profile?.email}</Link>,
+//     },
+//     {
+//       key: "telephone",
+//       label: "Phone",
+//       children: (
+//         <Link href={`tel:${profile?.contact_number}`}>
+//           {profile?.contact_number}
+//         </Link>
+//       ),
+//     },
+//     {
+//       key: "paln",
+//       label: "Plan Status",
+//       children: <span>{profile?.plan_status}</span>,
+//     },
+//     {
+//       key: "street",
+//       label: "street",
+//       children: <span>{profile?.address?.street}</span>,
+//     },
+//     {
+//       key: "city",
+//       label: "City",
+//       children: <span>{profile?.address?.city}</span>,
+//     },
+//     {
+//       key: "state",
+//       label: "State",
+//       children: <span>{profile?.address?.state}</span>,
+//     },
+//   ];
+
+//   useEffect(() => {
+//     dispatch(fetchUserProfile());
+//   }, [dispatch]);
+
+//   return (
+//     <>
+//       <Card className="user-profile-card-nav card"  >
+//         <Row {...stylesContext?.rowProps}>
+//           <Col xs={24} sm={8} lg={4}>
+//             <Image
+//               src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
+//               alt="user profile image"
+//               height="100%"
+//               width="100%"
+//               style={{ borderRadius }}
+//             />
+//           </Col>
+//           <Col xs={24} sm={16} lg={20}>
+//             <Descriptions
+//               title="User Info"
+//               items={DESCRIPTION_ITEMS}
+//               column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 4 }}
+//             />
+//           </Col>
+//         </Row>
+//       </Card>
+//     </>
+//   );
+// };
+
 import {
   Col,
-  ConfigProvider,
+  // ConfigProvider,
   Descriptions,
   DescriptionsProps,
   Image,
   Row,
-  Tabs,
-  TabsProps,
+  Form,
+  Input,
+  Button,
+  message,
   theme,
   Typography,
 } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import { Card } from "../../components";
+import { useStylesContext } from "../../context";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { useAppDispatch } from "../../hooks";
 import {
-  // Outlet,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
-import { USER_PROFILE_ITEMS } from "../../constants";
-import { useAuth, useStylesContext } from "../../context";
+  fetchUserProfile,
+  updateUserProfile,
+} from "../../redux/slice/user/userProfileSlice";
 
 const { Link } = Typography;
 
 import "./styles.css";
-import { useEffect, useState } from "react";
 
-
-
-const TAB_ITEMS: TabsProps["items"] = USER_PROFILE_ITEMS.map((u) => ({
-  key: u.title,
-  label: u.title,
-}));
-
-export const UserAccountLayout = () => {
+export const UserAccountLayout : React.FC = React.memo(() => {
   const {
     token: { borderRadius },
   } = theme.useToken();
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { profile, loading, 
+    // error
+   } = useSelector(
+    (state: RootState) => state.profile || {}
+  );
   const stylesContext = useStylesContext();
-  const location = useLocation();
-  const [activeKey, setActiveKey] = useState(TAB_ITEMS[0].key);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [form] = Form.useForm();
 
-  // console.log(user);
-  
+  useEffect(() => {
+    if (!profile) {
+      dispatch(fetchUserProfile());
+    } else {
+      form.setFieldsValue(profile);
+    }
+  }, [dispatch, profile, form]);
 
   const DESCRIPTION_ITEMS: DescriptionsProps["items"] = [
     {
-      key: "full-name",
-      label: "Name",
-      children: <span>{user?.username}</span>,
+      key: "first-name",
+      label: "First Name",
+      children: <span>{profile?.first_name}</span>,
     },
     {
-      key: "job-title",
-      label: "Job title",
-      children: <span>Software Engineer</span>,
+      key: "last-name",
+      label: "Last Name",
+      children: <span>{profile?.last_name}</span>,
+    },
+    {
+      key: "company_name",
+      label: "Company Name",
+      children: <span>{profile?.company_name}</span>,
     },
     {
       key: "email",
       label: "Email",
-      children: (
-        <Link href={`mailto:${user?.email}`}>
-          {user?.email}
-        </Link>
-      ),
+      children: <Link href={`mailto:${profile?.email}`}>{profile?.email}</Link>,
     },
     {
       key: "telephone",
       label: "Phone",
-      children: <Link href="tel:+254706094433">+254 706 094 4433</Link>,
-    },
-    {
-      key: "github",
-      label: "Github",
       children: (
-        <Link href="https://github.com/kelvink96" target="_blank">
-          kelvink96
+        <Link href={`tel:${profile?.contact_number}`}>
+          {profile?.contact_number}
         </Link>
       ),
     },
     {
-      key: "twitter",
-      label: "Twitter",
-      children: (
-        <Link href="https://twitter.com/kelvink_96" target="_blank">
-          @kelvink_96
-        </Link>
-      ),
+      key: "plan",
+      label: "Plan Status",
+      children: <span>{profile?.plan_status}</span>,
+    },
+    {
+      key: "street",
+      label: "Street",
+      children: <span>{profile?.address?.street}</span>,
+    },
+    {
+      key: "city",
+      label: "City",
+      children: <span>{profile?.address?.city}</span>,
+    },
+    {
+      key: "state",
+      label: "State",
+      children: <span>{profile?.address?.state}</span>,
     },
   ];
 
-  const onChange = (key: string) => {
-    navigate(key);
+  const toggleEditMode = () => {
+    setIsEditMode((prev) => !prev);
+    if (!isEditMode) {
+      form.setFieldsValue(profile);
+    }
   };
 
-  useEffect(() => {
-    console.log(location);
-    const k =
-      TAB_ITEMS.find((d) => location.pathname.includes(d.key))?.key || "";
-
-    console.log(k);
-    setActiveKey(k);
-  }, [location]);
-
-
+  const handleSubmit = async (values: any) => {
+    try {
+      await dispatch(updateUserProfile(values));
+      message.success("Profile updated successfully!");
+      setIsEditMode(false);
+    } catch (err) {
+      message.error("Failed to update profile");
+    }
+  };
 
   return (
-    <>
-      {/* <AppLayout> */}
-      <Card
-        className="user-profile-card-nav card"
-        actions={[
-          <ConfigProvider
-            theme={{
-              components: {
-                Tabs: {
-                  colorBorderSecondary: "none",
-                },
-              },
-            }}
-          >
-            <Tabs
-              defaultActiveKey={activeKey}
-              activeKey={activeKey}
-              items={TAB_ITEMS}
-              onChange={onChange}
-              style={{ textTransform: "capitalize" }}
-            />
-          </ConfigProvider>,
-        ]}
-      >
-        <Row {...stylesContext?.rowProps}>
-          <Col xs={24} sm={8} lg={4}>
-            <Image
-              src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
-              alt="user profile image"
-              height="100%"
-              width="100%"
-              style={{ borderRadius }}
-            />
-          </Col>
-          <Col xs={24} sm={16} lg={20}>
-            <Descriptions
-              title="User Info"
-              items={DESCRIPTION_ITEMS}
-              column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 4 }}
-            />
-          </Col>
-        </Row>
-      </Card>
-      {/* <div style={{ marginTop: '1.5rem' }}>
-          <Outlet />
-        </div> */}
-      {/* </AppLayout> */}
-    </>
+    <Card className="user-profile-card-nav card"
+    actions={[
+      <div style={{ padding: "5px", textAlign: "end" }}>
+        <Typography.Text type="danger" strong>
+          delete account?
+        </Typography.Text>
+        {/* <Button
+          type="default"
+          danger
+          // onClick={handleDelete}
+          style={{ marginLeft: 8 }}
+        >
+          Delete
+        </Button> */}
+      </div>
+    ]
+    }
+    >
+      <Row {...stylesContext?.rowProps}>
+        <Col xs={24} sm={8} lg={4}>
+          <Image
+            src={
+              "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
+            }
+            alt="user profile image"
+            height="250"
+            width="100%"
+            style={{ borderRadius }}
+          />
+        </Col>
+        <Col xs={24} sm={16} lg={20}>
+          {isEditMode ? (
+            <Form
+              form={form}
+              layout="vertical"
+              // initialValues={profile}
+              onFinish={handleSubmit}
+            >
+              <Form.Item name="first_name" label="First Name">
+                <Input />
+              </Form.Item>
+              <Form.Item name="last_name" label="Last Name">
+                <Input />
+              </Form.Item>
+              <Form.Item name="company_name" label="Company Name">
+                <Input />
+              </Form.Item>
+              <Form.Item name="email" label="Email">
+                <Input />
+              </Form.Item>
+              <Form.Item name="contact_number" label="Phone">
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="plan_status"
+                label="Plan Status (ONLY AT TESTING MODE)"
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item name={["address", "street"]} label="Street">
+                <Input />
+              </Form.Item>
+              <Form.Item name={["address", "city"]} label="City">
+                <Input />
+              </Form.Item>
+              <Form.Item name={["address", "state"]} label="State">
+                <Input />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit" loading={loading}>
+                  Save Changes
+                </Button>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  onClick={toggleEditMode}
+                  disabled={loading}
+                >
+                  Cancel
+                </Button>
+              </Form.Item>
+            </Form>
+          ) : (
+            <>
+              <Descriptions
+                title="User Info"
+                items={DESCRIPTION_ITEMS}
+                column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 4 }}
+                extra={
+                  <Button
+                    color="gold"
+                    variant="outlined"
+                    icon={<EditOutlined />}
+                    onClick={toggleEditMode}
+                    loading={loading}
+                  >
+                    Edit Profile
+                  </Button>
+                }
+                
+              />
+            </>
+          )}
+        </Col>
+      </Row>
+    </Card>
   );
-};
+});
+
+export default React.memo(UserAccountLayout);

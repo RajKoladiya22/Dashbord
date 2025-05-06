@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useAppDispatch } from '../../../hooks';
 import { fetchTeamMembers } from '../../../redux/slice/team/teamMemberSlice';
-import { TeamMemberData } from '../../../redux/types';
+import { TeamMemberData } from '../../../redux/APITypes';
 
 const { Meta } = Card;
 
@@ -16,7 +16,7 @@ export const TeamList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCard, setSelectedCard] = useState<number>(0);
   const [teamMemberData, setTeamMemberData] = useState<TeamMemberData | null>(null);
-  // console.log("error--->", error);
+  // console.log("teamMember--->", teamMember);
   
   useEffect(() => {
     dispatch(fetchTeamMembers());
@@ -69,7 +69,7 @@ export const TeamList: React.FC = () => {
               >
                 <Meta
                   avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-                  title={team.full_name}
+                  title={team.firstName}
                   description={team.department}
                 />
               </Card>
@@ -85,7 +85,7 @@ export const TeamList: React.FC = () => {
       >
         {teamMemberData && (
           <div>
-            <h3>Name: {teamMemberData.full_name}</h3>
+            <h3>Name: {teamMemberData.firstName}</h3>
             <h3>Email: {teamMemberData.email}</h3>
             <h3>Department: {teamMemberData.department}</h3>
             <h3>Role: {teamMemberData.role}</h3>

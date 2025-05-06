@@ -4,7 +4,7 @@ import { QuestionOutlined } from '@ant-design/icons';
 import { Card } from '../../../index.ts';
 
 const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>['mode']) => {
-  console.log(value.format('YYYY-MM-DD'), mode);
+ console.log(value.format('YYYY-MM-DD'), mode);
 };
 
 type Props = CardProps;

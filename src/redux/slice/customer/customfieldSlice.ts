@@ -5,12 +5,12 @@ import axiosInstance from "../../../utils/axiosInstance"; // Your pre-configured
 // Define the interface for a single admin custom field.
 export interface AdminCustomField {
   id: string;
-  admin_id: string;
-  field_name: string;
-  field_type: string;
-  is_required: boolean;
+  adminId: string;
+  fieldName: string;
+  fieldType: string;
+  isRequired: boolean;
   options: string[];
-  is_multi_select: boolean;
+  isMultiSelect: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -57,6 +57,7 @@ export const fetchAdminCustomFields = createAsyncThunk(
       const response = await axiosInstance.get<CustomFieldsResponse>("/customer/customfield", {
         withCredentials: true,
       });
+      
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
@@ -85,6 +86,8 @@ export const addAdminCustomField = createAsyncThunk(
         payload,
         { withCredentials: true }
       );
+      // console.log("response---->", response);
+
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
@@ -221,6 +224,6 @@ const adminCustomFieldsSlice = createSlice({
       state.error = action.payload as string;
     });
   },
-});
+});``
 
 export default adminCustomFieldsSlice.reducer;

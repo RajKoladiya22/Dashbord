@@ -1,72 +1,98 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+// src/store/slices/customerSlice.ts
 
-export interface Customer {
-  adminId: string;
-  companyName: string;
-  contactPerson: string;
-  mobileNumber: string;
-  email: string;
-  tallySerialNo: string;
-  prime: boolean;
-  blacklisted: boolean;
-  remark: string;
-  hasPartnerReference: boolean;
-  PartnerReferenceDetail?: {
-    referenceId: string;
-    Name: string;
-    // add additional fields if needed
-  } | null;
-  // You can add other fields like products, adminCustomFields, createdAt, updatedAt etc.
-}
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import axiosInstance from "../../../utils/axiosInstance";
+import { Customer, CustomerState, CustomerResponse } from "../../APITypes";
 
-interface CustomerState {
-  data: Customer[];
-  loading: boolean;
-  error: string | null;
-}
-
-const initialState: CustomerState = {
-  data: [],
-  loading: false,
-  error: null,
-};
-
-// Async thunk to post customer data
-export const postCustomer = createAsyncThunk(
-  'customer/postCustomer',
-  async (customer: Customer, { rejectWithValue }) => {
+// 1) Create Customer thunk
+export const createCustomer = createAsyncThunk<
+  Customer, // return type
+  Partial<Customer>, // arg type
+  { rejectValue: string } // thunkAPI
+>(
+  "customers/createCustomer",
+  async (payload: Partial<Customer>, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:3001/api/add-customer', customer);
-      // Assuming the API returns the saved customer data.
-      return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || 'An error occurred while saving customer data');
+      const response: any = await axiosInstance.post<CustomerResponse>(
+        "/customer/add",
+        payload
+      );
+      console.log("Customer------->\n", response);
+      return response.data.data.customers;
+    } catch (err: any) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to create customer"
+      );
     }
   }
 );
 
-export const customerSlice = createSlice({
-  name: 'customer',
+// 2) List Customers thunk
+export const listCustomers = createAsyncThunk<
+  Customer[], // return type
+  void, // no arg
+  { rejectValue: string } // thunkAPI
+>("customers/listCustomers", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.get<CustomerResponse>(
+      "/customer/list"
+    );
+    // ensure array
+    const cust = response.data.data.customers;
+    // console.log("Customer------->\n", cust);
+
+    return Array.isArray(cust) ? cust : [cust];
+  } catch (err: any) {
+    return rejectWithValue(
+      err.response?.data?.message || "Failed to fetch customers"
+    );
+  }
+});
+
+const initialState: CustomerState = {
+  customers: [],
+  loading: false,
+  error: null,
+};
+
+const customerSlice = createSlice({
+  name: "customers",
   initialState,
-  reducers: {
-    // You can add synchronous actions here if needed.
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(postCustomer.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(postCustomer.fulfilled, (state, action: PayloadAction<Customer>) => {
+    // createCustomer
+    builder.addCase(createCustomer.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(
+      createCustomer.fulfilled,
+      (state, action: PayloadAction<Customer>) => {
         state.loading = false;
-        // Append the newly saved customer data to our state
-        state.data.push(action.payload);
-      })
-      .addCase(postCustomer.rejected, (state, action) => {
+        state.customers.push(action.payload);
+      }
+    );
+    builder.addCase(createCustomer.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+
+    // listCustomers
+    builder.addCase(listCustomers.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(
+      listCustomers.fulfilled,
+      (state, action: PayloadAction<Customer[]>) => {
         state.loading = false;
-        state.error = action.payload as string;
-      });
+        state.customers = action.payload;
+      }
+    );
+    builder.addCase(listCustomers.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
   },
 });
 

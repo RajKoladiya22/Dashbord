@@ -6,7 +6,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { createPartner } from "../../../redux/slice/auth/partnerRegisterSlice";
 import { useAppDispatch } from "../../../hooks";
 import { fetchPartners } from "../../../redux/slice/partner/partnerMemberSlice";
-import { PartnerData } from "../../../redux/types";
+import { PartnerData } from "../../../redux/APITypes";
 
 // const { Option } = Select;
 
@@ -32,8 +32,8 @@ export const AddPartnerButton = () => {
     }
 
     const signupData: PartnerData = {
-      partner_name: values.partner_name,
-      company_name: values.company_name,
+      firstName: values.firstName,
+      companyName: values.companyName,
       email: values.email,
       password: values.password,
     };

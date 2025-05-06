@@ -104,7 +104,7 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
 
     // Pass the updated payload to the onUpdate callback
     onUpdate(updatedPayload);
-    console.log("Updated customer data", updatedPayload);
+  //  console.log("Updated customer data", updatedPayload);
   };
 
   const handleStatusChange = (

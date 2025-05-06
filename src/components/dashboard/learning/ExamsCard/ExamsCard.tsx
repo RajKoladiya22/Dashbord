@@ -35,9 +35,9 @@ export const ExamsCard = ({ data, loading, error, ...others }: Props) => {
           itemLayout="vertical"
           size="large"
           pagination={{
-            onChange: (page) => {
-              console.log(page);
-            },
+            // onChange: (page) => {
+            // //  console.log(page);
+            // },
             pageSize: 5,
             align: 'center',
           }}

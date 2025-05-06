@@ -11,8 +11,8 @@ import {
 import { Column } from '@ant-design/charts';
 
 import { Projects } from '../../types';
-import { 
-  useEffect,
+import React, { 
+  // useEffect,
    useState } from 'react';
 import {
   CloudUploadOutlined,
@@ -24,7 +24,7 @@ import {
 // import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useFetchData } from '../../hooks';
-import axios from 'axios';
+// import axios from 'axios';
 
 const RevenueColumnChart = () => {
   const data = [
@@ -149,7 +149,7 @@ const PROJECT_TABS = [
   },
 ];
 
-export const ProjectsDashboardPage = () => {
+export const ProjectsDashboardPage : React.FC = React.memo(() => {
   const {
     data: projectsData,
     error: projectsDataError,
@@ -182,26 +182,7 @@ export const ProjectsDashboardPage = () => {
     setProjectsTabKey(key);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/protected', 
-          {
-            withCredentials: true
-          }
-        );
-        console.log("API Response", response.data);
-        
-        // setData(response.data.message);
-      } catch (err) {
-        console.log("API",err);
-        
-        // setError(err.response?.data?.message || 'Error fetching data');
-      }
-    };
 
-    fetchData();
-  }, []);
 
   return (
     <div>
@@ -335,4 +316,6 @@ export const ProjectsDashboardPage = () => {
       </Row>
     </div>
   );
-};
+});
+
+export default React.memo(ProjectsDashboardPage);

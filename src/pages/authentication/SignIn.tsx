@@ -1,3 +1,4 @@
+import React, { useCallback } from "react";
 import {
   Button,
   Checkbox,
@@ -23,11 +24,14 @@ import {
   PATH_DASHBOARD,
 } from "../../constants";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+// import { useState } from "react";
 
 import { loginUser } from "../../redux/slice/auth/loginSlice";
 
 import {useAppDispatch} from '../../hooks'
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+// import { useBreakpoint } from "antd/es/grid/hooks";
 
 const { Title, Text } = Typography;
 
@@ -37,18 +41,20 @@ type FieldType = {
   remember?: boolean;
 };
 
-export const SignInPage = () => {
+export const SignInPage: React.FC = React.memo(() =>  {
   const {
     token: { colorPrimary },
   } = theme.useToken();
+  // const screens = useBreakpoint();
+  // const isMobile = !!screens.xs && !screens.sm;
   const isMobile = useMediaQuery({ maxWidth: 769 });
   const navigate = useNavigate();
   const dispatch =useAppDispatch();
-  const [loading, setLoading] = useState(false);
+  const authLoading = useSelector((state: RootState) => state.auth.loading);
 
-  const onFinish = async (values: FieldType) => {
+  const onFinish = useCallback(async (values: FieldType) => {
     // console.log("Login request:", values);
-    setLoading(true);
+    // setLoading(true);
 
     try {
       // Dispatch the loginUser async thunk.
@@ -68,13 +74,13 @@ export const SignInPage = () => {
       
       message.error(`${error}`);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
-  };
+  }, [dispatch, navigate] );
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Login Failed:", errorInfo);
-  };
+  const onFinishFailed = useCallback((errorInfo: any) => {
+    console.warn("Sign-in failed:", errorInfo);
+  }, []);
 
   // const onFinish = (values: any) => {
   //   console.log('Success:', values);
@@ -181,7 +187,7 @@ export const SignInPage = () => {
                   type="primary"
                   htmlType="submit"
                   size="middle"
-                  loading={loading}
+                  loading={authLoading}
                 >
                   Continue
                 </Button>
@@ -205,4 +211,4 @@ export const SignInPage = () => {
       </Col>
     </Row>
   );
-};
+});

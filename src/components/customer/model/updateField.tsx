@@ -8,12 +8,12 @@ import { UpdateFieldForm } from "../form";
 
 export interface CustomerData {
   id: string;
-  admin_id: string;
-  field_name: string;
-  field_type: string;
-  is_required: boolean;
+  adminId: string;
+  fieldName: string;
+  fieldType: string;
+  isRequired: boolean;
   options: string[];
-  is_multi_select: boolean;
+  isMultiSelect: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -36,7 +36,7 @@ export const UpdateFieldModel: React.FC<UpdateCustomerProps> = ({
   const handleUpdate = async (updatedPayload: any) => {
     try {
       // Dispatch the update thunk with the payload.
-      console.log("updatedPayload---->", updatedPayload);
+      // console.log("updatedPayload---->", updatedPayload);
       
       await dispatch(updateAdminCustomField(updatedPayload)).unwrap();
       // Optionally, show a success message here.
@@ -51,7 +51,7 @@ export const UpdateFieldModel: React.FC<UpdateCustomerProps> = ({
     <Modal
       title={
         <>
-          <EditOutlined /> Update: {updateField.field_name}
+          <EditOutlined /> Update: {updateField.fieldName}
         </>
       }
       open={open}

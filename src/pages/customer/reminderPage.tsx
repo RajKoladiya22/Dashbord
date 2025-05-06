@@ -1,8 +1,9 @@
 import { PageHeader, ReminderList } from "../../components";
 import { Card, Col, Row, Space } from "antd";
+import React from "react";
 import { Helmet } from "react-helmet-async";
 
-export const ReminderPage = () => {
+export const ReminderPage : React.FC = React.memo(() => {
   return (
     <div>
       <Helmet>
@@ -41,4 +42,4 @@ export const ReminderPage = () => {
       </Row>
     </div>
   );
-};
+});

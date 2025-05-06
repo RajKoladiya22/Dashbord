@@ -4,9 +4,10 @@ import {
   CustomFieldsList
 } from '../../components';
 import { Helmet } from 'react-helmet-async';
+import React from 'react';
 
 
-export const CustomFieldsListPage = () => {
+export const CustomFieldsListPage : React.FC = React.memo(() => {
 
 
   return (
@@ -33,4 +34,4 @@ export const CustomFieldsListPage = () => {
       </Row>
     </div>
   );
-};
+});

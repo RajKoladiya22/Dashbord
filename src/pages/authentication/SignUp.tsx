@@ -22,11 +22,12 @@ import {
 import { Logo } from "../../components";
 import { useMediaQuery } from "react-responsive";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, shallowEqual  } from "react-redux";
 import {useAppDispatch} from '../../hooks'
 import { RootState } from "../../redux/store";
 import { signupUser } from "../../redux/slice/auth/registerSlice"; // Adjust the path according to your folder structure
-import { SignUpData } from "../../redux/types";
+import { SignUpData } from "../../redux/APITypes";
+import { useCallback } from "react";
 
 const { Title, Text } = Typography;
 
@@ -54,9 +55,12 @@ export const SignUpPage = () => {
   const dispatch =useAppDispatch();
 
   // Get loading state from the Redux store.
-  const { loading } = useSelector((state: RootState) => state.auth);
+  const { loading } = useSelector(
+    (state: RootState) => ({ loading: state.auth.loading }),
+    shallowEqual
+  );
 
-  const onFinish = (values: FieldType) => {
+  const onFinish = useCallback( (values: FieldType) => {
     // Check that password and confirm password match
     if (values.password !== values.cPassword) {
       message.error("Passwords do not match!");
@@ -91,12 +95,12 @@ export const SignUpPage = () => {
       .catch((error: any) => {
         message.error("Signup failed: " + error);
       });
-  };
+  },[dispatch, navigate]);
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
+  const onFinishFailed = useCallback((errorInfo: any) => {
+    console.error("Signup validation failed:", errorInfo);
     message.error("Please complete all required fields correctly.");
-  };
+  }, []);
 
   return (
     <Row style={{ minHeight: isMobile ? "auto" : "100vh", overflow: "hidden" }}>

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { SignUpData, AuthResponse, AuthState } from "../../types";
+import { SignUpData, AuthResponse, AuthState } from "../../APITypes";
 import Cookies from "js-cookie";
 
 // Initial state for authentication.
@@ -17,11 +17,12 @@ export const signupUser = createAsyncThunk(
     try {
       // Send POST request to the sign-up API.
       const response = await axios.post<AuthResponse>(
-        "http://localhost:5000/api/auth/signup",
+        "http://localhost:3000/api/v1/auth/signup",
         signupData,
         {
           headers: {
             "Content-Type": "application/json",
+            "x-api-key": "Q0@gZ@dY7[jGQ/GRc@D9KSCX#U2Yz",
           },
         }
       );

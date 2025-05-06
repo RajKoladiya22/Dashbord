@@ -108,8 +108,8 @@ export const UpdateCustomerModel: React.FC<UpdateCustomerProps> = ({
   onClose,
   customer,
 }) => {
-  const handleUpdate = (updatedPayload: any) => {
-    console.log("Updated payload:", updatedPayload);
+  const handleUpdate = () => {
+  //  console.log("Updated payload:", updatedPayload);
     // You can add additional logic here, like API calls, then close the modal.
     onClose();
   };

@@ -1,8 +1,9 @@
 import { Card, Col, Row, Space } from "antd";
 import { Helmet } from "react-helmet-async";
 import { PageHeader, TeamList, AddInTeamButton } from "../../components";
+import React from "react";
 
-export const TeamPage = () => {
+export const TeamPage: React.FC = React.memo(() => {
   return (
     <div>
       <Helmet>
@@ -40,4 +41,4 @@ export const TeamPage = () => {
       </Row>
     </div>
   );
-};
+});

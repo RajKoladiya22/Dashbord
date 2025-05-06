@@ -38,9 +38,9 @@ export const CommunityGroupCard = ({
           size="small"
           className="community-group-list"
           pagination={{
-            onChange: (page) => {
-              console.log(page);
-            },
+            // onChange: (page) => {
+            // //  console.log(page);
+            // },
             pageSize: 5,
             align: 'center',
           }}

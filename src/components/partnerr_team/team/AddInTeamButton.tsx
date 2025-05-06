@@ -12,7 +12,7 @@
 // const { Option } = Select;
 
 // type FieldType = {
-//   full_name: string;
+//   firstName: string;
 //   email: string;
 //   password: string;
 //   cPassword: string;
@@ -46,7 +46,7 @@
 //     // Construct sign-up payload
 //     // If address fields are not provided in the UI, you can set a default value.
 //     const signupData: TeamMemberData = {
-//       full_name: values.full_name,
+//       firstName: values.firstName,
 //       email: values.email,
 //       password: values.password,
 //       department: values.department,
@@ -162,12 +162,12 @@ import { useAppDispatch } from "../../../hooks";
 import {createTeamMember} from "../../../redux/slice/auth/teamRegisterSlice";
 import { RootState } from "../../../redux/store";
 import { fetchTeamMembers } from "../../../redux/slice/team/teamMemberSlice";
-import { TeamMemberData } from "../../../redux/types";
+import { TeamMemberData } from "../../../redux/APITypes";
 
 const { Option } = Select;
 
 type FieldType = {
-  full_name: string;
+  firstName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -197,7 +197,7 @@ export const AddInTeamButton = () => {
     }
 
     const signupData: TeamMemberData = {
-      full_name: values.full_name,
+      firstName: values.firstName,
       email: values.email,
       password: values.password,
       department: values.department,
@@ -239,7 +239,7 @@ export const AddInTeamButton = () => {
           }
         >
           <Form.Item
-            name="full_name"
+            name="firstName"
             label="Full Name"
             rules={[{ required: true, message: "Please enter full name!" }]}
           >

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import {PartnerData, PartnerResponse, PartnerState} from '../../types'
+import {PartnerData, PartnerResponse, PartnerState} from '../../APITypes'
 
 
 const initialState: PartnerState = {
@@ -15,12 +15,13 @@ export const createPartner = createAsyncThunk(
   async (PartnerData: PartnerData, { rejectWithValue }) => {
     try {
       const response = await axios.post<PartnerResponse>(
-        "http://localhost:5000/api/auth/admin/partner",
+        "http://localhost:3000/api/v1/auth/partner",
         PartnerData,
         {
           withCredentials: true, // important for cookie-based auth
           headers: {
             "Content-Type": "application/json",
+            "x-api-key": "Q0@gZ@dY7[jGQ/GRc@D9KSCX#U2Yz",
           },
         }
       );

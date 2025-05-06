@@ -25,6 +25,7 @@ function path(root: string, sublink: string) {
   const ROOTS_ABOUT = '/about';
   const ROOTS_CUSTOMER = '/customer';
   const ROOTS_PRODUCT = '/product';
+  const ROOTS_CUSTOMFIELD = '/customfields';
   
   export const PATH_LANDING = {
     root: ROOTS_LANDING,
@@ -36,6 +37,9 @@ function path(root: string, sublink: string) {
   
   export const PATH_PRODUCT = {
     root: ROOTS_PRODUCT,
+  };
+  export const PATH_CUSTOMFIELD = {
+    root: ROOTS_CUSTOMFIELD,
   };
   
   export const PATH_DASHBOARD = {
