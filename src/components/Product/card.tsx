@@ -159,8 +159,8 @@ export const ProductList: React.FC = () => {
     ({
       product,
       onView,
-      onEdit,
-      onDelete,
+      // onEdit,
+      // onDelete,
     }: {
       product: Product;
       onView: (p: Product) => void;

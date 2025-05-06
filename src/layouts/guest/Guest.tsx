@@ -6,14 +6,14 @@ import {
   Layout,
   theme,
   Tooltip,
-} from 'antd';
+} from "antd";
 import {
   CSSTransition,
   SwitchTransition,
   TransitionGroup,
-} from 'react-transition-group';
-import { Link, Links, Outlet, useLocation } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+} from "react-transition-group";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import {
   AppstoreAddOutlined,
   GithubOutlined,
@@ -21,16 +21,16 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   ProductOutlined,
-} from '@ant-design/icons';
-import { useMediaQuery } from 'react-responsive';
-import { Logo, NProgress } from '../../components';
+} from "@ant-design/icons";
+import { useMediaQuery } from "react-responsive";
+import { Logo, NProgress } from "../../components";
 import {
   PATH_AUTH,
   PATH_DASHBOARD,
   PATH_DOCS,
   PATH_GITHUB,
   PATH_LANDING,
-} from '../../constants';
+} from "../../constants";
 
 const { Header, Content, Footer } = Layout;
 
@@ -54,7 +54,7 @@ export const GuestLayout = () => {
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', () => {
+    window.addEventListener("scroll", () => {
       if (window.scrollY > 50) {
         setNavFill(true);
       } else {
@@ -69,22 +69,22 @@ export const GuestLayout = () => {
       <Layout
         className="layout"
         style={{
-          minHeight: '100vh',
+          minHeight: "100vh",
           // backgroundColor: 'white',
         }}
       >
         <Header
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
             // background: navFill ? 'rgba(255, 255, 255, .5)' : 'none',
-            backdropFilter: navFill ? 'blur(8px)' : 'none',
-            boxShadow: navFill ? '0 0 8px 2px rgba(0, 0, 0, 0.05)' : 'none',
+            backdropFilter: navFill ? "blur(8px)" : "none",
+            boxShadow: navFill ? "0 0 8px 2px rgba(0, 0, 0, 0.05)" : "none",
             gap: 12,
-            position: 'sticky',
+            position: "sticky",
             top: 0,
-            padding: isMobile ? '0 1rem' : '0 2rem',
+            padding: isMobile ? "0 1rem" : "0 2rem",
             zIndex: 1,
           }}
         >
@@ -115,13 +115,13 @@ export const GuestLayout = () => {
               </Flex>
             </>
           ) : (
-            <Tooltip title={`${open ? 'Expand' : 'Collapse'} Sidebar`}>
+            <Tooltip title={`${open ? "Expand" : "Collapse"} Sidebar`}>
               <Button
                 type="text"
                 icon={open ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                 onClick={showDrawer}
                 style={{
-                  fontSize: '16px',
+                  fontSize: "16px",
                   width: 48,
                   height: 48,
                 }}
@@ -133,8 +133,8 @@ export const GuestLayout = () => {
           style={{
             // background: 'rgba(255, 255, 255, 1)',
             borderRadius,
-            transition: 'all .25s',
-            paddingBottom: '10rem',
+            transition: "all .25s",
+            paddingBottom: "10rem",
           }}
         >
           <TransitionGroup>
@@ -156,7 +156,7 @@ export const GuestLayout = () => {
                   <div
                     ref={nodeRef}
                     className="site-layout-content"
-                    style={{ background: 'none' }}
+                    style={{ background: "none" }}
                   >
                     <Outlet />
                   </div>
@@ -168,12 +168,15 @@ export const GuestLayout = () => {
         </Content>
         <Footer
           style={{
-            textAlign: 'center',
-            backgroundColor: 'rgba(52, 152, 219, 0.2)',
+            textAlign: "center",
+            backgroundColor: "rgba(52, 152, 219, 0.2)",
           }}
         >
-          CPM Dashboard &copy; {new Date().getFullYear()} Created by Design &nbsp;
-          <a href="https://www.magicallysoft.com" target='_blanck'>MagicallySoft</a>
+          CPM Dashboard &copy; {new Date().getFullYear()} Created by Design
+          &nbsp;
+          <a href="https://www.magicallysoft.com" target="_blanck">
+            MagicallySoft
+          </a>
         </Footer>
       </Layout>
       <Drawer title="Menu" placement="left" onClose={onClose} open={open}>
