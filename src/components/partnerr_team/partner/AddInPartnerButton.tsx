@@ -30,13 +30,16 @@ export const AddPartnerButton = () => {
       message.error("Passwords do not match!");
       return;
     }
-
+    // console.log("values----->", values);
+    
     const signupData: PartnerData = {
       firstName: values.firstName,
       companyName: values.companyName,
       email: values.email,
       password: values.password,
     };
+    // console.log("signupData---->", signupData);
+    
 
     dispatch(createPartner(signupData))
       .unwrap()
@@ -67,7 +70,7 @@ export const AddPartnerButton = () => {
         <Form form={form} layout="vertical" onFinish={onFinish}>
           {/* companyName */}
           <Form.Item
-            name="company_name"
+            name="companyName"
             label="Company Name"
             rules={[
               { required: true, message: "Please input the company name!" },
@@ -77,7 +80,7 @@ export const AddPartnerButton = () => {
           </Form.Item>
           {/* Partner Name */}
           <Form.Item
-            name="partner_name"
+            name="firstName"
             label="Partner Name"
             rules={[
               { required: true, message: "Please input the partner name!" },
