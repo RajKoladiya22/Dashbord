@@ -1,75 +1,3 @@
-// import React, { useState } from "react";
-// import { Button, Flex, Modal } from "antd";
-// import {
-//   SearchOutlined,
-//   CloudUploadOutlined,
-//   PlusOutlined,
-//   CheckCircleOutlined,
-//   CloseCircleOutlined,
-//   EyeOutlined,
-//   EditOutlined,
-//   DeleteOutlined,
-// } from "@ant-design/icons";
-
-// interface UpdateCustomerProps {
-//     id: string;
-//     onClose: () => void;
-//   }
-
-// export const UpdateCustomerModel: React.FC<UpdateCustomerProps> = ({id, onClose}) => {
-//   const [openResponsive, setOpenResponsive] = useState(false);
-
-//   return (
-//     <Flex vertical gap="middle" align="flex-start">
-//       {/* Responsive */}
-//       <Button
-//         color="gold"
-//         variant="outlined"
-//         icon={<EditOutlined />}
-//         onClick={() => setOpenResponsive(true)}
-//       >
-//         Edit
-//       </Button>
-//       <Modal
-//         title="Modal responsive width"
-//         centered
-//         open={openResponsive}
-//         onOk={() => setOpenResponsive(false)}
-//         onCancel={() => setOpenResponsive(false)}
-//         width={{
-//           xs: "90%",
-//           sm: "80%",
-//           md: "70%",
-//           lg: "60%",
-//           xl: "50%",
-//           xxl: "40%",
-//         }}
-//       >
-//         <h1>UPDATE</h1>
-//         <h2>ID {id}</h2>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//       </Modal>
-//     </Flex>
-//   );
-// };
-
-
 import React from "react";
 import { Modal } from "antd";
 import { EditOutlined } from "@ant-design/icons";
@@ -81,7 +9,7 @@ export interface CustomerData {
   contactPerson: string;
   mobileNumber: string;
   email: string;
-  tallySerialNo: string;
+  serialNo: string;
   prime: boolean;
   blacklisted: boolean;
   remark: string;

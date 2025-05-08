@@ -706,7 +706,8 @@ import {
   SearchOutlined,
   // CloudUploadOutlined,
   PlusOutlined,
-  EyeOutlined,
+  // EyeOutlined,
+  ProductOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
   DeleteOutlined,
@@ -770,7 +771,7 @@ interface CustomerRow {
   contactPerson: string;
   mobileNumber: string;
   email: string;
-  tallySerialNo: string;
+  serialNo: string;
   remark: string;
   prime: boolean;
   blacklisted: boolean;
@@ -927,7 +928,7 @@ export const CustomerList: React.FC = () => {
           contactPerson: customer.contactPerson,
           mobileNumber: customer.mobileNumber,
           email: customer.email,
-          tallySerialNo: customer.tallySerialNo,
+          serialNo: customer.serialNo,
           remark: customer.remark,
           prime: customer.prime,
           blacklisted: customer.blacklisted,
@@ -1033,10 +1034,12 @@ export const CustomerList: React.FC = () => {
             <Button
               color="geekblue"
               variant="outlined"
-              icon={<EyeOutlined />}
+              icon={<ProductOutlined />}
+              // icon={<EyeOutlined />}
               onClick={() => setViewCustomer(record)}
             >
-              View
+              Products
+              {/* View */}
             </Button>
             <Button
               color="gold"

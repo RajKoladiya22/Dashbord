@@ -17,7 +17,8 @@ export const signupUser = createAsyncThunk(
     try {
       // Send POST request to the sign-up API.
       const response = await axios.post<AuthResponse>(
-        "http://localhost:3000/api/v1/auth/signup",
+        "http://46.202.167.124/api/v1/auth/signup",
+        // "http://localhost:3000/api/v1/auth/signup",
         signupData,
         {
           headers: {
@@ -32,6 +33,8 @@ export const signupUser = createAsyncThunk(
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
       });
+      console.log("response------------------------->\n", response);
+      
       return response.data;
     } catch (error: any) {
       // Return a rejected promise with a custom error message.

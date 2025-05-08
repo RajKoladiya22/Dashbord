@@ -15,7 +15,8 @@ export const createPartner = createAsyncThunk(
   async (PartnerData: PartnerData, { rejectWithValue }) => {
     try {
       const response = await axios.post<PartnerResponse>(
-        "http://localhost:3000/api/v1/auth/partner",
+        "http://46.202.167.124/api/v1/auth/partner",
+        // "http://localhost:3000/api/v1/auth/partner",
         PartnerData,
         {
           withCredentials: true, // important for cookie-based auth

@@ -1,74 +1,3 @@
-// import React, { useState } from "react";
-// import { Button, Flex, Modal } from "antd";
-// import {
-//   SearchOutlined,
-//   CloudUploadOutlined,
-//   PlusOutlined,
-//   CheckCircleOutlined,
-//   CloseCircleOutlined,
-//   EyeOutlined,
-//   EditOutlined,
-//   DeleteOutlined,
-// } from "@ant-design/icons";
-
-// interface UpdateCustomerProps {
-//     id: string;
-//   }
-
-// export const CustomerDetail: React.FC<UpdateCustomerProps> = ({id}) => {
-//   const [openResponsive, setOpenResponsive] = useState(false);
-
-//   return (
-//     <Flex vertical gap="middle" align="flex-start">
-//       {/* Responsive */}
-//       <Button
-//         color="primary"
-//         variant="outlined"
-//         icon={<EyeOutlined />}
-//         onClick={() => setOpenResponsive(true)}
-//       >
-//         View
-//       </Button>
-//       <Modal
-//         title="Modal responsive width"
-//         centered
-//         open={openResponsive}
-//         onOk={() => setOpenResponsive(false)}
-//         onCancel={() => setOpenResponsive(false)}
-//         width={{
-//           xs: "90%",
-//           sm: "80%",
-//           md: "70%",
-//           lg: "60%",
-//           xl: "50%",
-//           xxl: "40%",
-//         }}
-//       >
-//         <h1>VIEW</h1>
-//         <h2>ID {id}</h2>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//         <p>some contents...</p>
-//       </Modal>
-//     </Flex>
-//   );
-// };
-
-
 import React from "react";
 import { Modal, Card, Row, Col } from "antd";
 
@@ -78,7 +7,7 @@ interface CustomerRow {
   contactPerson: string;
   mobileNumber: string;
   email: string;
-  tallySerialNo: string;
+  serialNo: string;
   remark: string;
   prime: boolean;
   blacklisted: boolean;
@@ -116,7 +45,7 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({ custom
             <p><strong>Email:</strong> {customer.email}</p>
           </Col>
           <Col xs={24} sm={12}>
-            <p><strong>Tally Serial No:</strong> {customer.tallySerialNo}</p>
+            <p><strong>Tally Serial No:</strong> {customer.serialNo}</p>
           </Col>
           <Col xs={24} sm={12}>
             <p><strong>Status:</strong> {customer.status}</p>

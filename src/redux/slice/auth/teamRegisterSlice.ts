@@ -18,7 +18,8 @@ export const createTeamMember = createAsyncThunk(
   async (teamMemberData: TeamMemberData, { rejectWithValue }) => {
     try {
       const response = await axios.post<TeamMembersignUpResponse>(
-        "http://localhost:3000/api/v1/auth/team",
+        "http://46.202.167.124/api/v1/auth/team",
+        // "http://localhost:3000/api/v1/auth/team",
         teamMemberData,
         {
           withCredentials: true, // important for cookie-based auth

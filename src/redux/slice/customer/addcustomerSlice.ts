@@ -4,6 +4,11 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance";
 import { Customer, CustomerState, CustomerResponse } from "../../APITypes";
 
+interface UpdateArgs {
+  id: string;
+  data: Partial<Customer>;
+}
+
 // 1) Create Customer thunk
 export const createCustomer = createAsyncThunk<
   Customer, // return type
@@ -49,6 +54,30 @@ export const listCustomers = createAsyncThunk<
   }
 });
 
+// 3) Update Customer thunk
+export const updateCustomer = createAsyncThunk<
+  Customer,         // return type is a single customer
+  UpdateArgs,       // { id, data }
+  { rejectValue: string }
+>(
+  "customers/updateCustomer",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put<CustomerResponse>(
+        `/customer/update/${id}`,
+        data
+      );
+      // Cast the API’s array back to a single object
+      const arr = response.data.data.customers;
+      return Array.isArray(arr) ? arr[0] : arr as Customer;
+    } catch (err: any) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to update customer"
+      );
+    }
+  }
+);
+
 const initialState: CustomerState = {
   customers: [],
   loading: false,
@@ -90,6 +119,25 @@ const customerSlice = createSlice({
       }
     );
     builder.addCase(listCustomers.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+    // updateCustomer
+    builder.addCase(updateCustomer.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(
+      updateCustomer.fulfilled,
+      (state, action: PayloadAction<Customer>) => {
+        state.loading = false;
+        const updated = action.payload;
+        state.customers = state.customers.map((c) =>
+          c.id === updated.id ? updated : c
+        );
+      }
+    );
+    builder.addCase(updateCustomer.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });

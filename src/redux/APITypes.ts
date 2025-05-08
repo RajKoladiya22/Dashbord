@@ -240,9 +240,9 @@ export interface Customer {
   address: Record<string, any>;
   joiningDate: string;              // ISO timestamp
   hasReference: boolean;
+  products: [];
   createdAt: string;                // ISO timestamp
   updatedAt: string;                // ISO timestamp
-  products: [];
 }
 
 /**
