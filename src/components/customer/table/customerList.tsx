@@ -1,928 +1,104 @@
-// import React, { useRef, useState, useEffect } from "react";
-// import {
-//   SearchOutlined,
-//   CloudUploadOutlined,
-//   PlusOutlined,
-//   CheckCircleOutlined,
-//   CloseCircleOutlined,
-//   EyeOutlined,
-//   EditOutlined,
-//   DeleteOutlined,
-// } from "@ant-design/icons";
-// import type { InputRef, TableColumnsType, TableColumnType } from "antd";
-// import { Button, Input, Space, Table, Col, Card, Popconfirm } from "antd";
-// import type { FilterDropdownProps } from "antd/es/table/interface";
-// import Highlighter from "react-highlight-words";
-// import { useFetchData } from "../../../hooks";
-// import { UpdateCustomer, CustomerDetail } from "../model";
-
-// interface Customer {
-//   companyName: string;
-//   contactPerson: string;
-//   mobileNumber: string;
-//   email: string;
-//   remark: string;
-//   prime: boolean;
-//   blacklisted: boolean;
-//   // add other fields if needed
-// }
-
-// interface CustomerRow {
-//   key: string;
-//   companyName: string;
-//   contactPerson: string;
-//   mobileNumber: string;
-//   email: string;
-//   remark: string;
-//   status: string;
-// }
-
-// type DataIndex = keyof CustomerRow;
-
-// const getColumnSearchProps = (
-//   dataIndex: DataIndex,
-//   searchText: string,
-//   setSearchText: (text: string) => void,
-//   searchedColumn: string,
-//   setSearchedColumn: (col: string) => void,
-//   searchInput: React.RefObject<InputRef>
-// ): TableColumnType<CustomerRow> => ({
-//   filterDropdown: ({
-//     setSelectedKeys,
-//     selectedKeys,
-//     confirm,
-//     clearFilters,
-//     close,
-//   }: FilterDropdownProps) => (
-//     <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-//       <Input
-//         ref={searchInput}
-//         placeholder={`Search ${dataIndex}`}
-//         value={selectedKeys[0]}
-//         onChange={(e) =>
-//           setSelectedKeys(e.target.value ? [e.target.value] : [])
-//         }
-//         onPressEnter={() => {
-//           confirm();
-//           setSearchText(selectedKeys[0] as string);
-//           setSearchedColumn(dataIndex);
-//         }}
-//         style={{ marginBottom: 8, display: "block" }}
-//       />
-//       <Space>
-//         <Button
-//           type="primary"
-//           onClick={() => {
-//             confirm();
-//             setSearchText(selectedKeys[0] as string);
-//             setSearchedColumn(dataIndex);
-//           }}
-//           icon={<SearchOutlined />}
-//           size="small"
-//           style={{ width: 90 }}
-//         >
-//           Search
-//         </Button>
-//         <Button
-//           onClick={() => {
-//             clearFilters && clearFilters();
-//             setSearchText("");
-//           }}
-//           size="small"
-//           style={{ width: 90 }}
-//         >
-//           Reset
-//         </Button>
-//         <Button
-//           type="link"
-//           size="small"
-//           onClick={() => {
-//             confirm({ closeDropdown: false });
-//             setSearchText(selectedKeys[0] as string);
-//             setSearchedColumn(dataIndex);
-//           }}
-//         >
-//           Filter
-//         </Button>
-//         <Button type="link" size="small" onClick={() => close()}>
-//           Close
-//         </Button>
-//       </Space>
-//     </div>
-//   ),
-//   filterIcon: (filtered: boolean) => (
-//     <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-//   ),
-//   onFilter: (value, record) =>
-//     record[dataIndex]
-//       .toString()
-//       .toLowerCase()
-//       .includes((value as string).toLowerCase()),
-//   filterDropdownProps: {
-//     onOpenChange(open) {
-//       if (open) {
-//         setTimeout(() => searchInput.current?.select(), 100);
-//       }
-//     },
-//   },
-//   render: (text) =>
-//     searchedColumn === dataIndex ? (
-//       <Highlighter
-//         highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-//         searchWords={[searchText]}
-//         autoEscape
-//         textToHighlight={text ? text.toString() : ""}
-//       />
-//     ) : (
-//       text
-//     ),
-// });
-
-// export const CustomerList: React.FC = () => {
-//   // Fetch customer data from your mocks file
-//   const { data: customersData } = useFetchData("../mocks/CustomerData.json");
-
-//   // Local state for search
-//   const [searchText, setSearchText] = useState("");
-//   const [searchedColumn, setSearchedColumn] = useState("");
-//   const searchInput = useRef<InputRef>(null);
-
-//   // Map the raw fetched data to table rows
-//   const [tableData, setTableData] = useState<CustomerRow[]>([]);
-
-//   useEffect(() => {
-//     if (customersData && Array.isArray(customersData)) {
-//       const rows = customersData.map((item: any, index: number) => {
-//         const customer: Customer = item.CustomerData.customer;
-//         // Determine status based on prime and blacklisted values.
-//         let status = "None";
-//         if (customer.prime) {
-//           status = "Prime";
-//         } else if (customer.blacklisted) {
-//           status = "Blacklisted";
-//         }
-//         return {
-//           key: index.toString(),
-//           companyName: customer.companyName,
-//           contactPerson: customer.contactPerson,
-//           mobileNumber: customer.mobileNumber,
-//           email: customer.email,
-//           remark: customer.remark,
-//           status,
-//         };
-//       });
-//       setTableData(rows);
-//     }
-//   }, [customersData]);
-
-//   const columns: TableColumnsType<CustomerRow> = [
-//     {
-//       title: "Company Name",
-//       dataIndex: "companyName",
-//       key: "companyName",
-//       ...getColumnSearchProps(
-//         "companyName",
-//         searchText,
-//         setSearchText,
-//         searchedColumn,
-//         setSearchedColumn,
-//         searchInput
-//       ),
-//     },
-//     {
-//       title: "Contact Person",
-//       dataIndex: "contactPerson",
-//       key: "contactPerson",
-//       ...getColumnSearchProps(
-//         "contactPerson",
-//         searchText,
-//         setSearchText,
-//         searchedColumn,
-//         setSearchedColumn,
-//         searchInput
-//       ),
-//     },
-//     {
-//       title: "Mobile Number",
-//       dataIndex: "mobileNumber",
-//       key: "mobileNumber",
-//       ...getColumnSearchProps(
-//         "mobileNumber",
-//         searchText,
-//         setSearchText,
-//         searchedColumn,
-//         setSearchedColumn,
-//         searchInput
-//       ),
-//     },
-//     {
-//       title: "Status",
-//       dataIndex: "status",
-//       key: "status",
-//       render: (text: string) => {
-//         let icon = null;
-//         if (text === "Prime") {
-//           icon = (
-//             <CheckCircleOutlined style={{ color: "green", marginRight: 4 }} />
-//           );
-//         } else if (text === "Blacklisted") {
-//           icon = (
-//             <CloseCircleOutlined style={{ color: "red", marginRight: 4 }} />
-//           );
-//         }
-//         return (
-//           <span>
-//             {icon}
-//             {text}
-//           </span>
-//         );
-//       },
-//       ...getColumnSearchProps(
-//         "status",
-//         searchText,
-//         setSearchText,
-//         searchedColumn,
-//         setSearchedColumn,
-//         searchInput
-//       ),
-//     },
-//     {
-//       title: "Action",
-//       key: "action",
-//       render: (_, record) => (
-//         <Space size="middle">
-//           <CustomerDetail id={record.key} />
-//           {/* <Button
-//             // type="link"
-//             color="primary"
-//             variant="outlined"
-//             icon={<EyeOutlined />}
-//             onClick={() => alert(`View Customer ID: ${record.key}`)}
-//           >
-//             View
-//           </Button> */}
-//           {/* <Button
-//             color="gold"
-//             variant="outlined"
-//             icon={<EditOutlined />}
-//             onClick={() => alert(`Edit Customer ID: ${record.key}`)}
-//           >
-//             Edit
-//           </Button> */}
-//           <UpdateCustomer id={record.key} />
-//           <Popconfirm
-//             title="Delete the task"
-//             description={`Are you sure to delete  ${record.companyName}?`}
-//             okText="Yes"
-//             cancelText="No"
-//             onConfirm={() => alert(`Delete Customer ID: ${record.key}`)}
-//           >
-//             <Button
-//               color="danger"
-//               variant="outlined"
-//               icon={<DeleteOutlined />}
-//               // onClick={() => alert(`Delete Customer ID: ${record.key}`)}
-//             >
-//               Delete
-//             </Button>
-//           </Popconfirm>
-//         </Space>
-//       ),
-//     },
-//   ];
-
-//   return (
-//     <>
-//       <Col span={24}>
-//         <Card
-//           title="Customer List"
-//           extra={
-//             <Space>
-//               <Button icon={<CloudUploadOutlined />}>Import</Button>
-//               <Button icon={<PlusOutlined />}>New Customer</Button>
-//             </Space>
-//           }
-//         >
-//           <Table<CustomerRow> columns={columns} dataSource={tableData} />
-//         </Card>
-//       </Col>
-//     </>
-//   );
-// };
-
-// import React, { useRef, useState, useEffect } from "react";
-// import {
-//   SearchOutlined,
-//   CloudUploadOutlined,
-//   PlusOutlined,
-//   EyeOutlined,
-//   CheckCircleOutlined,
-//   CloseCircleOutlined,
-//   DeleteOutlined,
-//   EditOutlined,
-// } from "@ant-design/icons";
-// import type { InputRef, TableColumnsType, TableColumnType } from "antd";
-// import {
-//   Button,
-//   AutoComplete,
-//   Space,
-//   Table,
-//   Col,
-//   Card,
-//   Popconfirm,
-// } from "antd";
-// import type { FilterDropdownProps } from "antd/es/table/interface";
-// import Highlighter from "react-highlight-words";
-// import { useFetchData } from "../../../hooks";
-// import { CustomerDetailModal, UpdateCustomerModel } from "../model";
-
-// interface Customer {
-//   adminId: string;
-//   companyName: string;
-//   contactPerson: string;
-//   mobileNumber: string;
-//   email: string;
-//   tallySerialNo: string;
-//   prime: boolean;
-//   blacklisted: boolean;
-//   remark: string;
-//   PartnerReferenceDetail?: {
-//     referenceId: string;
-//     Name: string;
-//     Contact: string;
-//     Company: string;
-//     email: string;
-//     adress: {
-//       street: string;
-//       city: string;
-//       state: string;
-//     };
-//     partnerType: string[];
-//     tallySerialNo: string;
-//     status: string;
-//     remark: string;
-//   };
-// }
-
-// interface CustomerRow {
-//   key: string;
-//   companyName: string;
-//   contactPerson: string;
-//   mobileNumber: string;
-//   email: string;
-//   tallySerialNo: string;
-//   remark: string;
-//   prime: boolean;
-//   blacklisted: boolean;
-//   status: string;
-// }
-
-// type DataIndex = keyof Pick<
-//   CustomerRow,
-//   | "companyName"
-//   | "contactPerson"
-//   | "mobileNumber"
-//   | "email"
-//   | "remark"
-//   | "status"
-// >;
-
-// const getColumnSearchProps = (
-//   dataIndex: DataIndex,
-//   searchText: string,
-//   setSearchText: (text: string) => void,
-//   searchedColumn: string,
-//   setSearchedColumn: (col: string) => void,
-//   searchInput: React.RefObject<InputRef>,
-//   suggestions: { value: string }[]
-// ): TableColumnType<CustomerRow> => ({
-//   filterDropdown: ({
-//     setSelectedKeys,
-//     selectedKeys,
-//     confirm,
-//     clearFilters,
-//     close,
-//   }: FilterDropdownProps) => (
-//     <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-//       <AutoComplete
-//         ref={searchInput}
-//         placeholder={`Search ${dataIndex}`}
-//         value={selectedKeys[0]}
-//         options={suggestions}
-//         onChange={(value) => setSelectedKeys(value ? [value] : [])}
-//         onPressEnter={() => {
-//           confirm();
-//           setSearchText(selectedKeys[0] as string);
-//           setSearchedColumn(dataIndex);
-//         }}
-//         style={{ marginBottom: 8, display: "block" }}
-//       />
-//       <Space>
-//         <Button
-//           type="primary"
-//           onClick={() => {
-//             confirm();
-//             setSearchText(selectedKeys[0] as string);
-//             setSearchedColumn(dataIndex);
-//           }}
-//           icon={<SearchOutlined />}
-//           size="small"
-//           style={{ width: 90 }}
-//         >
-//           Search
-//         </Button>
-//         <Button
-//           onClick={() => {
-//             clearFilters && clearFilters();
-//             setSearchText("");
-//           }}
-//           size="small"
-//           style={{ width: 90 }}
-//         >
-//           Reset
-//         </Button>
-//         <Button
-//           type="link"
-//           size="small"
-//           onClick={() => {
-//             confirm({ closeDropdown: false });
-//             setSearchText(selectedKeys[0] as string);
-//             setSearchedColumn(dataIndex);
-//           }}
-//         >
-//           Filter
-//         </Button>
-//         <Button type="link" size="small" onClick={() => close()}>
-//           Close
-//         </Button>
-//       </Space>
-//     </div>
-//   ),
-//   filterIcon: (filtered: boolean) => (
-//     <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-//   ),
-//   onFilter: (value, record) =>
-//     record[dataIndex]
-//       .toString()
-//       .toLowerCase()
-//       .includes((value as string).toLowerCase()),
-//   filterDropdownProps: {
-//     onOpenChange(open) {
-//       if (open) {
-//         setTimeout(() => searchInput.current?.select(), 100);
-//       }
-//     },
-//   },
-//   render: (text) =>
-//     searchedColumn === dataIndex ? (
-//       <Highlighter
-//         highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-//         searchWords={[searchText]}
-//         autoEscape
-//         textToHighlight={text ? text.toString() : ""}
-//       />
-//     ) : (
-//       text
-//     ),
-// });
-
-// export const CustomerList: React.FC = () => {
-//   const { data: customersData } = useFetchData("../mocks/CustomerData.json");
-
-//   const [searchText, setSearchText] = useState("");
-//   const [searchedColumn, setSearchedColumn] = useState("");
-//   const searchInput = useRef<InputRef>(null);
-
-//   const [tableData, setTableData] = useState<CustomerRow[]>([]);
-//   const [viewCustomer, setViewCustomer] = useState<CustomerRow | null>(null);
-//   const [updateCustomer, setUpdateCustomer] = useState<CustomerRow | null>(null);
-
-//   useEffect(() => {
-//     if (customersData && Array.isArray(customersData)) {
-//       const rows = customersData.map((item: any, index: number) => {
-//         const customer: Customer = item.CustomerData.customer;
-//         return {
-//           key: index.toString(),
-//           companyName: customer.companyName,
-//           contactPerson: customer.contactPerson,
-//           mobileNumber: customer.mobileNumber,
-//           email: customer.email,
-//           tallySerialNo: customer.tallySerialNo,
-//           remark: customer.remark,
-//           prime: customer.prime,
-//           blacklisted: customer.blacklisted,
-//           status: customer.prime
-//             ? "Prime"
-//             : customer.blacklisted
-//             ? "Blacklisted"
-//             : "-",
-//         };
-//       });
-//       setTableData(rows);
-//     }
-//   }, [customersData]);
-
-//   const getSuggestions = (dataIndex: DataIndex): { value: string }[] => {
-//     const uniqueValues = Array.from(
-//       new Set(tableData.map((item) => item[dataIndex]?.toString()))
-//     );
-//     return uniqueValues.map((val) => ({ value: val }));
-//   };
-
-//   const columns: TableColumnsType<CustomerRow> = [
-//     {
-//       title: "Company Name",
-//       dataIndex: "companyName",
-//       key: "companyName",
-//       ...getColumnSearchProps(
-//         "companyName",
-//         searchText,
-//         setSearchText,
-//         searchedColumn,
-//         setSearchedColumn,
-//         searchInput,
-//         getSuggestions("companyName")
-//       ),
-//     },
-//     {
-//       title: "Contact Person",
-//       dataIndex: "contactPerson",
-//       key: "contactPerson",
-//       ...getColumnSearchProps(
-//         "contactPerson",
-//         searchText,
-//         setSearchText,
-//         searchedColumn,
-//         setSearchedColumn,
-//         searchInput,
-//         getSuggestions("contactPerson")
-//       ),
-//     },
-//     {
-//       title: "Mobile Number",
-//       dataIndex: "mobileNumber",
-//       key: "mobileNumber",
-//       ...getColumnSearchProps(
-//         "mobileNumber",
-//         searchText,
-//         setSearchText,
-//         searchedColumn,
-//         setSearchedColumn,
-//         searchInput,
-//         getSuggestions("mobileNumber")
-//       ),
-//     },
-//     {
-//       title: "Status",
-//       dataIndex: "status",
-//       key: "status",
-//       render: (text: string) => {
-//         let icon = null;
-//         if (text === "Prime") {
-//           icon = (
-//             <CheckCircleOutlined style={{ color: "green", marginRight: 4 }} />
-//           );
-//         } else if (text === "Blacklisted") {
-//           icon = (
-//             <CloseCircleOutlined style={{ color: "red", marginRight: 4 }} />
-//           );
-//         }
-//         return (
-//           <span>
-//             {icon}
-//             {text}
-//           </span>
-//         );
-//       },
-//       ...getColumnSearchProps(
-//         "status",
-//         searchText,
-//         setSearchText,
-//         searchedColumn,
-//         setSearchedColumn,
-//         searchInput,
-//         getSuggestions("status")
-//       ),
-//     },
-//     {
-//       title: "Action",
-//       key: "action",
-//       render: (_, record) => (
-//         <div onClick={(e) => e.stopPropagation()}>
-//           <Space size="middle">
-//             <Button
-//               color="geekblue"
-//               variant="outlined"
-//               icon={<EyeOutlined />}
-//               onClick={() => setViewCustomer(record)}
-//             >
-//               View
-//             </Button>
-//             <Button
-//             color="gold"
-//               variant="outlined"
-//               icon={<EditOutlined />}
-//               onClick={() => setUpdateCustomer(record)}
-//             >
-//               Edit
-//             </Button>
-//             <Popconfirm
-//               title="Delete the task"
-//               description={`Are you sure to delete ${record.companyName}?`}
-//               okText="Yes"
-//               cancelText="No"
-//             >
-//               <Button color="volcano"
-//               variant="outlined"
-//               icon={<DeleteOutlined />}>Delete</Button>
-//             </Popconfirm>
-//           </Space>
-//         </div>
-//       ),
-//     },
-//   ];
-
-//   return (
-//     <>
-//       <style>
-//         {`
-//           .prime-row {
-//             background-color: #d4f7d4 !important;
-//             color: #000000 !important;
-//           }
-//           .blacklisted-row {
-//             background-color: #f7d4d4 !important;
-//             color: #000000 !important;
-//           }
-//           .ant-table-tbody > tr {
-//             cursor: pointer;
-//           }
-//         `}
-//       </style>
-//       <Col span={24}>
-//         <Card
-//           title="Customer List"
-//           extra={
-//             <Space>
-//               <Button icon={<CloudUploadOutlined />}>Import</Button>
-//               <Button icon={<PlusOutlined />}>New Customer</Button>
-//             </Space>
-//           }
-//         >
-//           <Table<CustomerRow>
-//             columns={columns}
-//             dataSource={tableData}
-//             onRow={(record) => ({
-//               onClick: () => setViewCustomer(record),
-//             })}
-//             rowClassName={(record) => {
-//               if (record.status === "Prime") return "prime-row";
-//               if (record.status === "Blacklisted") return "blacklisted-row";
-//               return "";
-//             }}
-//             scroll={{ x: true }}
-//           />
-//         </Card>
-//       </Col>
-//       {viewCustomer && (
-//         <CustomerDetailModal
-//           customer={viewCustomer}
-//           onClose={() => setViewCustomer(null)}
-//         />
-//       )}
-//       {updateCustomer && (
-//         <UpdateCustomerModel
-//           customer={updateCustomer}
-//           open={true}
-//           onClose={() => setUpdateCustomer(null)}
-//         />
-//       )}
-//     </>
-//   );
-// };
-
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   SearchOutlined,
-  // CloudUploadOutlined,
-  PlusOutlined,
-  // EyeOutlined,
   ProductOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
   DeleteOutlined,
   EditOutlined,
+  // CheckCircleOutlined,
+  InfoCircleOutlined,
 } from "@ant-design/icons";
-// Import the correct type for AutoComplete's ref.
-// Adjust the path if needed depending on your antd version.
-import type { TableColumnsType, TableColumnType, InputRef } from "antd";
+import type { TableColumnsType } from "antd";
 import {
   Button,
-  AutoComplete,
   Space,
   Table,
   Col,
   Card,
   Popconfirm,
+  message,
+  Switch,
+  Input,
+  Tooltip,
 } from "antd";
-import type { FilterDropdownProps } from "antd/es/table/interface";
-import Highlighter from "react-highlight-words";
+
 import { useAppDispatch } from "../../../hooks";
-import { CustomerDetailModal, UpdateCustomerModel } from "../model";
-import { Link } from "react-router-dom";
-import { listCustomers } from "../../../redux/slice/customer/addcustomerSlice";
+import {
+  CustomerDetailModal,
+  ProductDetailModal,
+  UpdateCustomerModel,
+} from "../model";
+import {
+  deleteCustomer,
+  listCustomers,
+  toggleCustomerStatus,
+} from "../../../redux/slice/customer/addcustomerSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-
-// Customer interface remains unchanged.
-// interface Customer {
-//   adminId: string;
-//   companyName: string;
-//   contactPerson: string;
-//   mobileNumber: string;
-//   email: string;
-//   tallySerialNo: string;
-//   prime: boolean;
-//   blacklisted: boolean;
-//   remark: string;
-//   PartnerReferenceDetail?: {
-//     referenceId: string;
-//     Name: string;
-//     Contact: string;
-//     Company: string;
-//     email: string;
-//     adress: {
-//       street: string;
-//       city: string;
-//       state: string;
-//     };
-//     partnerType: string[];
-//     tallySerialNo: string;
-//     status: string;
-//     remark: string;
-//   };
-// }
+import { PartnerData, Product } from "../../../redux/APITypes";
+import AutoDismissAlert from "../../Alert";
 
 // Add adminId to the CustomerRow interface so it’s available where needed.
 interface CustomerRow {
-  key: string;
+  id: string;
   adminId: string;
+  partnerId?: string;
   companyName: string;
   contactPerson: string;
   mobileNumber: string;
   email: string;
   serialNo: string;
-  remark: string;
   prime: boolean;
   blacklisted: boolean;
-  status: string;
+  remark?: string;
+  adminCustomFields: Record<string, any>[];
+  address: Record<string, any>;
+  joiningDate: string; // ISO timestamp
+  hasReference: boolean;
+  status: boolean;
+  product: Product[];
+  createdAt: string; // ISO timestamp
+  updatedAt: string;
+  partner: PartnerData;
 }
-
-type DataIndex = keyof Pick<
-  CustomerRow,
-  | "companyName"
-  | "contactPerson"
-  | "mobileNumber"
-  | "email"
-  | "remark"
-  | "status"
->;
-
-// Note the change: We now expect a BaseSelectRef for AutoComplete
-const getColumnSearchProps = (
-  dataIndex: DataIndex,
-  searchText: string,
-  setSearchText: (text: string) => void,
-  searchedColumn: string,
-  setSearchedColumn: (col: string) => void,
-  // searchInput: React.RefObject<AutoCompleteRef>,
-  searchInput: React.RefObject<InputRef | null>,
-  suggestions: { value: string }[]
-): TableColumnType<CustomerRow> => ({
-  filterDropdown: ({
-    setSelectedKeys,
-    selectedKeys,
-    confirm,
-    clearFilters,
-    close,
-  }: FilterDropdownProps) => (
-    <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-      <AutoComplete
-        // ref={searchInput}
-        placeholder={`Search ${dataIndex}`}
-        value={selectedKeys[0]}
-        options={suggestions}
-        onChange={(value) => setSelectedKeys(value ? [value] : [])}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            confirm();
-            setSearchText(selectedKeys[0] as string);
-            setSearchedColumn(dataIndex);
-          }
-        }}
-        style={{ marginBottom: 8, display: "block" }}
-      />
-      <Space>
-        <Button
-          type="primary"
-          onClick={() => {
-            confirm();
-            setSearchText(selectedKeys[0] as string);
-            setSearchedColumn(dataIndex);
-          }}
-          icon={<SearchOutlined />}
-          size="small"
-          style={{ width: 90 }}
-        >
-          Search
-        </Button>
-        <Button
-          onClick={() => {
-            clearFilters && clearFilters();
-            setSearchText("");
-          }}
-          size="small"
-          style={{ width: 90 }}
-        >
-          Reset
-        </Button>
-        <Button
-          type="link"
-          size="small"
-          onClick={() => {
-            confirm({ closeDropdown: false });
-            setSearchText(selectedKeys[0] as string);
-            setSearchedColumn(dataIndex);
-          }}
-        >
-          Filter
-        </Button>
-        <Button type="link" size="small" onClick={() => close()}>
-          Close
-        </Button>
-      </Space>
-    </div>
-  ),
-  filterIcon: (filtered: boolean) => (
-    <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-  ),
-  onFilter: (value, record) =>
-    record[dataIndex]
-      .toString()
-      .toLowerCase()
-      .includes((value as string).toLowerCase()),
-  filterDropdownProps: {
-    onOpenChange(open) {
-      if (open) {
-        // Instead of select(), use focus() if available on BaseSelectRef.
-        setTimeout(() => searchInput.current?.focus(), 100);
-      }
-    },
-  },
-  render: (text) =>
-    searchedColumn === dataIndex ? (
-      <Highlighter
-        highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-        searchWords={[searchText]}
-        autoEscape
-        textToHighlight={text ? text.toString() : ""}
-      />
-    ) : (
-      text
-    ),
-});
 
 export const CustomerList: React.FC = () => {
   const dispatch = useAppDispatch();
-  // const { data: customersData } = useFetchData("../mocks/CustomerData.json");
-  const { customers, 
-    // loading, error 
-  } = useSelector(
+  const { customers, meta, loading, error } = useSelector(
     (state: RootState) => state.customer
   );
-  const customersData = customers
-  console.log("Customer--->", customers);
-  // console.log("loading--->", loading);
-  // console.log("error--->", error);
+  const customersData = customers;
 
-  const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState("");
-  // Change the type of the ref from InputRef to BaseSelectRef.
-  const searchInput = useRef<InputRef>(null);
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [q, setQ] = useState<string>("");
+  const [status, setStatus] = useState<boolean>(true);
+  // const [sortBy, setSortBy] = useState<string>("companyName");
+  // const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const [tableData, setTableData] = useState<CustomerRow[]>([]);
   const [viewCustomer, setViewCustomer] = useState<CustomerRow | null>(null);
+  const [viewProducts, setViewProducts] = useState<CustomerRow | null>(null);
   const [updateCustomer, setUpdateCustomer] = useState<CustomerRow | null>(
     null
   );
 
+  // debounce search
+  const searchRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    clearTimeout(searchRef.current);
+    searchRef.current = setTimeout(() => setQ(val.trim()), 300);
+  };
+
   useEffect(() => {
     if (customersData && Array.isArray(customersData)) {
       const rows = customersData.map((customer: any, index: number) => {
-        // const customer: Customer = item.CustomerData.customer;
+        index++;
+
         return {
           key: index.toString(),
           // Add adminId so the type matches CustomerData requirements.
+          id: customer.id,
           adminId: customer.adminId,
           companyName: customer.companyName,
           contactPerson: customer.contactPerson,
@@ -932,98 +108,57 @@ export const CustomerList: React.FC = () => {
           remark: customer.remark,
           prime: customer.prime,
           blacklisted: customer.blacklisted,
-          status: customer.prime
-            ? "Prime"
-            : customer.blacklisted
-            ? "Blacklisted"
-            : "-",
+          address: customer.address,
+          adminCustomFields: customer.adminCustomFields,
+          joiningDate: customer.joiningDate,
+          product: customer.product,
+          partner: customer.partner,
+          status: customer.status,
+          hasReference: customer.hasReference,
+          createdAt: customer.createdAt,
+          updatedAt: customer.updatedAt,
         };
       });
       setTableData(rows);
     }
   }, [customersData]);
 
-  const getSuggestions = (dataIndex: DataIndex): { value: string }[] => {
-    const uniqueValues = Array.from(
-      new Set(tableData.map((item) => item[dataIndex]?.toString()))
-    );
-    return uniqueValues.map((val) => ({ value: val }));
+  // delete onli Inactive cutomer
+  const handleDelete = (id: string) => {
+    dispatch(deleteCustomer(id)).unwrap();
+    message.success("Customer Deleted successfully");
+  };
+
+  const handleToggleStatus = (p: CustomerRow) => {
+    dispatch(toggleCustomerStatus({ id: p.id, status: !p.status })).unwrap();
+    message.success("Customer Status Updated");
   };
 
   const columns: TableColumnsType<CustomerRow> = [
     {
+      title: "#",
+      dataIndex: "number",
+      render: (_, __, index) => (meta.page - 1) * meta.limit + index + 1,
+    },
+    {
       title: "Company Name",
       dataIndex: "companyName",
       key: "companyName",
-      ...getColumnSearchProps(
-        "companyName",
-        searchText,
-        setSearchText,
-        searchedColumn,
-        setSearchedColumn,
-        searchInput,
-        getSuggestions("companyName")
-      ),
     },
     {
       title: "Contact Person",
       dataIndex: "contactPerson",
       key: "contactPerson",
-      ...getColumnSearchProps(
-        "contactPerson",
-        searchText,
-        setSearchText,
-        searchedColumn,
-        setSearchedColumn,
-        searchInput,
-        getSuggestions("contactPerson")
-      ),
     },
     {
       title: "Mobile Number",
       dataIndex: "mobileNumber",
       key: "mobileNumber",
-      ...getColumnSearchProps(
-        "mobileNumber",
-        searchText,
-        setSearchText,
-        searchedColumn,
-        setSearchedColumn,
-        searchInput,
-        getSuggestions("mobileNumber")
-      ),
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (text: string) => {
-        let icon = null;
-        if (text === "Prime") {
-          icon = (
-            <CheckCircleOutlined style={{ color: "green", marginRight: 4 }} />
-          );
-        } else if (text === "Blacklisted") {
-          icon = (
-            <CloseCircleOutlined style={{ color: "red", marginRight: 4 }} />
-          );
-        }
-        return (
-          <span>
-            {icon}
-            {text}
-          </span>
-        );
-      },
-      ...getColumnSearchProps(
-        "status",
-        searchText,
-        setSearchText,
-        searchedColumn,
-        setSearchedColumn,
-        searchInput,
-        getSuggestions("status")
-      ),
+      title: "Seriol Number",
+      dataIndex: "serialNo",
+      key: "sserialNor",
     },
     {
       title: "Action",
@@ -1031,38 +166,70 @@ export const CustomerList: React.FC = () => {
       render: (_, record) => (
         <div onClick={(e) => e.stopPropagation()}>
           <Space size="middle">
-            <Button
-              color="geekblue"
-              variant="outlined"
-              icon={<ProductOutlined />}
-              // icon={<EyeOutlined />}
-              onClick={() => setViewCustomer(record)}
-            >
-              Products
-              {/* View */}
-            </Button>
-            <Button
-              color="gold"
-              variant="outlined"
-              icon={<EditOutlined />}
-              onClick={() => setUpdateCustomer(record)}
-            >
-              Edit
-            </Button>
+            {record.status ? (
+              <>
+                <Button
+                  color="geekblue"
+                  variant="outlined"
+                  icon={<ProductOutlined />}
+                  // icon={<EyeOutlined />}
+                  onClick={() => setViewProducts(record)}
+                >
+                  Products
+                  {/* View */}
+                </Button>
+                <Button
+                  color="gold"
+                  variant="outlined"
+                  icon={<EditOutlined />}
+                  onClick={() => setUpdateCustomer(record)}
+                >
+                  Edit
+                </Button>
+              </>
+            ) : (
+              ""
+            )}
+
             <Popconfirm
-              title="Delete the task"
-              description={`Are you sure to delete ${record.companyName}?`}
-              okText="Yes"
-              cancelText="No"
+              title={`Change status to ${
+                record.status ? "Inactive" : "Active"
+              }?`}
+              // description={`Are you sure to Inactive ${record.companyName}?`}
+              onConfirm={() => handleToggleStatus(record)}
+              okText="Confirm"
+              cancelText="Cancel"
             >
               <Button
-                color="volcano"
-                variant="outlined"
-                icon={<DeleteOutlined />}
+                // icon={<DeleteOutlined />}
+                // icon={record.status ? <DeleteOutlined /> : <CheckCircleOutlined />}
+                // color="volcano"
+                variant="outlined" //deleteCustomer
+                danger={record.status}
+                type="default"
               >
-                Delete
+                {record.status ? "Inactive" : "Active"}
               </Button>
             </Popconfirm>
+            {!record.status ? (
+              <Popconfirm
+                title="Delete the Customer"
+                description={`Are you sure to delete ${record.companyName}?`}
+                onConfirm={() => handleDelete(record.id)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  color="volcano"
+                  variant="outlined"
+                  icon={<DeleteOutlined />}
+                >
+                  Delete
+                </Button>
+              </Popconfirm>
+            ) : (
+              ""
+            )}
           </Space>
         </div>
       ),
@@ -1070,8 +237,9 @@ export const CustomerList: React.FC = () => {
   ];
 
   useEffect(() => {
-    dispatch(listCustomers());
-  }, []);
+    dispatch(listCustomers({ page, limit, q, status }));
+  }, [dispatch, page, limit, q, status]);
+
   return (
     <>
       <style>
@@ -1087,33 +255,91 @@ export const CustomerList: React.FC = () => {
           .ant-table-tbody > tr {
             cursor: pointer;
           }
+          .ant-table-tbody > tr:hover td {
+            background: rgba(0,0,0,0.02) !important;
+          }
+          .responsive-search {
+            width: 100%;
+            max-width: 400px;
+            transition: all 0.3s;
+          }  
         `}
       </style>
       <Col span={24}>
         <Card
-          title="Customer List"
+          title="Customer Management"
           extra={
-            <Space>
+            <Space wrap style={{ width: "100%", justifyContent: "flex-end" }}>
+              <Input
+                placeholder="Search..."
+                prefix={<SearchOutlined />}
+                allowClear
+                onChange={handleSearchChange}
+                aria-label="Search..."
+                // style={{ width: 200 }}
+                className="responsive-search"
+                suffix={
+                  <Tooltip title="Search by name, seriol number, or phone">
+                    <InfoCircleOutlined style={{ color: "rgba(0,0,0,0.45)" }} />
+                  </Tooltip>
+                }
+              />
               {/* <Button icon={<CloudUploadOutlined />}>Import</Button> */}
-              <Link to="/customer/addcustomer">
+              <Switch
+                checkedChildren="Active"
+                unCheckedChildren="Inactive"
+                checked={status}
+                onChange={setStatus}
+              />
+
+              {/* <Link to="/customer/addcustomer">
                 <Button icon={<PlusOutlined />}>New Customer</Button>
-              </Link>
+              </Link> */}
             </Space>
           }
           bordered={false}
+          //  headStyle={{ borderBottom: '1px solid #f0f0f0' }}
         >
+          {error && (
+                  <AutoDismissAlert
+                    message="Error"
+                    description={error}
+                    type="error"
+                    showIcon
+                    style={{ marginBottom: 16 }}
+                    onClose={() => null}
+                    durationMs={10000} // 10 seconds
+                  />
+                )}
           <Table<CustomerRow>
             columns={columns}
             dataSource={tableData}
+            rowKey="id"
+            loading={loading}
+            pagination={{
+              current: meta.page,
+              pageSize: meta.limit,
+              total: meta.total,
+              showSizeChanger: true,
+              showTotal: (total) => `Total ${total} customers`,
+              pageSizeOptions: ["10", "25", "50", "100"],
+              responsive: true,
+              onChange: (p, size) => {
+                setPage(p);
+                setLimit(size);
+              },
+            }}
+            
             onRow={(record) => ({
-              onClick: () => setViewCustomer(record),
+              onClick: () => setViewCustomer(record)
             })}
             rowClassName={(record) => {
-              if (record.status === "Prime") return "prime-row";
-              if (record.status === "Blacklisted") return "blacklisted-row";
+              if (record.prime) return "prime-row";
+              if (record.blacklisted) return "blacklisted-row";
               return "";
             }}
             scroll={{ x: true }}
+            sticky
           />
         </Card>
       </Col>
@@ -1121,6 +347,12 @@ export const CustomerList: React.FC = () => {
         <CustomerDetailModal
           customer={viewCustomer}
           onClose={() => setViewCustomer(null)}
+        />
+      )}
+      {viewProducts && (
+        <ProductDetailModal
+          products={viewProducts}
+          onClose={() => setViewProducts(null)}
         />
       )}
       {updateCustomer && (

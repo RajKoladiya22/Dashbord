@@ -2,9 +2,12 @@ import React from "react";
 import { Modal } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { UpdateCustomerForm } from "../form"; // Import your update form component
+import { PartnerData, Product } from "../../../redux/APITypes";
 
 export interface CustomerData {
+  id: string;
   adminId: string;
+  partnerId?: string;
   companyName: string;
   contactPerson: string;
   mobileNumber: string;
@@ -12,13 +15,16 @@ export interface CustomerData {
   serialNo: string;
   prime: boolean;
   blacklisted: boolean;
-  remark: string;
-  state?: string;
-  city?: string;
-  area?: string;
-  address?: string;
-  joiningDate?: string;
-  // Add any additional fields if needed.
+  remark?: string;
+  adminCustomFields: Record<string, any>[];
+  address: Record<string, any>;
+  joiningDate: string;              // ISO timestamp
+  hasReference: boolean;
+  status: boolean;
+  product: Product[];
+  createdAt: string;                // ISO timestamp
+  updatedAt: string;
+  partner: PartnerData;  
 }
 
 interface UpdateCustomerProps {

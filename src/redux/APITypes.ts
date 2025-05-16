@@ -56,8 +56,13 @@ export interface PartnerData {
   email?: string;
   password?: string;
   confirmPassword?: string;
+  status?: boolean;
   partner_type?: string;
-  contact_info?: {} | null;
+  role?: string;
+  contactInfo?: Record<string, any> | undefined;
+  address?: any;
+  createdAt?: Date;
+  
 }
 
 //partner signIN Response
@@ -65,32 +70,31 @@ export interface PartnerResponse {
   status: number;
   success: boolean;
   message: string;
-  Partner: {
-    id: string;
-    partner_name: string;
-    company_name: string;
-    email: string;
-    contact_info: {} | null;
-    status: string;
-  };
+  Partner: PartnerData;
 }
 
 // PartnerState
 export interface PartnerState {
-  Partner: PartnerResponse | PartnerData[] | null;
+  // Partner: PartnerResponse | PartnerData[] | null;
+  Partner: PartnerData[]; 
   loading: boolean;
   error: string | null;
 }
 
 // TeamMember Data
 export interface TeamMemberData {
+  id?:string;
   firstName: string;
+  lastName?: string;
   email: string;
   contactNumber?: string;
   password: string;
   department?: string;
   position?: string;
   role?: string;
+  status?:boolean;
+  createdAt?:Date;
+  address?:any;
 }
 
 // TeamMember signUp Response
@@ -111,7 +115,7 @@ export interface TeamMembersignUpResponse {
 
 // TeamState
 export interface TeamState {
-  teamMember?: TeamMembersignUpResponse | TeamMemberData[] | null | [];
+  teamMember?: TeamMemberData[];
   loading?: boolean;
   error?: string | null;
 }
@@ -172,16 +176,18 @@ export interface UserProfileState {
 
 export interface Product {
   id: string;
+  image: string;
   productName: string;
   productCategory: Record<string, any>;
   productPrice: string;
   description?: string;
   productLink?: string;
-  tags?: string[];
+  tags?:string[] | undefined;
   specifications?: Record<string, any>;
   admin_id: string;
-  created_at?: string;
-  updated_at?: string;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ProductResponse {
@@ -240,9 +246,10 @@ export interface Customer {
   address: Record<string, any>;
   joiningDate: string;              // ISO timestamp
   hasReference: boolean;
-  products: [];
+  products: Product;
   createdAt: string;                // ISO timestamp
-  updatedAt: string;                // ISO timestamp
+  updatedAt: string;
+  partner: PartnerData;                // ISO timestamp
 }
 
 /**
@@ -250,6 +257,7 @@ export interface Customer {
  */
 export interface CustomerState {
   customers: Customer[];
+  meta: Record<string, any>;
   loading: boolean;
   error: string | null;
 }
@@ -269,11 +277,13 @@ export interface SingleCustomerResponse {
  * The common API envelope when you return a list of customers.
  */
 export interface CustomerResponse {
-  data: {
-    customers: Customer[];  // always an array
-  };
   message?: string;
   status?: string;
+
+  data: {
+    customers: Customer[];  // always an array
+    meta: any;
+  };
 }
 export interface CreaateCustomerResponse {
   data: {
@@ -281,4 +291,18 @@ export interface CreaateCustomerResponse {
   };
   message?: string;
   status?: string;
+}
+
+
+export interface ReminderData {
+  id: string;
+  expiryDate: string;
+  renewalDate: string | null;
+  purchaseDate: string;
+  productPrice: string;
+  renewal: boolean;
+  status: boolean;
+  product: Product;
+  customer: Customer;
+  createdAt: string;
 }

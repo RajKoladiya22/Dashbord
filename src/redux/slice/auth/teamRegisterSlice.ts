@@ -1,13 +1,13 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   TeamMemberData,
   TeamMembersignUpResponse,
   TeamState,
 } from "../../APITypes";
+import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState: TeamState = {
-  teamMember: null,
+  teamMember: [],
   loading: false,
   error: null,
 };
@@ -17,17 +17,9 @@ export const createTeamMember = createAsyncThunk(
   "team/createTeamMember",
   async (teamMemberData: TeamMemberData, { rejectWithValue }) => {
     try {
-      const response = await axios.post<TeamMembersignUpResponse>(
-        "http://46.202.167.124/api/v1/auth/team",
-        // "http://localhost:3000/api/v1/auth/team",
-        teamMemberData,
-        {
-          withCredentials: true, // important for cookie-based auth
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": "Q0@gZ@dY7[jGQ/GRc@D9KSCX#U2Yz",
-          },
-        }
+      const response = await axiosInstance.post<TeamMembersignUpResponse>(
+        "/auth/team",
+        teamMemberData
       );
       return response.data;
     } catch (error: any) {
@@ -48,7 +40,7 @@ const teamSlice = createSlice({
   initialState,
   reducers: {
     clearTeamMemberState: (state) => {
-      state.teamMember = null;
+      state.teamMember = [];
       state.loading = false;
       state.error = null;
     },
@@ -61,9 +53,11 @@ const teamSlice = createSlice({
       })
       .addCase(
         createTeamMember.fulfilled,
-        (state, action: PayloadAction<TeamMembersignUpResponse>) => {
+        (state,
+          //  action: PayloadAction<TeamMembersignUpResponse>
+          ) => {
           state.loading = false;
-          state.teamMember = action.payload;
+          // state.teamMember = action.payload;
         }
       )
       .addCase(createTeamMember.rejected, (state, action) => {

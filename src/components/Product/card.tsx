@@ -1,78 +1,3 @@
-// import  { useEffect, useState } from 'react';
-// import { Card, Avatar, Row, Col, Modal } from 'antd';
-// import { EditOutlined, EllipsisOutlined, EyeOutlined, SettingOutlined } from '@ant-design/icons';
-// import { useSelector } from 'react-redux';
-// import { RootState } from '../../redux/store';
-// import { useAppDispatch } from '../../hooks';
-// import { fetchAllProducts } from '../../redux/slice/products/productSlice';
-
-// const { Meta } = Card;
-
-// export const ProductList = () => {
-//     const { products, loading, error } = useSelector(
-//       (state: RootState) => state.products
-//     );
-//   const dispatch = useAppDispatch();
-//   const [isModalVisible, setIsModalVisible] = useState(false);
-//   const [selectedCard, setSelectedCard] = useState({});
-
-//   console.log("Products--->", products);
-//   console.log("loading--->", loading);
-//   console.log("error--->", error);
-
-//   const showModal = (product : any) => {
-//     setSelectedCard(product);
-//     setIsModalVisible(true);
-//   };
-
-//   const handleCancel = () => {
-//     setIsModalVisible(false);
-//     setSelectedCard(0);
-//   };
-
-//   useEffect(()=>{
-//     dispatch(fetchAllProducts())
-//   },[])
-
-//   return (
-//     <Row gutter={[16, 16]} justify="center">
-//       {products.map((product, index) => (
-//         <Col key={index} xs={24} sm={12} md={8} lg={6} xl={4}>
-//           <Card
-//             hoverable
-//             style={{ maxWidth: 300, margin: 'auto' }}
-//             onClick={() => showModal(product)}
-//             cover={
-//               <img
-//                 alt={`example ${index + 1}`}
-//                 src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-//               />
-//             }
-//             actions={[
-//               <EyeOutlined  key="view"  />,
-//               <EditOutlined key="edit" onClick={(e) => e.stopPropagation()} />,
-//             ]}
-//           >
-//             <Meta
-//               avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-//               title={product.product_name}
-//               description={product.description}
-//             />
-//           </Card>
-//         </Col>
-//       ))}
-//       <Modal
-//         title={`Details for Card ${selectedCard?.product_name}`}
-//         open={isModalVisible}
-//         onCancel={handleCancel}
-//         footer={null}
-//       >
-//         <p>More information about Card {selectedCard}.</p>
-//       </Modal>
-//     </Row>
-//   );
-// };
-
 import React, { useEffect, useState, useCallback } from "react";
 import {
   Card,
@@ -81,21 +6,39 @@ import {
   Col,
   Modal,
   Skeleton,
-  Alert,
+  // Alert,
   Empty,
   message,
   Popconfirm,
+  Switch,
+  Tag,
+  Button,
+  Divider,
+  Descriptions,
+  Space,
+  Typography
 } from "antd";
-import { EditOutlined, EyeOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  // EyeOutlined,
+  // DeleteOutlined,
+  CheckCircleTwoTone,
+  StopTwoTone,
+  GlobalOutlined,
+} from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useAppDispatch } from "../../hooks";
 import {
   fetchAllProducts,
-  deleteProduct,
+  // deleteProduct,
+  toggleProductStatus,
 } from "../../redux/slice/products/productSlice";
 import { EditProductModal } from "./EditProductModal";
 import { Product } from "../../redux/APITypes";
+import AutoDismissAlert from "../Alert";
+import dayjs from "dayjs";
+const { Text } = Typography;
 
 const { Meta } = Card;
 
@@ -120,17 +63,17 @@ export const ProductList: React.FC = () => {
   const { products, loading, error } = useSelector(
     (state: RootState) => state.products
   );
+  const [filterStatus, setFilterStatus] = useState<boolean>(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [editing, setEditing] = useState<Product | null>(null);
 
   // Fetch products once on mount
   useEffect(() => {
-    dispatch(fetchAllProducts());
-  }, [dispatch]);
+    dispatch(fetchAllProducts({ status: filterStatus }));
+  }, [dispatch, filterStatus]);
 
   // console.log("products-->", products);
-  
 
   // Stable handlers for modal actions
   const showModal = useCallback((product: Product) => {
@@ -143,25 +86,31 @@ export const ProductList: React.FC = () => {
     setSelectedProduct(null);
   }, []);
 
-  const handleDelete = useCallback(
-    async (id: string) => {
-      try {
-        await dispatch(deleteProduct(id)).unwrap();
-        message.success("Product deleted successfully");
-      } catch (err) {
-        message.error("Failed to delete product");
-      }
-    },
-    [dispatch]
-  );
+  // const handleDelete = useCallback(
+  //   async (id: string) => {
+  //     try {
+  //       await dispatch(deleteProduct(id)).unwrap();
+  //       message.success("Product deleted successfully");
+  //     } catch (err) {
+  //       message.error("Failed to delete product");
+  //     }
+  //   },
+  //   [dispatch]
+  // );
+  const handleToggleStatus = (p: Product, e: React.MouseEvent) => {
+    e.stopPropagation();
+    dispatch(toggleProductStatus({ id: p.id, status: !p.status }))
+    .unwrap();
+    message.success("Product Status Updated");
+  };
 
   const ProductCard = React.memo(
     ({
       product,
       onView,
-      // onEdit,
-      // onDelete,
-    }: {
+    }: // onEdit,
+    // onDelete,
+    {
       product: Product;
       onView: (p: Product) => void;
       onEdit: (p: Product) => void;
@@ -178,40 +127,40 @@ export const ProductList: React.FC = () => {
           />
         }
         actions={[
-          <EyeOutlined
-            key="view"
-            onClick={(e) => {
-              e.stopPropagation();
-              onView(product);
-            }}
-          />,
-          <EditOutlined
-            key="edit"
-            onClick={(e) => {
-              e.stopPropagation();
-              setEditing(product);
-            }}
-          />,
-          <Popconfirm
-            key="delete"
-            title="Are you sure to delete this product?"
-            onConfirm={(e) => {
-              e?.stopPropagation();
-              handleDelete(product.id);
-            }}
-            onCancel={(e) => e?.stopPropagation()}
-            okText="Yes"
-            cancelText="No"
-          >
-            <DeleteOutlined onClick={(e) => e.stopPropagation()} />
-          </Popconfirm>,
-          // <DeleteOutlined
-          //   key="delete"
-          //   onClick={(e) => {
-          //     e.stopPropagation();
-          //     onDelete(product);
-          //   }}
-          // />,
+          // toggle status icon
+          product.status ? (
+            <CheckCircleTwoTone
+              key="activate"
+              twoToneColor="#52c41a"
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <StopTwoTone
+              key="deactivate"
+              twoToneColor="#ff4d4f"
+              onClick={(e) => e.stopPropagation()}
+            />
+          ),
+          <span onClick={(e) => e.stopPropagation()}>
+            <Popconfirm
+              key="toggle"
+              title={`Are you sure you want to ${
+                product.status ? "deactivate" : "activate"
+              } this product?`}
+              onConfirm={(e: any) => {
+                e.stopPropagation(); // stop confirm click
+                handleToggleStatus(product, e);
+              }}
+              okText="Yes"
+              cancelText="No"
+              // onClick={(e:any) => e.stopPropagation()}  // stop click on the Popconfirm trigger itself
+            >
+              <EditOutlined
+                key="edit"
+                onClick={(e) => e.stopPropagation()} // stop click on the icon
+              />
+            </Popconfirm>
+          </span>,
         ]}
       >
         <Meta
@@ -230,16 +179,25 @@ export const ProductList: React.FC = () => {
 
   return (
     <>
+      <Switch
+        checkedChildren="Active"
+        unCheckedChildren="Inactive"
+        checked={filterStatus}
+        onChange={(checked) => setFilterStatus(checked)}
+        style={{ marginBottom: 16 }}
+      />
       {error && (
-        <Alert
+        <AutoDismissAlert
           message="Error"
           description={error}
           type="error"
           showIcon
           style={{ marginBottom: 16 }}
+          onClose={() => null}
+          durationMs={10000} // 10 seconds
         />
       )}
-      <Row gutter={[16, 16]} justify="center">
+      <Row gutter={[16, 16]} justify="start">
         {loading ? (
           // Skeleton placeholders while loading
           Array.from({ length: 8 }).map((_, idx) => (
@@ -270,7 +228,7 @@ export const ProductList: React.FC = () => {
         )}
       </Row>
 
-      <Modal
+      {/* <Modal
         title={selectedProduct?.productName}
         open={isModalVisible}
         onCancel={handleCancel}
@@ -288,16 +246,113 @@ export const ProductList: React.FC = () => {
             <p>
               <strong>Description:</strong> {selectedProduct.description}
             </p>
-            {/* Additional product details */}
           </>
         ) : null}
-      </Modal>
+      </Modal> */}
 
-        <EditProductModal
-          visible={!!editing}
-          product={editing}
-          onCancel={() => setEditing(null)}
+
+      <Modal
+  title={
+    <div className="modal-header">
+      <span>{selectedProduct?.productName}</span>
+      <Tag color={selectedProduct?.status ? "green" : "red"}>
+        {selectedProduct?.status ? "Active" : "Inactive"}
+      </Tag>
+    </div>
+  }
+  open={isModalVisible}
+  onCancel={handleCancel}
+  footer={[
+    <Button key="close" onClick={handleCancel}>
+      Close
+    </Button>,
+    <Button 
+      key="visit" 
+      type="primary" 
+      icon={<GlobalOutlined />}
+      onClick={() => window.open(selectedProduct?.productLink, '_blank')}
+    >
+      Visit Website
+    </Button>
+  ]}
+  width={800}
+  className="product-detail-modal"
+>
+  {selectedProduct && (
+    <div className="product-content">
+      <div className="product-media">
+        <Avatar 
+          size={160}
+          src={selectedProduct.image || `https://via.placeholder.com/150?text=${selectedProduct.productName[0]}`}
+          className="product-image"
         />
+      </div>
+
+      <Divider />
+
+      <Descriptions bordered column={2}>
+        <Descriptions.Item label="Price" span={2}>
+          <div className="price-display">
+            ₹{selectedProduct.productPrice}
+            <span className="price-period">/year</span>
+          </div>
+        </Descriptions.Item>
+
+        <Descriptions.Item label="Category">
+          <Space wrap>
+            {selectedProduct.productCategory.map((cat:any) => (
+              <Tag color="blue" key={cat}>{cat}</Tag>
+            ))}
+          </Space>
+        </Descriptions.Item>
+
+        <Descriptions.Item label="Tags">
+          <Space wrap>
+            {selectedProduct.tags?.map(tag => (
+              <Tag color="geekblue" key={tag}>{tag}</Tag>
+            ))}
+          </Space>
+        </Descriptions.Item>
+
+        <Descriptions.Item label="Description" span={2}>
+          <div className="product-description">
+            {selectedProduct.description}
+          </div>
+        </Descriptions.Item>
+
+        <Descriptions.Item label="Specifications" span={2}>
+          <div className="spec-grid">
+            {Object.entries(selectedProduct?.specifications ?? {}).map(([key, value]) => (
+              <div key={key} className="spec-item">
+                <div className="spec-key">{key}:</div>
+                <div className="spec-value">{value}</div>
+              </div>
+            ))}
+          </div>
+        </Descriptions.Item>
+      </Descriptions>
+
+      <Divider />
+
+      <div className="meta-info">
+        <Space>
+          <Text type="secondary">
+            Created: {dayjs(selectedProduct.createdAt).format('MMM D, YYYY')}
+          </Text>
+          <Text type="secondary">
+            Last Updated: {dayjs(selectedProduct.updatedAt).format('MMM D, YYYY')}
+          </Text>
+        </Space>
+      </div>
+    </div>
+  )}
+</Modal>
+
+      <EditProductModal
+        visible={!!editing}
+        product={editing}
+        onCancel={() => setEditing(null)}
+      />
     </>
   );
 };

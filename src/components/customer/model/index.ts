@@ -1,5 +1,6 @@
 export {UpdateCustomerModel} from './updateCustomer'
 export {CustomerDetailModal} from './customerDetail'
+export {ProductDetailModal} from './productDetail'
 export {CustomFieldsModel} from './CustomFields'
 export {FieldDetailModal} from './CustomFieldsDetails'
 export {UpdateFieldModel} from './updateField'

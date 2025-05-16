@@ -77,8 +77,8 @@ export const AddCustomer: React.FC = () => {
   useEffect(() => {
     Promise.all([
       dispatch(fetchAdminCustomFields()),
-      dispatch(fetchAllProducts()),
-      dispatch(fetchPartners()),
+      dispatch(fetchAllProducts({ status: true })),
+      dispatch(fetchPartners({ status: true })),
     ]).catch((e) => {
       // handle global fetch error if desired
       console.error("Initial load failed", e);
@@ -149,6 +149,9 @@ export const AddCustomer: React.FC = () => {
       };
 
       try {
+        // console.log("\n\n\npayload----->\n\n",payload);
+        // console.log("\n\n\n<-------------------->\n\n\n");
+
         // Dispatch the thunk and unwrap for error handling
         const action = await dispatch(createCustomer(payload));
         const customer = unwrapResult(action);
@@ -356,7 +359,7 @@ export const AddCustomer: React.FC = () => {
                   <Space>
                     <Form.Item name="prime" valuePropName="checked" noStyle>
                       <Switch
-                        checkedChildren="Prime"
+                        checkedChildren="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prime&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         unCheckedChildren="Prime"
                         onChange={(checked) =>
                           handleStatusChange(checked, "prime")
@@ -378,17 +381,17 @@ export const AddCustomer: React.FC = () => {
                     </Form.Item>
                   </Space>
                 </Form.Item>
-                <Alert
+                {/* <Alert
                   message="Note: Customer can be either Prime or Blacklisted, not both"
                   type="info"
                   showIcon
                   style={{ marginTop: 16 }}
-                />
+                /> */}
               </Col>
             </Row>
 
             <Row gutter={24}>
-              <Col span={24}>
+              <Col xs={24} sm={12}>
                 <Form.Item
                   name="reference"
                   label="Reference Partner"
@@ -398,49 +401,54 @@ export const AddCustomer: React.FC = () => {
                   <Switch />
                 </Form.Item>
               </Col>
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  noStyle
+                  shouldUpdate={(prevValues, currentValues) =>
+                    prevValues.reference !== currentValues.reference
+                  }
+                >
+                  {({ getFieldValue }) =>
+                    getFieldValue("reference") && (
+                      <Form.Item
+                        name="referenceChoice"
+                        label="Select Partner"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please select a reference partner",
+                          },
+                        ]}
+                      >
+                        <Select
+                          placeholder="Choose referring partner"
+                          style={{ width: "100%" }}
+                        >
+                          {partnerMembers.map((p) => (
+                            <Select.Option key={p.id} value={p.id}>
+                              {p.firstName} {p.lastName} / {p.companyName}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    )
+                  }
+                </Form.Item>
+              </Col>
             </Row>
 
-            <Form.Item
-              noStyle
-              shouldUpdate={(prevValues, currentValues) =>
-                prevValues.reference !== currentValues.reference
-              }
-            >
-              {({ getFieldValue }) =>
-                getFieldValue("reference") && (
-                  <Form.Item
-                    name="referenceChoice"
-                    label="Select Partner"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please select a reference partner",
-                      },
-                    ]}
-                  >
-                    <Select
-                      placeholder="Choose referring partner"
-                      style={{ width: "100%" }}
-                    >
-                      {partnerMembers.map((p) => (
-                        <Select.Option key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName} / {p.companyName}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                )
-              }
-            </Form.Item>
-
-            <Form.Item name="remark" label="Remarks">
-              <TextArea
-                showCount
-                maxLength={100}
-                placeholder="Enter additional remarks..."
-                style={{ minHeight: 100 }}
-              />
-            </Form.Item>
+            <Row gutter={24}>
+              <Col xs={24} sm={12}>
+                <Form.Item name="remark" label="Remarks">
+                  <TextArea
+                    showCount
+                    maxLength={100}
+                    placeholder="Enter additional remarks..."
+                    // style={{ minHeight: 100 }}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
           </Card>
 
           {/* Custom Fields Section */}
@@ -652,8 +660,106 @@ export const AddCustomer: React.FC = () => {
                             "renewal",
                           ]);
                           return renewalValue ? (
-                            <Row gutter={24}>
-                              <Col xs={24} sm={12}>
+                            <>
+                              <Row gutter={24}>
+                                <Col xs={24} sm={12}>
+                                  <Form.Item
+                                    {...field}
+                                    name={[field.name, "renewPeriod"]}
+                                    label="Renew Period"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Renew Period is required",
+                                      },
+                                    ]}
+                                  >
+                                    <Select
+                                      style={{ width: "100%" }}
+                                      placeholder="Select renew period"
+                                    >
+                                      <Select.Option value="monthly">
+                                        1 Month
+                                      </Select.Option>
+                                      <Select.Option value="quarterly">
+                                        3 Months
+                                      </Select.Option>
+                                      <Select.Option value="half_yearly">
+                                        6 Months
+                                      </Select.Option>
+                                      <Select.Option value="yearly">
+                                        1 Year
+                                      </Select.Option>
+                                      <Select.Option value="custom">
+                                        Custom
+                                      </Select.Option>
+                                      {/* Add more options as needed */}
+                                    </Select>
+                                  </Form.Item>
+                                </Col>
+                              </Row>
+                              <Row gutter={24}>
+                                <Form.Item
+                                  shouldUpdate={(prevValues, curValues) => {
+                                    const prev =
+                                      prevValues.products?.[field.name]
+                                        ?.renewPeriod;
+                                    const cur =
+                                      curValues.products?.[field.name]
+                                        ?.renewPeriod;
+                                    return prev !== cur;
+                                  }}
+                                  noStyle
+                                >
+                                  {({ getFieldValue }) =>
+                                    getFieldValue([
+                                      "products",
+                                      field.name,
+                                      "renewPeriod",
+                                    ]) === "custom" ? (
+                                      <>
+                                        <Col xs={24} sm={12}>
+                                          <Form.Item
+                                            {...field}
+                                            name={[field.name, "expiryDate"]}
+                                            label="Expiry Date"
+                                            rules={[
+                                              {
+                                                required: true,
+                                                message:
+                                                  "Expiry date is required",
+                                              },
+                                            ]}
+                                          >
+                                            <DatePicker
+                                              style={{ width: "100%" }}
+                                            />
+                                          </Form.Item>
+                                        </Col>
+                                        <Col xs={24} sm={12}>
+                                          <Form.Item
+                                            {...field}
+                                            name={[field.name, "renewalDate"]}
+                                            label="Renewal Date"
+                                            rules={[
+                                              {
+                                                required: true,
+                                                message:
+                                                  "Renewal date is required",
+                                              },
+                                            ]}
+                                          >
+                                            <DatePicker
+                                              style={{ width: "100%" }}
+                                            />
+                                          </Form.Item>
+                                        </Col>
+                                      </>
+                                    ) : null
+                                  }
+                                </Form.Item>
+                              </Row>
+                              {/* <Col xs={24} sm={12}>
                                 <Form.Item
                                   {...field}
                                   name={[field.name, "expiryDate"]}
@@ -682,8 +788,8 @@ export const AddCustomer: React.FC = () => {
                                 >
                                   <DatePicker style={{ width: "100%" }} />
                                 </Form.Item>
-                              </Col>
-                            </Row>
+                              </Col> */}
+                            </>
                           ) : null;
                         }}
                       </Form.Item>

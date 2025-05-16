@@ -25,9 +25,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, shallowEqual  } from "react-redux";
 import {useAppDispatch} from '../../hooks'
 import { RootState } from "../../redux/store";
-import { signupUser } from "../../redux/slice/auth/registerSlice"; // Adjust the path according to your folder structure
+
 import { SignUpData } from "../../redux/APITypes";
 import { useCallback } from "react";
+import { signupUser } from "../../redux/slice/auth/authSlice";
 
 const { Title, Text } = Typography;
 

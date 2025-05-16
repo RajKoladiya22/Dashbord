@@ -39,12 +39,12 @@ export const AddPartnerButton = () => {
       password: values.password,
     };
     // console.log("signupData---->", signupData);
-    
+       
 
     dispatch(createPartner(signupData))
       .unwrap()
       .then(() => {
-        dispatch(fetchPartners())
+        dispatch(fetchPartners({ status: true }))
         message.success("Team member created successfully!");
         form.resetFields();
         setIsModalVisible(false);

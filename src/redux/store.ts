@@ -2,8 +2,8 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import themeReducer, { ThemeState } from './theme/themeSlice';
 import { persistReducer, persistStore, PersistConfig } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import authReducer from './slice/auth/authSlice';
 import customerReducer from './slice/customer/addcustomerSlice';
-import authReducer from './slice/auth/loginSlice';
 import userReducer from './slice/user/userProfileSlice';
 import teamReducer from './slice/auth/teamRegisterSlice';
 import teamMemberReducer from './slice/team/teamMemberSlice'
@@ -11,6 +11,7 @@ import partnerMemberReducer from './slice/partner/partnerMemberSlice'
 import partnerReducer from './slice/auth/partnerRegisterSlice';
 import customFieldsReducer from './slice/customer/customfieldSlice'
 import productsReducer from './slice/products/productSlice'
+import reminderReducer from './slice/products/reminder.slice'
 
 // Define the state shape
 interface RootState {
@@ -24,6 +25,7 @@ interface RootState {
   partnerMember: ReturnType<typeof partnerMemberReducer>; 
   customFields: ReturnType<typeof customFieldsReducer>;
   products: ReturnType<typeof productsReducer>;
+  reminders: ReturnType<typeof reminderReducer>;
 }
 
 // Combine reducers
@@ -38,6 +40,7 @@ const rootReducer = combineReducers({
   partnerMember: partnerMemberReducer, 
   customFields: customFieldsReducer,
   products: productsReducer,
+  reminders: reminderReducer,
 });
 
 // Persist config with RootState
@@ -45,7 +48,7 @@ const persistConfig: PersistConfig<RootState> = {
   key: 'root',
   storage,
   version: 1,
-  whitelist: ['auth']
+  whitelist: ['auth', 'team', 'partner']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

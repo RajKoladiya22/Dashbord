@@ -26,11 +26,12 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 // import { useState } from "react";
 
-import { loginUser } from "../../redux/slice/auth/loginSlice";
+
 
 import {useAppDispatch} from '../../hooks'
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { loginUser } from "../../redux/slice/auth/authSlice";
 // import { useBreakpoint } from "antd/es/grid/hooks";
 
 const { Title, Text } = Typography;

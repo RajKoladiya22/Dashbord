@@ -7,41 +7,59 @@ export const createProduct = createAsyncThunk(
   "products/createProduct",
   async (payload: Partial<Product>, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post<ProductResponse>("/product", payload);
-      return response.data.data.product;;
+      const response = await axiosInstance.post<ProductResponse>(
+        "/product",
+        payload
+      );
+      return response.data.data.product;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to create product");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create product"
+      );
     }
   }
 );
 
 // Fetch all products for the authenticated admin
-export const fetchAllProducts = createAsyncThunk(
-  "products/fetchAllProducts",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get<ProductResponse>("/product");
-      // console.log("Product response--->", response);
-      
-      return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to fetch products");
-    }
+export const fetchAllProducts = createAsyncThunk<
+  ProductResponse, // Return type: an array of team members.
+  { status?: boolean },
+  { rejectValue: string }
+>("products/fetchAllProducts", async ({ status }, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.get<ProductResponse>("/product", {
+      params: { status },
+    });
+    // console.log("Product response--->", response);
+
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to fetch products"
+    );
   }
-);
+});
 
 // Update a specific product
 export const updateProduct = createAsyncThunk(
   "products/updateProduct",
-  async ({ id, data }: { id: string; data: Partial<Product> }, { rejectWithValue }) => {
+  async (
+    { id, data }: { id: string; data: Partial<Product> },
+    { rejectWithValue }
+  ) => {
     try {
       // console.log("ID-->",id);
       // console.log("data-->",data);
 
-      const response = await axiosInstance.put<ProductResponse>(`/product/${id}`, data);
+      const response = await axiosInstance.put<ProductResponse>(
+        `/product/${id}`,
+        data
+      );
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to update product");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update product"
+      );
     }
   }
 );
@@ -52,14 +70,41 @@ export const deleteProduct = createAsyncThunk(
   async (id: string, { rejectWithValue }) => {
     try {
       // console.log("ID-->",id);
-      
-      const response = await axiosInstance.delete<ProductResponse>(`/product/${id}`);
+
+      const response = await axiosInstance.delete<ProductResponse>(
+        `/product/${id}`
+      );
       return { id, ...response.data };
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to delete product");
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete product"
+      );
     }
   }
 );
+
+export const toggleProductStatus = createAsyncThunk<
+  Product, // now returns one teamData
+  { id: string | undefined; status: boolean },
+  { rejectValue: string }
+>("product/toggleStatus", async ({ id, status }, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.patch<{
+      status: number;
+      success: boolean;
+      message: string;
+      data: { product: Product };
+    }>(`/product/status/${id}`, { status });
+    if (response.status !== 200 || !response.data.success) {
+      throw new Error("Failed to update team status");
+    }
+    console.log("response.data.data.teamMembers-->", response);
+
+    return response.data.data.product;
+  } catch (err: any) {
+    return rejectWithValue(err.response?.data?.message || err.message);
+  }
+});
 
 const initialState: ProductState = {
   products: [],
@@ -77,7 +122,7 @@ const productSlice = createSlice({
       state.loading = true;
       state.error = null;
     });
-    builder.addCase(createProduct.fulfilled, (state, action:any) => {
+    builder.addCase(createProduct.fulfilled, (state, action: any) => {
       state.loading = false;
       state.products.push(action.payload);
     });
@@ -91,12 +136,15 @@ const productSlice = createSlice({
       state.loading = true;
       state.error = null;
     });
-    builder.addCase(fetchAllProducts.fulfilled, (state, action: PayloadAction<ProductResponse>) => {
-      state.loading = false;
-      state.products = Array.isArray(action.payload.data.product)
-        ? action.payload.data.product
-        : [action.payload.data.product];
-    });
+    builder.addCase(
+      fetchAllProducts.fulfilled,
+      (state, action: PayloadAction<ProductResponse>) => {
+        state.loading = false;
+        state.products = Array.isArray(action.payload.data.product)
+          ? action.payload.data.product
+          : [action.payload.data.product];
+      }
+    );
     builder.addCase(fetchAllProducts.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
@@ -110,7 +158,9 @@ const productSlice = createSlice({
     builder.addCase(updateProduct.fulfilled, (state, action: any) => {
       state.loading = false;
       const updated = action.payload.data.product;
-      state.products = state.products.map((prod) => (prod.id === updated.id ? updated : prod));
+      state.products = state.products.map((prod) =>
+        prod.id === updated.id ? updated : prod
+      );
     });
     builder.addCase(updateProduct.rejected, (state, action) => {
       state.loading = false;
@@ -122,13 +172,33 @@ const productSlice = createSlice({
       state.loading = true;
       state.error = null;
     });
-    builder.addCase(deleteProduct.fulfilled, (state, action: PayloadAction<any>) => {
-      state.loading = false;
-      state.products = state.products.filter((prod) => prod.id !== action.payload.id);
-    });
+    builder.addCase(
+      deleteProduct.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.products = state.products.filter(
+          (prod) => prod.id !== action.payload.id
+        );
+      }
+    );
     builder.addCase(deleteProduct.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
+    });
+    // toggleProductStatus handlers
+    builder.addCase(toggleProductStatus.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(toggleProductStatus.fulfilled, (state, action: any) => {
+      state.loading = false;
+      state.products = state.products?.filter(
+        (p: any) => p.id !== action.payload.id
+      );
+    });
+    builder.addCase(toggleProductStatus.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload || "Could not toggle status";
     });
   },
 });

@@ -1,10 +1,9 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
-import {PartnerData, PartnerResponse, PartnerState} from '../../APITypes'
-
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { PartnerData, PartnerResponse, PartnerState } from "../../APITypes";
+import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState: PartnerState = {
-  Partner: null,
+  Partner: [],
   loading: false,
   error: null,
 };
@@ -14,17 +13,9 @@ export const createPartner = createAsyncThunk(
   "partner/createPartner",
   async (PartnerData: PartnerData, { rejectWithValue }) => {
     try {
-      const response = await axios.post<PartnerResponse>(
-        "http://46.202.167.124/api/v1/auth/partner",
-        // "http://localhost:3000/api/v1/auth/partner",
-        PartnerData,
-        {
-          withCredentials: true, // important for cookie-based auth
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": "Q0@gZ@dY7[jGQ/GRc@D9KSCX#U2Yz",
-          },
-        }
+      const response = await axiosInstance.post<PartnerResponse>(
+        "/auth/partner",
+        PartnerData
       );
       return response.data;
     } catch (error: any) {
@@ -45,7 +36,7 @@ const partnerSlice = createSlice({
   initialState,
   reducers: {
     clearPartnerState: (state) => {
-      state.Partner = null;
+      state.Partner = [];
       state.loading = false;
       state.error = null;
     },
@@ -58,9 +49,12 @@ const partnerSlice = createSlice({
       })
       .addCase(
         createPartner.fulfilled,
-        (state, action: PayloadAction<PartnerResponse>) => {
+        (
+          state
+          // action: PayloadAction<PartnerResponse>
+        ) => {
           state.loading = false;
-          state.Partner = action.payload;
+          // state.Partner = action.payload;
         }
       )
       .addCase(createPartner.rejected, (state, action) => {

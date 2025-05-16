@@ -2,11 +2,25 @@
 
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance";
-import { Customer, CustomerState, CustomerResponse } from "../../APITypes";
+import {
+  Customer,
+  CustomerState,
+  CustomerResponse,
+  CreaateCustomerResponse,
+} from "../../APITypes";
 
 interface UpdateArgs {
   id: string;
   data: Partial<Customer>;
+}
+
+interface ListParams {
+  page?: number;
+  limit?: number;
+  q?: string;
+  status?: boolean;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 // 1) Create Customer thunk
@@ -22,7 +36,7 @@ export const createCustomer = createAsyncThunk<
         "/customer/add",
         payload
       );
-      console.log("Customer------->\n", response);
+      // console.log("Customer------->\n", response);
       return response.data.data.customers;
     } catch (err: any) {
       return rejectWithValue(
@@ -34,52 +48,114 @@ export const createCustomer = createAsyncThunk<
 
 // 2) List Customers thunk
 export const listCustomers = createAsyncThunk<
-  Customer[], // return type
-  void, // no arg
-  { rejectValue: string } // thunkAPI
->("customers/listCustomers", async (_, { rejectWithValue }) => {
-  try {
-    const response = await axiosInstance.get<CustomerResponse>(
-      "/customer/list"
-    );
-    // ensure array
-    const cust = response.data.data.customers;
-    // console.log("Customer------->\n", cust);
-
-    return Array.isArray(cust) ? cust : [cust];
-  } catch (err: any) {
-    return rejectWithValue(
-      err.response?.data?.message || "Failed to fetch customers"
-    );
-  }
-});
-
-// 3) Update Customer thunk
-export const updateCustomer = createAsyncThunk<
-  Customer,         // return type is a single customer
-  UpdateArgs,       // { id, data }
+  { customers: Customer[]; meta: { total: number; page: number; limit: number; pages: number } },
+  ListParams,
   { rejectValue: string }
 >(
-  "customers/updateCustomer",
-  async ({ id, data }, { rejectWithValue }) => {
+  "customers/listCustomers",
+  async (params, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.put<CustomerResponse>(
-        `/customer/update/${id}`,
-        data
+      const {
+        page = 1,
+        limit = 10,
+        q = '',
+        status = true,
+        sortBy = 'companyName',
+        sortOrder = 'asc',
+      } = params || {};
+
+      const query = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        q,
+        status: String(status),
+        sortBy,
+        sortOrder,
+      });
+
+      const response = await axiosInstance.get<CustomerResponse>(
+        `/customer/list?${query.toString()}`
       );
-      // Cast the API’s array back to a single object
-      const arr = response.data.data.customers;
-      return Array.isArray(arr) ? arr[0] : arr as Customer;
+
+      const { customers, meta } = response.data.data;
+      return { customers, meta };
     } catch (err: any) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to update customer"
+        err.response?.data?.message || "Failed to fetch customers"
       );
     }
   }
 );
 
+// 3) Update Customer thunk
+export const updateCustomer = createAsyncThunk<
+  Customer, // return type is a single customer
+  UpdateArgs, // { id, data }
+  { rejectValue: string }
+>("customers/updateCustomer", async ({ id, data }, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.patch<CreaateCustomerResponse>(
+      `/customer/update/${id}`,
+      data
+    );
+
+    // console.log("CustomerState------>", response);
+    // console.log("response----customers------>", response.data.data.customer);
+
+    // Cast the API’s array back to a single object
+    const arr = response.data.data.customer;
+    return Array.isArray(arr) ? arr[0] : (arr as Customer);
+  } catch (err: any) {
+    return rejectWithValue(
+      err.response?.data?.message || "Failed to update customer"
+    );
+  }
+});
+
+// 4) Delete Customer thunk
+export const deleteCustomer = createAsyncThunk<
+  string, // return type: we can return a success message
+  string, // arg type: customer id
+  { rejectValue: string } // thunkAPI
+>("customers/deleteCustomer", async (id: string, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.delete(`/customer/delete/${id}`);
+    console.log("Customer deleted: ", response.data.message);
+    return response.data.data.customer.id; // assuming the API returns a success message
+  } catch (err: any) {
+    return rejectWithValue(
+      err.response?.data?.message || "Failed to delete customer"
+    );
+  }
+});
+
+
+export const toggleCustomerStatus = createAsyncThunk<
+  Customer, // now returns one teamData
+  { id: string | undefined; status: boolean },
+  { rejectValue: string }
+>("customers/toggleStatus", async ({ id, status }, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.patch<{
+      status: number;
+      success: boolean;
+      message: string;
+      data: { customers : Customer };
+    }>(`/customer/status/${id}`, { status });
+    if (response.status !== 200 || !response.data.success) {
+      throw new Error("Failed to update team status");
+    }
+    console.log("Response-->", response);
+
+    return response.data.data.customers;
+  } catch (err: any) {
+    return rejectWithValue(err.response?.data?.message || err.message);
+  }
+});
+
 const initialState: CustomerState = {
   customers: [],
+  meta: { total: 0, page: 1, limit: 10, pages: 0 },
   loading: false,
   error: null,
 };
@@ -113,9 +189,10 @@ const customerSlice = createSlice({
     });
     builder.addCase(
       listCustomers.fulfilled,
-      (state, action: PayloadAction<Customer[]>) => {
+      (state, action: PayloadAction<{ customers: Customer[]; meta: { total: number; page: number; limit: number; pages: number } }>) => {
         state.loading = false;
-        state.customers = action.payload;
+        state.customers = action.payload.customers;
+        state.meta = action.payload.meta;
       }
     );
     builder.addCase(listCustomers.rejected, (state, action) => {
@@ -141,6 +218,39 @@ const customerSlice = createSlice({
       state.loading = false;
       state.error = action.payload as string;
     });
+    builder.addCase(deleteCustomer.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(
+      deleteCustomer.fulfilled,
+      (state, action: PayloadAction<string>) => {
+        state.loading = false;
+        state.customers = state.customers.filter(
+          (c) => c.id !== action.payload
+        );
+      }
+    );
+    builder.addCase(deleteCustomer.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+
+        // toggleProductStatus handlers
+        builder.addCase(toggleCustomerStatus.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        });
+        builder.addCase(toggleCustomerStatus.fulfilled, (state, action: any) => {
+          state.loading = false;
+          state.customers = state.customers?.filter(
+            (p: any) => p.id !== action.payload.id
+          );
+        });
+        builder.addCase(toggleCustomerStatus.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload || "Could not toggle status";
+        });
   },
 });
 
