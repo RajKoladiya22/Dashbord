@@ -17,10 +17,10 @@ import {
 } from "antd";
 import {
   EditOutlined,
-  EnvironmentOutlined,
+  // EnvironmentOutlined,
   MailOutlined,
   ShoppingOutlined,
-  TeamOutlined,
+  // TeamOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { PartnerData, Product } from "../../../redux/APITypes";

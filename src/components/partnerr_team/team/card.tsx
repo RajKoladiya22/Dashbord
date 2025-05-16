@@ -19,9 +19,9 @@ import {
   CheckCircleOutlined,
   CheckCircleTwoTone,
   EditOutlined,
-  EllipsisOutlined,
+  // EllipsisOutlined,
   MailOutlined,
-  SettingOutlined,
+  // SettingOutlined,
   StopOutlined,
   StopTwoTone,
 } from "@ant-design/icons";
@@ -50,7 +50,7 @@ export const TeamList: React.FC = () => {
   const [teamMemberData, setTeamMemberData] = useState<TeamMemberData | null>(
     null
   );
-  // console.log("teamMember--->", teamMember);
+  console.log(selectedCard);
 
   useEffect(() => {
     dispatch(fetchTeamMembers({ status: filterStatus }));
