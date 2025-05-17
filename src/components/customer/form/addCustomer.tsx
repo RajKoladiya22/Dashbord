@@ -522,7 +522,7 @@ export const AddCustomer: React.FC = () => {
                             mode={isMultiSelect ? "multiple" : undefined}
                             placeholder={`Select ${fieldName}`}
                           >
-                            {options.map((option) => (
+                            {options.map((option:any) => (
                               <Option key={option} value={option}>
                                 {option}
                               </Option>

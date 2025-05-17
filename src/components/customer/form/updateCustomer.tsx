@@ -43,7 +43,6 @@ const tailFormItemLayout = {
   wrapperCol: { xs: { span: 24, offset: 0 }, sm: { span: 16, offset: 8 } },
 };
 
-
 interface UpdateCustomerFormProps {
   customer: Customer;
   onUpdate: () => void;
@@ -54,7 +53,6 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
   onUpdate,
 }) => {
   // console.log("\n\ncustomer-->", customer);
-  
 
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
@@ -160,7 +158,6 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
     async (vals: any) => {
       setSubmitting(true); // disable double‐submit
       try {
-        
         const data: Partial<Customer> = {
           companyName: vals.company,
           contactPerson: vals.name,
@@ -192,14 +189,13 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
             ? vals.adminCustomFields
             : {}, // ensure array
         };
-        
+
         console.log("customer data--->", data);
         await dispatch(updateCustomer({ id: customer.id, data })).unwrap();
         message.success("Customer updated successfully");
         onUpdate();
       } catch (e: any) {
-        
-        message.error(e.message || e ||"Update failed");
+        message.error(e.message || e || "Update failed");
       } finally {
         setSubmitting(false);
       }
@@ -410,7 +406,7 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
                 if (f.fieldType === "select")
                   comp = (
                     <Select mode={f.isMultiSelect ? "multiple" : undefined}>
-                      {f.options?.map((o) => (
+                      {f.options?.map((o: any) => (
                         <Option key={o} value={o}>
                           {o}
                         </Option>

@@ -16,19 +16,18 @@ import {
   GoogleOutlined,
   TwitterOutlined,
 } from "@ant-design/icons";
-import {
-  PATH_DASHBOARD,
-} from "../../constants";
+import { PATH_DASHBOARD } from "../../constants";
 import { Logo } from "../../components";
 import { useMediaQuery } from "react-responsive";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector, shallowEqual  } from "react-redux";
-import {useAppDispatch} from '../../hooks'
+import { useSelector, shallowEqual } from "react-redux";
+import { useAppDispatch } from "../../hooks";
 import { RootState } from "../../redux/store";
 
-import { SignUpData } from "../../redux/APITypes";
+// import { SignUpData } from "../../redux/APITypes";
 import { useCallback } from "react";
 import { signupUser } from "../../redux/slice/auth/authSlice";
+import { User } from "../../types/user.type";
 
 const { Title, Text } = Typography;
 
@@ -53,7 +52,7 @@ export const SignUpPage = () => {
   } = theme.useToken();
   const isMobile = useMediaQuery({ maxWidth: 769 });
   const navigate = useNavigate();
-  const dispatch =useAppDispatch();
+  const dispatch = useAppDispatch();
 
   // Get loading state from the Redux store.
   const { loading } = useSelector(
@@ -61,42 +60,45 @@ export const SignUpPage = () => {
     shallowEqual
   );
 
-  const onFinish = useCallback( (values: FieldType) => {
-    // Check that password and confirm password match
-    if (values.password !== values.cPassword) {
-      message.error("Passwords do not match!");
-      return;
-    }
+  const onFinish = useCallback(
+    (values: FieldType) => {
+      // Check that password and confirm password match
+      if (values.password !== values.cPassword) {
+        message.error("Passwords do not match!");
+        return;
+      }
 
-    // Construct sign-up payload
-    // If address fields are not provided in the UI, you can set a default value.
-    const signupData: SignUpData = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      email: values.email,
-      password: values.password,
-      contactNumber: values.contactNumber,
-      companyName: values.companyName,
-      address: {
-        street: values.street || "Default Street",
-        city: values.city || "Default City",
-        state: values.state || "Default State",
-      },
-      planStatus: "free trial", // You can change this if needed
-      role: "admin",
-    };
+      // Construct sign-up payload
+      // If address fields are not provided in the UI, you can set a default value.
+      const signupData: User = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        password: values.password,
+        contactNumber: values.contactNumber,
+        companyName: values.companyName,
+        address: {
+          street: values.street || "Default Street",
+          city: values.city || "Default City",
+          state: values.state || "Default State",
+        },
+        planStatus: "free trial", // You can change this if needed
+        role: "admin",
+      };
 
-    // Dispatch the signupUser async thunk.
-    dispatch(signupUser(signupData))
-      .unwrap()
-      .then(() => {
-        message.success("Account signup successful");
-        navigate(PATH_DASHBOARD.home);
-      })
-      .catch((error: any) => {
-        message.error("Signup failed: " + error);
-      });
-  },[dispatch, navigate]);
+      // Dispatch the signupUser async thunk.
+      dispatch(signupUser(signupData))
+        .unwrap()
+        .then(() => {
+          message.success("Account signup successful");
+          navigate(PATH_DASHBOARD.home);
+        })
+        .catch((error: any) => {
+          message.error("Signup failed: " + error);
+        });
+    },
+    [dispatch, navigate]
+  );
 
   const onFinishFailed = useCallback((errorInfo: any) => {
     console.error("Signup validation failed:", errorInfo);
@@ -228,26 +230,17 @@ export const SignUpPage = () => {
               </Col>
               {/* Optionally, add address fields */}
               <Col xs={24} lg={8}>
-                <Form.Item<FieldType>
-                  label="Street"
-                  name="street"
-                >
+                <Form.Item<FieldType> label="Street" name="street">
                   <Input />
                 </Form.Item>
               </Col>
               <Col xs={24} lg={8}>
-                <Form.Item<FieldType>
-                  label="City"
-                  name="city"
-                >
+                <Form.Item<FieldType> label="City" name="city">
                   <Input />
                 </Form.Item>
               </Col>
               <Col xs={24} lg={8}>
-                <Form.Item<FieldType>
-                  label="State"
-                  name="state"
-                >
+                <Form.Item<FieldType> label="State" name="state">
                   <Input />
                 </Form.Item>
               </Col>

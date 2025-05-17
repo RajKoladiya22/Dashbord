@@ -36,19 +36,7 @@ import {
   FieldDetailModal,
   UpdateFieldModel,
 } from "../model";
-
-// Define the interface for your custom field row.
-export interface AdminCustomField {
-  id: string;
-  adminId: string;
-  fieldName: string;
-  fieldType: string;
-  isRequired: boolean;
-  options: string[];
-  isMultiSelect: boolean;
-  created_at: string;
-  updated_at: string;
-}
+import { AdminCustomField } from "../../../types/customField.type";
 
 type DataIndex = keyof AdminCustomField;
 
@@ -60,7 +48,7 @@ const getColumnSearchProps = (
   searchedColumn: string,
   setSearchedColumn: (col: string) => void,
   // searchInput: React.RefObject<InputRef | null>,
-  searchInput: React.RefObject<HTMLInputElement | null>,
+  searchInput: React.RefObject<HTMLInputElement | null>
   // suggestions: { value: string | null }[] | null
 ): TableColumnsType<AdminCustomField>[number] => ({
   filterDropdown: ({
@@ -90,7 +78,7 @@ const getColumnSearchProps = (
         style={{ marginBottom: 8, display: "block", width: "100%" }}
         // ref={searchInput as React.RefObject<HTMLInputElement>}
       />
-      
+
       <Space>
         <Button
           type="primary"
@@ -151,7 +139,6 @@ const getColumnSearchProps = (
     ) : (
       text
     ),
-    
 });
 
 export const CustomFieldsList: React.FC = () => {
@@ -224,7 +211,7 @@ export const CustomFieldsList: React.FC = () => {
         setSearchText,
         searchedColumn,
         setSearchedColumn,
-        searchInput,
+        searchInput
         // getSuggestions("fieldName")
       ),
     },

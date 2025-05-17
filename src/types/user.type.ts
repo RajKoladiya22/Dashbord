@@ -1,22 +1,23 @@
 import { Partner } from "./partner.type";
 
 export interface User {
-  id: string;
-  role: string;
-  email: string;
-  passwordHash: string;
+  id?: string;
+  role?: string;
+  email?: string;
+  password?: string;
   firstName?: string;
   lastName?: string;
   companyName?: string;
   partner?: Partner;
   contactInfo?: Record<string, any>;
   status?: boolean;
+  planStatus?: string;
   address?: Record<string, any>;
   contactNumber?: string;
   department?: string;
   position?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface UserProfileResponse {

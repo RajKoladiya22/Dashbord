@@ -2,16 +2,7 @@
 import React, { createContext, useContext } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-
-interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  username: string;
-  role: string;
-  // Add other user properties as needed
-}
+import { User } from "../types/user.type";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -33,7 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     (state: RootState) => state.auth?.currentUser?.data?.user ?? null
   );
   // console.log("user--->", user);
-  
+
   const isAuthenticated = Boolean(token);
 
   return (
