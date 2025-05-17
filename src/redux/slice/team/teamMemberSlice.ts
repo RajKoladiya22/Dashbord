@@ -1,10 +1,5 @@
-// src/redux/teamMemberSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  TeamMemberData,
-  //  TeamMemberListResponse,
-  TeamState,
-} from "../../APITypes";
+import { TeamMember, TeamState } from "../../../types/team.type";
 import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState: TeamState = {
@@ -15,7 +10,7 @@ const initialState: TeamState = {
 
 // Async thunk to fetch team members.
 export const fetchTeamMembers = createAsyncThunk<
-  TeamMemberData[], // Return type: an array of team members.
+  TeamMember[], // Return type: an array of team members.
   { status?: boolean },
   { rejectValue: string }
 >("team/fetchMembers", async ({ status }, { rejectWithValue }) => {
@@ -24,7 +19,7 @@ export const fetchTeamMembers = createAsyncThunk<
       status: number;
       success: boolean;
       message: string;
-      data: { teamMembers: TeamMemberData[] };
+      data: { teamMembers: TeamMember[] };
     }>("/team-members", {
       params: { status }, // ← HERE
     });
@@ -44,7 +39,7 @@ export const fetchTeamMembers = createAsyncThunk<
 });
 
 export const toggleTeamStatus = createAsyncThunk<
-  TeamMemberData, // now returns one teamData
+  TeamMember, // now returns one teamData
   { id: string | undefined; status: boolean },
   { rejectValue: string }
 >("team/toggleStatus", async ({ id, status }, { rejectWithValue }) => {
@@ -53,13 +48,13 @@ export const toggleTeamStatus = createAsyncThunk<
       status: number;
       success: boolean;
       message: string;
-      data: { teamMembers: TeamMemberData };
+      data: { teamMembers: TeamMember };
     }>(`/team-members/${id}/status`, { status });
     if (response.status !== 200 || !response.data.success) {
       throw new Error("Failed to update team status");
     }
     console.log("response.data.data.teamMembers-->", response);
-    
+
     return response.data.data.teamMembers;
   } catch (err: any) {
     return rejectWithValue(err.response?.data?.message || err.message);

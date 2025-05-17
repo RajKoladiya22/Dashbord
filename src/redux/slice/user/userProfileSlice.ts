@@ -2,10 +2,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance";
 import {
-  UserProfile,
+  User,
   UserProfileResponse,
   UserProfileState,
-} from "../../APITypes";
+} from "../../../types/user.type";
 
 // Fetch user profile
 export const fetchUserProfile = createAsyncThunk(
@@ -27,7 +27,7 @@ export const fetchUserProfile = createAsyncThunk(
 // Update user profile
 export const updateUserProfile = createAsyncThunk(
   "userProfile/updateUserProfile",
-  async (payload: Partial<UserProfile>, { rejectWithValue }) => {
+  async (payload: Partial<User>, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put<UserProfileResponse>(
         "/users/update-profile",

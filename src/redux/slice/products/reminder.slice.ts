@@ -1,7 +1,7 @@
 // src/redux/slice/reminders/remindersSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance";
-import { ReminderData } from "../../APITypes";
+import { ReminderData } from "../../../types/customer.type";
 
 // Slice state
 interface RemindersState {

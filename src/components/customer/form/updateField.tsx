@@ -1,23 +1,12 @@
 // UpdateFieldForm.tsx
 import React, { useState, useEffect } from "react";
 import { Button, Form, Input, Select, Checkbox } from "antd";
+import { AdminCustomField } from "../../../types/customField.type";
 
 const { Option } = Select;
 
-export interface FieldData {
-  id: string;
-  adminId: string;
-  fieldName: string;
-  fieldType: string;
-  isRequired: boolean;
-  options: string[];
-  isMultiSelect: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
 interface UpdateFieldFormProps {
-  updateField?: FieldData;
+  updateField?: AdminCustomField;
   // onUpdate callback should return a promise if it does asynchronous work.
   onUpdate: (updatedPayload: {
     id: string;
@@ -63,7 +52,7 @@ export const UpdateFieldForm: React.FC<UpdateFieldFormProps> = ({
           ? values.options.split(",").map((opt: string) => opt.trim())
           : [],
       isMultiSelect:
-        values.fieldType === "select" ? (values.isMultiSelect || false) : false,
+        values.fieldType === "select" ? values.isMultiSelect || false : false,
     };
 
     setSubmitting(true);
@@ -107,7 +96,11 @@ export const UpdateFieldForm: React.FC<UpdateFieldFormProps> = ({
       </Form.Item>
 
       {/* Conditionally render options and multi-select only when fieldType is "select" */}
-      <Form.Item shouldUpdate={(prevValues, curValues) => prevValues.fieldType !== curValues.fieldType}>
+      <Form.Item
+        shouldUpdate={(prevValues, curValues) =>
+          prevValues.fieldType !== curValues.fieldType
+        }
+      >
         {({ getFieldValue }) => {
           const fieldType = getFieldValue("fieldType");
           if (fieldType === "select") {
@@ -116,7 +109,12 @@ export const UpdateFieldForm: React.FC<UpdateFieldFormProps> = ({
                 <Form.Item
                   name="options"
                   label="Options (comma separated)"
-                  rules={[{ required: true, message: "Please enter options for select field" }]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter options for select field",
+                    },
+                  ]}
                 >
                   <Input placeholder="Enter options separated by commas" />
                 </Form.Item>
@@ -131,12 +129,15 @@ export const UpdateFieldForm: React.FC<UpdateFieldFormProps> = ({
       </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit" loading={submitting} disabled={submitting}>
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={submitting}
+          disabled={submitting}
+        >
           Submit
         </Button>
       </Form.Item>
     </Form>
   );
 };
-
-

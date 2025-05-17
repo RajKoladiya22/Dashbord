@@ -6,19 +6,9 @@ import { useAppDispatch } from "../../../hooks";
 import {createTeamMember} from "../../../redux/slice/auth/teamRegisterSlice";
 import { RootState } from "../../../redux/store";
 import { fetchTeamMembers } from "../../../redux/slice/team/teamMemberSlice";
-import { TeamMemberData } from "../../../redux/APITypes";
+import { TeamMember } from "../../../types/team.type";
 
 const { Option } = Select;
-
-type FieldType = {
-  firstName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  department: string;
-  position: string;
-  role: string;
-};
 
 export const AddInTeamButton = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -35,13 +25,13 @@ export const AddInTeamButton = () => {
     form.resetFields();
   };
 
-  const onFinish = (values: FieldType) => {
+  const onFinish = (values: TeamMember) => {
     if (values.password !== values.confirmPassword) {
       message.error("Passwords do not match!");
       return;
     }
 
-    const signupData: TeamMemberData = {
+    const signupData: TeamMember = {
       firstName: values.firstName,
       email: values.email,
       password: values.password,

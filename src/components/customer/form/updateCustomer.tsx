@@ -17,6 +17,7 @@ import {
   Spin,
   Empty,
 } from "antd";
+
 import { PlusOutlined } from "@ant-design/icons";
 // import dayjs from "dayjs";
 import { indianStates, indianCities } from "./data/indianLocations";
@@ -27,8 +28,9 @@ import { useAppDispatch } from "../../../hooks";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { CustomFieldsModel } from "../model";
-import { PartnerData, Customer } from "../../../redux/APITypes";
 import { updateCustomer } from "../../../redux/slice/customer/addcustomerSlice";
+import { Customer } from "../../../types/customer.type";
+import { Partner } from "../../../types/partner.type";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -41,31 +43,9 @@ const tailFormItemLayout = {
   wrapperCol: { xs: { span: 24, offset: 0 }, sm: { span: 16, offset: 8 } },
 };
 
-export interface CustomerData {
-  id: string;
-  adminId: string;
-  partnerId?: string;
-  companyName: string;
-  contactPerson: string;
-  mobileNumber: string;
-  email: string;
-  serialNo: string;
-  prime: boolean;
-  blacklisted: boolean;
-  remark?: string;
-  adminCustomFields: Record<string, any>[];
-  address: Record<string, any>;
-  joiningDate: string;              // ISO timestamp
-  hasReference: boolean;
-  status: boolean;
-  product: Record<string, any>[];
-  createdAt: string;                // ISO timestamp
-  updatedAt: string;
-  partner: PartnerData;  
-}
 
 interface UpdateCustomerFormProps {
-  customer: CustomerData;
+  customer: Customer;
   onUpdate: () => void;
 }
 
@@ -102,7 +82,7 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
   } = useSelector((state: RootState) => state.partnerMember);
 
   // derive safe arrays
-  const partnerMembers: PartnerData[] = useMemo(() => {
+  const partnerMembers: Partner[] = useMemo(() => {
     if (Array.isArray(Partner)) return Partner;
     if (
       Partner &&
@@ -143,7 +123,7 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
       area: customer.address?.area,
       address: customer.address?.street,
       adminCustomFields: customer.adminCustomFields || {},
-      // products:
+      // product:
       //   customer.product?.map((pr) => ({
       //     productId: pr.productId,
       //     purchaseDate: dayjs(pr.purchaseDate),
@@ -199,10 +179,11 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
             street: vals.address,
           },
           joiningDate: vals.joiningDate?.toISOString(),
-          products: vals.products?.map((pr: any) => ({
+          product: vals.products?.map((pr: any) => ({
             productId: pr.productId,
             purchaseDate: pr.purchaseDate.toISOString(),
             renewal: pr.renewal,
+            renewPeriod: pr.renewPeriod,
             expiryDate: pr.expiryDate?.toISOString(),
             renewalDate: pr.renewalDate?.toISOString(),
             details: pr.details,
@@ -212,7 +193,7 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
             : {}, // ensure array
         };
         
-        // console.log("customer.id--->", customer.id);
+        console.log("customer data--->", data);
         await dispatch(updateCustomer({ id: customer.id, data })).unwrap();
         message.success("Customer updated successfully");
         onUpdate();

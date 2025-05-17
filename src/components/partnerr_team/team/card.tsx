@@ -32,9 +32,9 @@ import {
   fetchTeamMembers,
   toggleTeamStatus,
 } from "../../../redux/slice/team/teamMemberSlice";
-import { TeamMemberData } from "../../../redux/APITypes";
 import AutoDismissAlert from "../../Alert";
 import dayjs from "dayjs";
+import { TeamMember } from "../../../types/team.type";
 
 const { Meta } = Card;
 
@@ -42,12 +42,12 @@ export const TeamList: React.FC = () => {
   const { teamMember, loading, error } = useSelector(
     (state: RootState) => state.teamMember || []
   );
-  const members = teamMember as TeamMemberData[];
+  const members = teamMember as TeamMember[];
   const dispatch = useAppDispatch();
   const [filterStatus, setFilterStatus] = useState<boolean>(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCard, setSelectedCard] = useState<number>(0);
-  const [teamMemberData, setTeamMemberData] = useState<TeamMemberData | null>(
+  const [teamMemberData, setTeamMemberData] = useState<TeamMember | null>(
     null
   );
   console.log(selectedCard);
@@ -56,7 +56,7 @@ export const TeamList: React.FC = () => {
     dispatch(fetchTeamMembers({ status: filterStatus }));
   }, [dispatch, filterStatus]);
 
-  const showModal = (team: TeamMemberData, cardIndex: number) => {
+  const showModal = (team: TeamMember, cardIndex: number) => {
     setTeamMemberData(team);
     setSelectedCard(cardIndex);
     setIsModalVisible(true);
@@ -68,7 +68,7 @@ export const TeamList: React.FC = () => {
     setTeamMemberData(null);
   };
 
-  const handleToggleStatus = (p: TeamMemberData, e: React.MouseEvent) => {
+  const handleToggleStatus = (p: TeamMember, e: React.MouseEvent) => {
     e.stopPropagation();
     dispatch(toggleTeamStatus({ id: p.id, status: !p.status })).unwrap()
     message.success("Member Status Updated");
@@ -98,7 +98,7 @@ export const TeamList: React.FC = () => {
         <Empty description="No team members found." />
       ) : (
         <Row gutter={[16, 16]} justify="center">
-          {members?.map((team: TeamMemberData, index: number) => (
+          {members?.map((team: TeamMember, index: number) => (
             <Col key={index} xs={24} sm={12} md={8} lg={6} xl={4}>
               <Card
                 hoverable

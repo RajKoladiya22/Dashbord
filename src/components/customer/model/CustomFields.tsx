@@ -2,9 +2,11 @@
 import React, { useRef } from "react";
 import { Modal, message } from "antd";
 import { CustomFieldsForm } from "../form";
-import { CustomFieldsFormValues } from "../form/CustomFields";
 import { useAppDispatch } from "../../../hooks";
 import { addAdminCustomField } from "../../../redux/slice/customer/customfieldSlice";
+import { AdminCustomField } from "../../../types/customField.type";
+
+
 
 interface CustomFieldsModelProps {
   visible: boolean;
@@ -21,7 +23,7 @@ export const CustomFieldsModel: React.FC<CustomFieldsModelProps> = ({
   const formRef = useRef<any>(null);
   const dispatch = useAppDispatch();
   // Handler to submit custom field data using the Fetch API.
-  const handleSubmitCustomFields = async (values: CustomFieldsFormValues) => {
+  const handleSubmitCustomFields = async (values: AdminCustomField) => {
     // Prepare payload. For the "options" field, split comma-separated string into an array.
     // console.log("values----->\v", values);
     

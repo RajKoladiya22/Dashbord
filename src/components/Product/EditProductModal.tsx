@@ -4,7 +4,7 @@ import { Modal, Form, Input, Select, Button, message } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../hooks";
 import { updateProduct } from "../../redux/slice/products/productSlice";
-import { Product } from "../../redux/APITypes";
+import { Product } from "../../types/product.type";
 
 
 

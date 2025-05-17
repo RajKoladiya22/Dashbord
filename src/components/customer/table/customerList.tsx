@@ -34,32 +34,9 @@ import {
 } from "../../../redux/slice/customer/addcustomerSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { PartnerData, Product } from "../../../redux/APITypes";
 import AutoDismissAlert from "../../Alert";
+import { Customer } from "../../../types/customer.type";
 
-// Add adminId to the CustomerRow interface so it’s available where needed.
-interface CustomerRow {
-  id: string;
-  adminId: string;
-  partnerId?: string;
-  companyName: string;
-  contactPerson: string;
-  mobileNumber: string;
-  email: string;
-  serialNo: string;
-  prime: boolean;
-  blacklisted: boolean;
-  remark?: string;
-  adminCustomFields: Record<string, any>[];
-  address: Record<string, any>;
-  joiningDate: string; // ISO timestamp
-  hasReference: boolean;
-  status: boolean;
-  product: Product[];
-  createdAt: string; // ISO timestamp
-  updatedAt: string;
-  partner: PartnerData;
-}
 
 export const CustomerList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -75,10 +52,10 @@ export const CustomerList: React.FC = () => {
   // const [sortBy, setSortBy] = useState<string>("companyName");
   // const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-  const [tableData, setTableData] = useState<CustomerRow[]>([]);
-  const [viewCustomer, setViewCustomer] = useState<CustomerRow | null>(null);
-  const [viewProducts, setViewProducts] = useState<CustomerRow | null>(null);
-  const [updateCustomer, setUpdateCustomer] = useState<CustomerRow | null>(
+  const [tableData, setTableData] = useState<Customer[]>([]);
+  const [viewCustomer, setViewCustomer] = useState<Customer | null>(null);
+  const [viewProducts, setViewProducts] = useState<Customer | null>(null);
+  const [updateCustomer, setUpdateCustomer] = useState<Customer | null>(
     null
   );
 
@@ -129,12 +106,12 @@ export const CustomerList: React.FC = () => {
     message.success("Customer Deleted successfully");
   };
 
-  const handleToggleStatus = (p: CustomerRow) => {
+  const handleToggleStatus = (p: Customer) => {
     dispatch(toggleCustomerStatus({ id: p.id, status: !p.status })).unwrap();
     message.success("Customer Status Updated");
   };
 
-  const columns: TableColumnsType<CustomerRow> = [
+  const columns: TableColumnsType<Customer> = [
     {
       title: "#",
       dataIndex: "number",
@@ -311,7 +288,7 @@ export const CustomerList: React.FC = () => {
                     durationMs={10000} // 10 seconds
                   />
                 )}
-          <Table<CustomerRow>
+          <Table<Customer>
             columns={columns}
             dataSource={tableData}
             rowKey="id"

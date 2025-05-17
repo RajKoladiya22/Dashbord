@@ -31,8 +31,8 @@ import {
   togglePartnerStatus,
 } from "../../../redux/slice/partner/partnerMemberSlice";
 import { useAppDispatch } from "../../../hooks";
-import { PartnerData } from "../../../redux/APITypes";
 import AutoDismissAlert from "../../Alert";
+import { Partner } from "../../../types/partner.type";
 
 const { Meta } = Card;
 
@@ -44,7 +44,7 @@ export const PartnerList = () => {
   // console.log("Partner", Partner);
   // console.log("error", error);
 
-  const patnerMembers: PartnerData[] = Array.isArray(Partner)
+  const patnerMembers: Partner[] = Array.isArray(Partner)
     ? Partner
     : Partner && "data" in Partner && Array.isArray(Partner)
     ? Partner
@@ -53,7 +53,7 @@ export const PartnerList = () => {
   const [filterStatus, setFilterStatus] = useState<boolean>(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCard, setSelectedCard] = useState(0);
-  const [partnerData, setPartnerData] = useState<PartnerData | null>(null);
+  const [partnerData, setPartnerData] = useState<Partner | null>(null);
 
   console.log(selectedCard);
 
@@ -61,7 +61,7 @@ export const PartnerList = () => {
     dispatch(fetchPartners({ status: filterStatus }));
   }, [dispatch, filterStatus]);
 
-  const showModal = (partner: PartnerData, cardIndex: any) => {
+  const showModal = (partner: Partner, cardIndex: any) => {
     setPartnerData(partner);
     setSelectedCard(cardIndex);
     setIsModalVisible(true);
@@ -72,7 +72,7 @@ export const PartnerList = () => {
     setSelectedCard(0);
   };
 
-  const handleToggleStatus = (p: PartnerData, e: React.MouseEvent) => {
+  const handleToggleStatus = (p: Partner, e: React.MouseEvent) => {
     e.stopPropagation();
     dispatch(togglePartnerStatus({ id: p.id, status: !p.status })).unwrap();
     message.success("Partner Status Updated");
@@ -116,7 +116,7 @@ export const PartnerList = () => {
         <Empty description="No partner members found." />
       ) : (
         <Row gutter={[16, 16]} justify="center">
-          {patnerMembers?.map((partner: PartnerData, index: number) => (
+          {patnerMembers?.map((partner: Partner, index: number) => (
             <Col key={index} xs={24} sm={12} md={8} lg={6} xl={4}>
               <Card
                 hoverable

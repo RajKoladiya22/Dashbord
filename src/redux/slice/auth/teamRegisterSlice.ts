@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  TeamMemberData,
+  TeamMember,
   TeamMembersignUpResponse,
   TeamState,
-} from "../../APITypes";
+} from "../../../types/team.type";
 import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState: TeamState = {
@@ -15,7 +15,7 @@ const initialState: TeamState = {
 // Async thunk to create a team member
 export const createTeamMember = createAsyncThunk(
   "team/createTeamMember",
-  async (teamMemberData: TeamMemberData, { rejectWithValue }) => {
+  async (teamMemberData: TeamMember, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post<TeamMembersignUpResponse>(
         "/auth/team",
@@ -53,9 +53,10 @@ const teamSlice = createSlice({
       })
       .addCase(
         createTeamMember.fulfilled,
-        (state,
+        (
+          state
           //  action: PayloadAction<TeamMembersignUpResponse>
-          ) => {
+        ) => {
           state.loading = false;
           // state.teamMember = action.payload;
         }

@@ -1,27 +1,7 @@
-// src/store/slices/customerSlice.ts
-
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance";
-import {
-  Customer,
-  CustomerState,
-  CustomerResponse,
-  CreaateCustomerResponse,
-} from "../../APITypes";
+import { Customer, ListCustomerResponse, CustomerResponse, ListParams, UpdateArgs, CustomerState } from "../../../types/customer.type";
 
-interface UpdateArgs {
-  id: string;
-  data: Partial<Customer>;
-}
-
-interface ListParams {
-  page?: number;
-  limit?: number;
-  q?: string;
-  status?: boolean;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
-}
 
 // 1) Create Customer thunk
 export const createCustomer = createAsyncThunk<
@@ -37,7 +17,7 @@ export const createCustomer = createAsyncThunk<
         payload
       );
       // console.log("Customer------->\n", response);
-      return response.data.data.customers;
+      return response.data.data.customer;
     } catch (err: any) {
       return rejectWithValue(
         err.response?.data?.message || "Failed to create customer"
@@ -73,7 +53,7 @@ export const listCustomers = createAsyncThunk<
         sortOrder,
       });
 
-      const response = await axiosInstance.get<CustomerResponse>(
+      const response = await axiosInstance.get<ListCustomerResponse>(
         `/customer/list?${query.toString()}`
       );
 
@@ -94,7 +74,7 @@ export const updateCustomer = createAsyncThunk<
   { rejectValue: string }
 >("customers/updateCustomer", async ({ id, data }, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.patch<CreaateCustomerResponse>(
+    const response = await axiosInstance.patch<CustomerResponse>(
       `/customer/update/${id}`,
       data
     );
@@ -129,25 +109,20 @@ export const deleteCustomer = createAsyncThunk<
   }
 });
 
-
+// 5) Customer Status Change thunk
 export const toggleCustomerStatus = createAsyncThunk<
   Customer, // now returns one teamData
   { id: string | undefined; status: boolean },
   { rejectValue: string }
 >("customers/toggleStatus", async ({ id, status }, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.patch<{
-      status: number;
-      success: boolean;
-      message: string;
-      data: { customers : Customer };
-    }>(`/customer/status/${id}`, { status });
+    const response = await axiosInstance.patch<CustomerResponse>(`/customer/status/${id}`, { status });
     if (response.status !== 200 || !response.data.success) {
       throw new Error("Failed to update team status");
     }
-    console.log("Response-->", response);
+    // console.log("Response-->", response);
 
-    return response.data.data.customers;
+    return response.data.data.customer;
   } catch (err: any) {
     return rejectWithValue(err.response?.data?.message || err.message);
   }

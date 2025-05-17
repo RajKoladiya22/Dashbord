@@ -1,38 +1,16 @@
 import React from "react";
 import { Modal } from "antd";
 import { EditOutlined } from "@ant-design/icons";
-import { UpdateCustomerForm } from "../form"; // Import your update form component
-import { PartnerData, Product } from "../../../redux/APITypes";
+import { UpdateCustomerForm } from "../form"; 
+import { Customer } from "../../../types/customer.type";
 
-export interface CustomerData {
-  id: string;
-  adminId: string;
-  partnerId?: string;
-  companyName: string;
-  contactPerson: string;
-  mobileNumber: string;
-  email: string;
-  serialNo: string;
-  prime: boolean;
-  blacklisted: boolean;
-  remark?: string;
-  adminCustomFields: Record<string, any>[];
-  address: Record<string, any>;
-  joiningDate: string;              // ISO timestamp
-  hasReference: boolean;
-  status: boolean;
-  product: Product[];
-  createdAt: string;                // ISO timestamp
-  updatedAt: string;
-  partner: PartnerData;  
-}
 
 interface UpdateCustomerProps {
   adminId: string;
   id: string;
   open: boolean;
   onClose: () => void;
-  customer: CustomerData; // Pass the full customer data for update
+  customer: Customer; // Pass the full customer data for update
 }
 
 export const UpdateCustomerModel: React.FC<UpdateCustomerProps> = ({

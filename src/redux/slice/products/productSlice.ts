@@ -1,8 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance";
-import { Product, ProductState, ProductResponse } from "../../APITypes";
+import {
+  Product,
+  ProductResponse,
+  ProductState,
+} from "../../../types/product.type";
 
-// Create a new product
+// 1) Create a new product
 export const createProduct = createAsyncThunk(
   "products/createProduct",
   async (payload: Partial<Product>, { rejectWithValue }) => {
@@ -20,27 +24,30 @@ export const createProduct = createAsyncThunk(
   }
 );
 
-// Fetch all products for the authenticated admin
+// 2) Fetch all products
 export const fetchAllProducts = createAsyncThunk<
   ProductResponse, // Return type: an array of team members.
-  { status?: boolean },
+  { status?: boolean; q?: string; page?: number; limit?: number },
   { rejectValue: string }
->("products/fetchAllProducts", async ({ status }, { rejectWithValue }) => {
-  try {
-    const response = await axiosInstance.get<ProductResponse>("/product", {
-      params: { status },
-    });
-    // console.log("Product response--->", response);
+>(
+  "products/fetchAllProducts",
+  async ({ status, q, page, limit }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get<ProductResponse>("/product", {
+        params: { status, q, page, limit },
+      });
+      // console.log("Product response--->", response);
 
-    return response.data;
-  } catch (error: any) {
-    return rejectWithValue(
-      error.response?.data?.message || "Failed to fetch products"
-    );
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch products"
+      );
+    }
   }
-});
+);
 
-// Update a specific product
+// 3) Update a specific product
 export const updateProduct = createAsyncThunk(
   "products/updateProduct",
   async (
@@ -64,7 +71,7 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
-// Delete a specific product
+// 4) Delete a specific product
 export const deleteProduct = createAsyncThunk(
   "products/deleteProduct",
   async (id: string, { rejectWithValue }) => {
@@ -83,6 +90,7 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+// 5) Product Status
 export const toggleProductStatus = createAsyncThunk<
   Product, // now returns one teamData
   { id: string | undefined; status: boolean },
@@ -108,6 +116,7 @@ export const toggleProductStatus = createAsyncThunk<
 
 const initialState: ProductState = {
   products: [],
+  meta: { total: 0, page: 1, limit: 10, pages: 0 },
   loading: false,
   error: null,
 };
@@ -143,6 +152,7 @@ const productSlice = createSlice({
         state.products = Array.isArray(action.payload.data.product)
           ? action.payload.data.product
           : [action.payload.data.product];
+        state.meta = action.payload.data.meta;
       }
     );
     builder.addCase(fetchAllProducts.rejected, (state, action) => {

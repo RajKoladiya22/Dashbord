@@ -2,12 +2,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance";
 import Cookies from "js-cookie";
-import {
-  AuthResponse,
-  LoginCredentials,
-  SignUpData,
-  AuthState,
-} from "../../APITypes";
+import { AuthState, AuthResponse, LoginCredentials, User} from "../../../types/user.type";
 
 // Initial state for authentication.
 const initialState: AuthState = {
@@ -45,7 +40,7 @@ export const loginUser = createAsyncThunk<
 // Async thunk to handle sign-up.
 export const signupUser = createAsyncThunk<
   AuthResponse,
-  SignUpData,
+  User,
   { rejectValue: string }
 >("auth/signupUser", async (signupData, { rejectWithValue }) => {
   try {

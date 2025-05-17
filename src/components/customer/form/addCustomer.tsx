@@ -26,9 +26,9 @@ import { RootState } from "../../../redux/store";
 import { CustomFieldsModel } from "../model";
 import { fetchAllProducts } from "../../../redux/slice/products/productSlice";
 import { fetchPartners } from "../../../redux/slice/partner/partnerMemberSlice";
-import { PartnerData } from "../../../redux/APITypes";
 import { createCustomer } from "../../../redux/slice/customer/addcustomerSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { Partner } from "../../../types/partner.type";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -95,7 +95,7 @@ export const AddCustomer: React.FC = () => {
     [products]
   );
 
-  const partnerMembers: PartnerData[] = useMemo(() => {
+  const partnerMembers: Partner[] = useMemo(() => {
     // If slice.Partner is already an array
     if (Array.isArray(Partner)) {
       return Partner;

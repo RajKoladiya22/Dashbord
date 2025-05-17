@@ -1,46 +1,11 @@
-// src/slice/adminCustomFields/adminCustomFieldsSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance"; // Your pre-configured axios instance
+import {
+  CustomFieldsState,
+  CustomFieldsResponse,
+  AddCustomFieldsResponse,
+} from "../../../types/customField.type";
 
-// Define the interface for a single admin custom field.
-export interface AdminCustomField {
-  id: string;
-  adminId: string;
-  fieldName: string;
-  fieldType: string;
-  isRequired: boolean;
-  options: string[];
-  isMultiSelect: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-// Define the interface for the API response when fetching custom fields.
-export interface CustomFieldsResponse {
-  status: number;
-  success: boolean;
-  message: string;
-  data: {
-    adminCustomFields: AdminCustomField[];
-  };
-}
-
-// Define the interface for the API response when adding/updating/deleting a custom field.
-export interface AddCustomFieldsResponse {
-  status: number;
-  success: boolean;
-  message: string;
-  data: {
-    adminCustomField: AdminCustomField;
-  };
-}
-
-// Define the slice state.
-interface CustomFieldsState {
-  customFields: AdminCustomField[];
-  loading: boolean;
-  error: string | null;
-}
 
 // Initial state.
 const initialState: CustomFieldsState = {
@@ -54,10 +19,13 @@ export const fetchAdminCustomFields = createAsyncThunk(
   "adminCustomFields/fetchAdminCustomFields",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get<CustomFieldsResponse>("/customer/customfield", {
-        withCredentials: true,
-      });
-      
+      const response = await axiosInstance.get<CustomFieldsResponse>(
+        "/customer/customfield",
+        {
+          withCredentials: true,
+        }
+      );
+
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
@@ -224,6 +192,7 @@ const adminCustomFieldsSlice = createSlice({
       state.error = action.payload as string;
     });
   },
-});``
+});
+``;
 
 export default adminCustomFieldsSlice.reducer;

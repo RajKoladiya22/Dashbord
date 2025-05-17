@@ -6,7 +6,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import { createPartner } from "../../../redux/slice/auth/partnerRegisterSlice";
 import { useAppDispatch } from "../../../hooks";
 import { fetchPartners } from "../../../redux/slice/partner/partnerMemberSlice";
-import { PartnerData } from "../../../redux/APITypes";
+import { Partner } from "../../../types/partner.type";
+
 
 // const { Option } = Select;
 
@@ -25,14 +26,14 @@ export const AddPartnerButton = () => {
     form.resetFields();
   };
 
-  const onFinish = (values: PartnerData) => {
+  const onFinish = (values: Partner) => {
     if (values.password !== values.confirmPassword) {
       message.error("Passwords do not match!");
       return;
     }
     // console.log("values----->", values);
     
-    const signupData: PartnerData = {
+    const signupData: Partner = {
       firstName: values.firstName,
       companyName: values.companyName,
       email: values.email,

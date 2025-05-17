@@ -6,7 +6,6 @@ import {
   Col,
   Modal,
   Skeleton,
-  // Alert,
   Empty,
   message,
   Popconfirm,
@@ -16,7 +15,8 @@ import {
   Divider,
   Descriptions,
   Space,
-  Typography
+  Typography,
+  Input,
 } from "antd";
 import {
   EditOutlined,
@@ -25,38 +25,26 @@ import {
   CheckCircleTwoTone,
   StopTwoTone,
   GlobalOutlined,
+  DeleteOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useAppDispatch } from "../../hooks";
 import {
   fetchAllProducts,
-  // deleteProduct,
+  deleteProduct,
   toggleProductStatus,
 } from "../../redux/slice/products/productSlice";
 import { EditProductModal } from "./EditProductModal";
-import { Product } from "../../redux/APITypes";
 import AutoDismissAlert from "../Alert";
 import dayjs from "dayjs";
+import { Product } from "../../types/product.type";
 const { Text } = Typography;
 
 const { Meta } = Card;
 
 // Memoized Product Card to prevent unnecessary re-renders
-
-// export interface Product {
-//   id: string;
-//   product_name: string;
-//   product_category: string[];
-//   product_price: string;
-//   description?: string;
-//   product_link?: string;
-//   tags?: string[];
-//   specifications?: Record<string, any>;
-//   admin_id: string;
-//   created_at: string;
-//   updated_at: string;
-// }
 
 export const ProductList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -67,13 +55,29 @@ export const ProductList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [editing, setEditing] = useState<Product | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  // Fetch products once on mount
   useEffect(() => {
-    dispatch(fetchAllProducts({ status: filterStatus }));
-  }, [dispatch, filterStatus]);
+    const delayDebounce = setTimeout(() => {
+      dispatch(
+        fetchAllProducts({
+          status: filterStatus,
+          q: searchQuery,
+          page: 1,
+          limit: 100, // or use a local state
+        })
+      );
+    }, 300); // debounce to reduce calls
+
+    return () => clearTimeout(delayDebounce);
+  }, [dispatch, filterStatus, searchQuery]);
 
   // console.log("products-->", products);
+
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+  }, []);
 
   // Stable handlers for modal actions
   const showModal = useCallback((product: Product) => {
@@ -86,21 +90,20 @@ export const ProductList: React.FC = () => {
     setSelectedProduct(null);
   }, []);
 
-  // const handleDelete = useCallback(
-  //   async (id: string) => {
-  //     try {
-  //       await dispatch(deleteProduct(id)).unwrap();
-  //       message.success("Product deleted successfully");
-  //     } catch (err) {
-  //       message.error("Failed to delete product");
-  //     }
-  //   },
-  //   [dispatch]
-  // );
+  const handleDelete = useCallback(
+    async (id: string) => {
+      try {
+        await dispatch(deleteProduct(id)).unwrap();
+        message.success("Product deleted successfully");
+      } catch (err) {
+        message.error("Failed to delete product");
+      }
+    },
+    [dispatch]
+  );
   const handleToggleStatus = (p: Product, e: React.MouseEvent) => {
     e.stopPropagation();
-    dispatch(toggleProductStatus({ id: p.id, status: !p.status }))
-    .unwrap();
+    dispatch(toggleProductStatus({ id: p.id, status: !p.status })).unwrap();
     message.success("Product Status Updated");
   };
 
@@ -127,20 +130,27 @@ export const ProductList: React.FC = () => {
           />
         }
         actions={[
-          // toggle status icon
-          product.status ? (
-            <CheckCircleTwoTone
-              key="activate"
-              twoToneColor="#52c41a"
-              onClick={(e) => e.stopPropagation()}
-            />
-          ) : (
-            <StopTwoTone
-              key="deactivate"
-              twoToneColor="#ff4d4f"
-              onClick={(e) => e.stopPropagation()}
+          // Edit icon
+          <EditOutlined
+            key="edit"
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditing(product);
+            }}
+          />,
+
+          // Delete icon — shown only if product is inactive
+          !product.status && (
+            <DeleteOutlined
+              key="delete"
+              onClick={(e: any) => {
+                e.stopPropagation();
+                handleDelete(product.id);
+              }}
             />
           ),
+
+          // Toggle status icon inside Popconfirm
           <span onClick={(e) => e.stopPropagation()}>
             <Popconfirm
               key="toggle"
@@ -148,17 +158,25 @@ export const ProductList: React.FC = () => {
                 product.status ? "deactivate" : "activate"
               } this product?`}
               onConfirm={(e: any) => {
-                e.stopPropagation(); // stop confirm click
+                e.stopPropagation();
                 handleToggleStatus(product, e);
               }}
               okText="Yes"
               cancelText="No"
-              // onClick={(e:any) => e.stopPropagation()}  // stop click on the Popconfirm trigger itself
             >
-              <EditOutlined
-                key="edit"
-                onClick={(e) => e.stopPropagation()} // stop click on the icon
-              />
+              {product.status ? (
+                <CheckCircleTwoTone
+                  key="activate"
+                  twoToneColor="#52c41a"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              ) : (
+                <StopTwoTone
+                  key="deactivate"
+                  twoToneColor="#ff4d4f"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              )}
             </Popconfirm>
           </span>,
         ]}
@@ -185,6 +203,16 @@ export const ProductList: React.FC = () => {
         checked={filterStatus}
         onChange={(checked) => setFilterStatus(checked)}
         style={{ marginBottom: 16 }}
+      />
+
+      <Input
+        placeholder="Search..."
+        prefix={<SearchOutlined />}
+        allowClear
+        aria-label="Search..."
+        value={searchQuery}
+        onChange={handleSearch}
+        style={{ width: 300, marginBottom: 16 }}
       />
       {error && (
         <AutoDismissAlert
@@ -227,126 +255,113 @@ export const ProductList: React.FC = () => {
           ))
         )}
       </Row>
-
-      {/* <Modal
-        title={selectedProduct?.productName}
+      <Modal
+        title={
+          <div className="modal-header">
+            <span>{selectedProduct?.productName}</span>
+            <Tag color={selectedProduct?.status ? "green" : "red"}>
+              {selectedProduct?.status ? "Active" : "Inactive"}
+            </Tag>
+          </div>
+        }
         open={isModalVisible}
         onCancel={handleCancel}
-        footer={null}
+        footer={[
+          <Button key="close" onClick={handleCancel}>
+            Close
+          </Button>,
+          <Button
+            key="visit"
+            type="primary"
+            icon={<GlobalOutlined />}
+            onClick={() => window.open(selectedProduct?.productLink, "_blank")}
+          >
+            Visit Website
+          </Button>,
+        ]}
+        width={800}
+        className="product-detail-modal"
       >
-        {selectedProduct ? (
-          <>
-            <p>
-              <strong>Category:</strong>{" "}
-              {selectedProduct.productCategory.join(", ")}
-            </p>
-            <p>
-              <strong>Price:</strong> ₹{selectedProduct.productPrice}
-            </p>
-            <p>
-              <strong>Description:</strong> {selectedProduct.description}
-            </p>
-          </>
-        ) : null}
-      </Modal> */}
+        {selectedProduct && (
+          <div className="product-content">
+            <div className="product-media">
+              <Avatar
+                size={160}
+                src={
+                  selectedProduct.image ||
+                  `https://via.placeholder.com/150?text=${selectedProduct.productName[0]}`
+                }
+                className="product-image"
+              />
+            </div>
 
+            <Divider />
 
-      <Modal
-  title={
-    <div className="modal-header">
-      <span>{selectedProduct?.productName}</span>
-      <Tag color={selectedProduct?.status ? "green" : "red"}>
-        {selectedProduct?.status ? "Active" : "Inactive"}
-      </Tag>
-    </div>
-  }
-  open={isModalVisible}
-  onCancel={handleCancel}
-  footer={[
-    <Button key="close" onClick={handleCancel}>
-      Close
-    </Button>,
-    <Button 
-      key="visit" 
-      type="primary" 
-      icon={<GlobalOutlined />}
-      onClick={() => window.open(selectedProduct?.productLink, '_blank')}
-    >
-      Visit Website
-    </Button>
-  ]}
-  width={800}
-  className="product-detail-modal"
->
-  {selectedProduct && (
-    <div className="product-content">
-      <div className="product-media">
-        <Avatar 
-          size={160}
-          src={selectedProduct.image || `https://via.placeholder.com/150?text=${selectedProduct.productName[0]}`}
-          className="product-image"
-        />
-      </div>
+            <Descriptions bordered column={2}>
+              <Descriptions.Item label="Price" span={2}>
+                <div className="price-display">
+                  ₹{selectedProduct.productPrice}
+                  <span className="price-period">/year</span>
+                </div>
+              </Descriptions.Item>
 
-      <Divider />
+              <Descriptions.Item label="Category">
+                <Space wrap>
+                  {selectedProduct.productCategory.map((cat: any) => (
+                    <Tag color="blue" key={cat}>
+                      {cat}
+                    </Tag>
+                  ))}
+                </Space>
+              </Descriptions.Item>
 
-      <Descriptions bordered column={2}>
-        <Descriptions.Item label="Price" span={2}>
-          <div className="price-display">
-            ₹{selectedProduct.productPrice}
-            <span className="price-period">/year</span>
+              <Descriptions.Item label="Tags">
+                <Space wrap>
+                  {selectedProduct.tags?.map((tag) => (
+                    <Tag color="geekblue" key={tag}>
+                      {tag}
+                    </Tag>
+                  ))}
+                </Space>
+              </Descriptions.Item>
+
+              <Descriptions.Item label="Description" span={2}>
+                <div className="product-description">
+                  {selectedProduct.description}
+                </div>
+              </Descriptions.Item>
+
+              <Descriptions.Item label="Specifications" span={2}>
+                <div className="spec-grid">
+                  {Object.entries(selectedProduct?.specifications ?? {}).map(
+                    ([key, value]) => (
+                      <div key={key} className="spec-item">
+                        <div className="spec-key">{key}:</div>
+                        <div className="spec-value">{value}</div>
+                      </div>
+                    )
+                  )}
+                </div>
+              </Descriptions.Item>
+            </Descriptions>
+
+            <Divider />
+
+            <div className="meta-info">
+              <Space>
+                <Text type="secondary">
+                  Created:{" "}
+                  {dayjs(selectedProduct.createdAt).format("MMM D, YYYY")}
+                </Text>
+                <Text type="secondary">
+                  Last Updated:{" "}
+                  {dayjs(selectedProduct.updatedAt).format("MMM D, YYYY")}
+                </Text>
+              </Space>
+            </div>
           </div>
-        </Descriptions.Item>
-
-        <Descriptions.Item label="Category">
-          <Space wrap>
-            {selectedProduct.productCategory.map((cat:any) => (
-              <Tag color="blue" key={cat}>{cat}</Tag>
-            ))}
-          </Space>
-        </Descriptions.Item>
-
-        <Descriptions.Item label="Tags">
-          <Space wrap>
-            {selectedProduct.tags?.map(tag => (
-              <Tag color="geekblue" key={tag}>{tag}</Tag>
-            ))}
-          </Space>
-        </Descriptions.Item>
-
-        <Descriptions.Item label="Description" span={2}>
-          <div className="product-description">
-            {selectedProduct.description}
-          </div>
-        </Descriptions.Item>
-
-        <Descriptions.Item label="Specifications" span={2}>
-          <div className="spec-grid">
-            {Object.entries(selectedProduct?.specifications ?? {}).map(([key, value]) => (
-              <div key={key} className="spec-item">
-                <div className="spec-key">{key}:</div>
-                <div className="spec-value">{value}</div>
-              </div>
-            ))}
-          </div>
-        </Descriptions.Item>
-      </Descriptions>
-
-      <Divider />
-
-      <div className="meta-info">
-        <Space>
-          <Text type="secondary">
-            Created: {dayjs(selectedProduct.createdAt).format('MMM D, YYYY')}
-          </Text>
-          <Text type="secondary">
-            Last Updated: {dayjs(selectedProduct.updatedAt).format('MMM D, YYYY')}
-          </Text>
-        </Space>
-      </div>
-    </div>
-  )}
-</Modal>
+        )}
+      </Modal>
 
       <EditProductModal
         visible={!!editing}

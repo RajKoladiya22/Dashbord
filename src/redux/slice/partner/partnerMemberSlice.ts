@@ -1,109 +1,6 @@
-// // src/redux/teamMemberSlice.ts
-// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import { PartnerData, PartnerState } from "../../APITypes";
-// import axiosInstance from "../../../utils/axiosInstance";
-
-// const initialState: PartnerState = {
-//   Partner: null,
-//   loading: false,
-//   error: null,
-// };
-
-// // Async thunk to fetch team members.
-// export const fetchPartners = createAsyncThunk<
-//   PartnerData[], // Return type: an array of team members.
-//   void, // No argument passed.
-//   { rejectValue: string }
-// >("partner/fetchPartnerrs", async (_, { rejectWithValue }) => {
-//   try {
-//     const response = await axiosInstance.get<{
-//       status: number;
-//       success: boolean;
-//       message: string;
-//       data: { partners: PartnerData[] };
-//     }>("/partner");
-
-//     // console.log("PartnerData---->\n",response);
-
-//     // Check for HTTP errors.
-//     if (response.status !== 200 || !response.data.success) {
-//       throw new Error("Failed to fetch Partner");
-//     }
-
-//     // Parse the JSON response.
-
-//     return response.data.data.partners;
-//   } catch (error: any) {
-//     return rejectWithValue(error.message);
-//   }
-// });
-
-// export const togglePartnerStatus = createAsyncThunk<
-//   { id: string | undefined; status: boolean },
-//   { id: string | undefined; status: boolean },
-//   { rejectValue: string }
-// >("partner/toggleStatus", async ({ id, status }, { rejectWithValue }) => {
-//   try {
-//     const response = await axiosInstance.patch(`/partner/${id}/status`, {
-//       status,
-//     });
-//     if (response.status !== 200 || !response.data.success) {
-//       throw new Error("Failed to fetch Partner");
-//     }
-
-//     // Parse the JSON response.
-//     fetchPartners()
-//     return response.data.data.partners;
-//   } catch (err: any) {
-//     return rejectWithValue(
-//       err.response?.data?.message || "Failed to change status"
-//     );
-//   }
-// });
-
-// const PartnerMemberSlice = createSlice({
-//   name: "partners",
-//   initialState,
-//   reducers: {
-//     // You can add synchronous reducers here if needed.
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchPartners.pending, (state) => {
-//         state.loading = true;
-//         state.error = null;
-//       })
-//       .addCase(fetchPartners.fulfilled, (state, action) => {
-//         state.loading = false;
-//         state.Partner = action.payload;
-//       })
-//       .addCase(fetchPartners.rejected, (state, action) => {
-//         state.loading = false;
-//         state.error = action.payload as string;
-//       })
-
-//       .addCase(togglePartnerStatus.pending, (state) => {
-//         // optimistic update: flip status in local list
-//         state.loading = true;
-//         state.error = null;
-//       })
-//       .addCase(togglePartnerStatus.fulfilled, (state) => {
-//         state.loading = false;
-//         // state.Partner = action.payload;
-//       })
-//       .addCase(togglePartnerStatus.rejected, (state, action) => {
-//         // rollback on error
-//         state.loading = false;
-//         state.error = action.payload as string;
-//       });
-//   },
-// });
-
-// export default PartnerMemberSlice.reducer;
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { PartnerData, PartnerState } from "../../APITypes";
 import axiosInstance from "../../../utils/axiosInstance";
+import { Partner, PartnerState } from "../../../types/partner.type";
 
 const initialState: PartnerState = {
   Partner: [],
@@ -113,7 +10,7 @@ const initialState: PartnerState = {
 
 // 1️⃣ Fetch all partners
 export const fetchPartners = createAsyncThunk<
-  PartnerData[],
+  Partner[],
   { status?: boolean },
   { rejectValue: string }
 >("partner/fetchPartners", async ({ status }, { rejectWithValue }) => {
@@ -122,7 +19,7 @@ export const fetchPartners = createAsyncThunk<
       status: number;
       success: boolean;
       message: string;
-      data: { partners: PartnerData[] };
+      data: { partners: Partner[] };
     }>("/partner", {
       params: { status }, // ← HERE
     });
@@ -137,7 +34,7 @@ export const fetchPartners = createAsyncThunk<
 
 // 2️⃣ Toggle a single partner’s status
 export const togglePartnerStatus = createAsyncThunk<
-  PartnerData, // now returns one PartnerData
+  Partner, // now returns one Partner
   { id: string | undefined; status: boolean },
   { rejectValue: string }
 >("partner/toggleStatus", async ({ id, status }, { rejectWithValue }) => {
@@ -146,7 +43,7 @@ export const togglePartnerStatus = createAsyncThunk<
       status: number;
       success: boolean;
       message: string;
-      data: { partners: PartnerData };
+      data: { partners: Partner };
     }>(`/partner/${id}/status`, { status });
     if (response.status !== 200 || !response.data.success) {
       throw new Error("Failed to update partner status");

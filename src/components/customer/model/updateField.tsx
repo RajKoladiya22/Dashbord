@@ -5,25 +5,14 @@ import { EditOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../../hooks";
 import { updateAdminCustomField } from "../../../redux/slice/customer/customfieldSlice";
 import { UpdateFieldForm } from "../form";
-
-export interface CustomerData {
-  id: string;
-  adminId: string;
-  fieldName: string;
-  fieldType: string;
-  isRequired: boolean;
-  options: string[];
-  isMultiSelect: boolean;
-  created_at: string;
-  updated_at: string;
-}
+import { AdminCustomField } from "../../../types/customField.type";
 
 interface UpdateCustomerProps {
   adminId: string;
   id: string;
   open: boolean;
   onClose: () => void;
-  updateField: CustomerData; // Field data to update.
+  updateField: AdminCustomField; // Field data to update.
 }
 
 export const UpdateFieldModel: React.FC<UpdateCustomerProps> = ({

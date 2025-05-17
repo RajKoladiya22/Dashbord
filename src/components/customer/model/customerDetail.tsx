@@ -22,35 +22,13 @@ import {
   TeamOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
-import { PartnerData, Product } from "../../../redux/APITypes";
+// import { PartnerData, Product } from "../../../redux/APITypes";
+import { Customer } from "../../../types/customer.type";
 const { Text } = Typography;
 // import './style.css'
 
-interface CustomerRow {
-  id: string;
-  adminId: string;
-  partnerId?: string;
-  companyName: string;
-  contactPerson: string;
-  mobileNumber: string;
-  email: string;
-  serialNo: string;
-  prime: boolean;
-  blacklisted: boolean;
-  remark?: string;
-  adminCustomFields: Record<string, any>[];
-  address: Record<string, any>;
-  joiningDate: string; // ISO timestamp
-  hasReference: boolean;
-  status: boolean;
-  product: Product[];
-  createdAt: string; // ISO timestamp
-  updatedAt: string;
-  partner: PartnerData;
-}
-
 interface CustomerDetailModalProps {
-  customer: CustomerRow;
+  customer: Customer;
   onClose: () => void;
 }
 
@@ -63,8 +41,14 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
   return (
     <Modal
       title={
-        <div className="modal-header" style={{display: 'flex' , alignItems: 'center'}}>
-          <Avatar size={40} style={{ backgroundColor: "#1890ff", marginRight: '15px' }}>
+        <div
+          className="modal-header"
+          style={{ display: "flex", alignItems: "center" }}
+        >
+          <Avatar
+            size={40}
+            style={{ backgroundColor: "#1890ff", marginRight: "15px" }}
+          >
             {customer.companyName[0]}
           </Avatar>
           <div>
@@ -187,73 +171,79 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
         {/* Products Tab */}
         <Tabs.TabPane tab="Products & Services" key="2">
           <Row gutter={[16, 16]}>
-            {customer.product?.map((product: any, index: any) => (
-              <Col span={24} key={product.id}>
-                <Card
-                  key={index}
-                  title={
-                    <Space>
-                      <ShoppingOutlined />
-                      <Text strong>{product.productDetails.productName}</Text>
-                      <Tag color={product.status ? "green" : "red"}>
-                        {product.status ? "Active" : "Inactive"}
-                      </Tag>
-                    </Space>
-                  }
-                  extra={
-                    <Text strong>₹{product.productDetails.productPrice}</Text>
-                  }
-                >
-                  <Descriptions column={2}>
-                    <Descriptions.Item label="Purchase Date">
-                      {dayjs(product.purchaseDate).format("MMM D, YYYY")}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Renewal Period">
-                      {product.renewPeriod.replace("_", " ").toUpperCase()}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Expiry Date">
-                      {product.expiryDate
-                        ? dayjs(product.expiryDate).format("MMM D, YYYY")
-                        : "N/A"}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Auto Renewal">
-                      <Tag color={product.renewal ? "green" : "volcano"}>
-                        {product.renewal ? "Enabled" : "Disabled"}
-                      </Tag>
-                    </Descriptions.Item>
-                  </Descriptions>
+            {(Array.isArray(customer.product)
+              ? customer.product
+              : [customer.product]
+            )
+              .filter(Boolean)
+              .map((product: any, index: any) => (
+                <Col span={24} key={product.id}>
+                  <Card
+                    key={index}
+                    title={
+                      <Space>
+                        <ShoppingOutlined />
+                        <Text strong>{product.productDetails.productName}</Text>
+                        <Tag color={product.status ? "green" : "red"}>
+                          {product.status ? "Active" : "Inactive"}
+                        </Tag>
+                      </Space>
+                    }
+                    extra={
+                      <Text strong>₹{product.productDetails.productPrice}</Text>
+                    }
+                  >
+                    <Descriptions column={2}>
+                      <Descriptions.Item label="Purchase Date">
+                        {dayjs(product.purchaseDate).format("MMM D, YYYY")}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Renewal Period">
+                        {product.renewPeriod.replace("_", " ").toUpperCase()}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Expiry Date">
+                        {product.expiryDate
+                          ? dayjs(product.expiryDate).format("MMM D, YYYY")
+                          : "N/A"}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Auto Renewal">
+                        <Tag color={product.renewal ? "green" : "volcano"}>
+                          {product.renewal ? "Enabled" : "Disabled"}
+                        </Tag>
+                      </Descriptions.Item>
+                    </Descriptions>
 
-                  {product.history.length > 0 && (
-                    <>
-                      <Divider />
-                      <Timeline mode="left">
-                        {product.history.map((entry: any) => (
-                          <Timeline.Item
-                            key={entry.id}
-                            color={entry.expiryDate ? "green" : "gray"}
-                          >
-                            <Space direction="vertical">
-                              <Text strong>
-                                {dayjs(entry.purchaseDate).format(
-                                  "MMM D, YYYY"
-                                )}{" "} {"Expired"} {" "}
-                                {dayjs(entry.expiryDate).format(
-                                  "MMM D, YYYY"
-                                )}
-                              </Text>
-                              <Text type="secondary">
-                                Renewed At{" "}
-                                {dayjs(entry.createdAt).format("MMM D, YYYY")}
-                              </Text>
-                            </Space>
-                          </Timeline.Item>
-                        ))}
-                      </Timeline>
-                    </>
-                  )}
-                </Card>
-              </Col>
-            ))}
+                    {product.history.length > 0 && (
+                      <>
+                        <Divider />
+                        <Timeline mode="left">
+                          {product.history.map((entry: any) => (
+                            <Timeline.Item
+                              key={entry.id}
+                              color={entry.expiryDate ? "green" : "gray"}
+                            >
+                              <Space direction="vertical">
+                                <Text strong>
+                                  {dayjs(entry.purchaseDate).format(
+                                    "MMM D, YYYY"
+                                  )}{" "}
+                                  {"Expired"}{" "}
+                                  {dayjs(entry.expiryDate).format(
+                                    "MMM D, YYYY"
+                                  )}
+                                </Text>
+                                <Text type="secondary">
+                                  Renewed At{" "}
+                                  {dayjs(entry.createdAt).format("MMM D, YYYY")}
+                                </Text>
+                              </Space>
+                            </Timeline.Item>
+                          ))}
+                        </Timeline>
+                      </>
+                    )}
+                  </Card>
+                </Col>
+              ))}
           </Row>
         </Tabs.TabPane>
       </Tabs>

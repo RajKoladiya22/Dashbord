@@ -1,21 +1,9 @@
 import React from "react";
 import { Modal, Card, Row, Col } from "antd";
-
-interface FieldRow {
-  //   key: string;
-  id: string;
-  adminId: string;
-  fieldName: string;
-  fieldType: string;
-  isRequired: boolean;
-  options: string[];
-  isMultiSelect: boolean;
-  created_at: string;
-  updated_at: string;
-}
+import { AdminCustomField } from "../../../types/customField.type";
 
 interface FieldDetailModalProps {
-  field: FieldRow;
+  field: AdminCustomField;
   onClose: () => void;
 }
 

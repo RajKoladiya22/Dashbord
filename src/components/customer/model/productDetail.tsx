@@ -23,35 +23,14 @@ import {
   // TeamOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
-import { PartnerData, Product } from "../../../redux/APITypes";
+import { Customer } from "../../../types/customer.type";
 const { Panel } = Collapse;
 const { Text } = Typography;
 
-interface CustomerRow {
-  id: string;
-  adminId: string;
-  partnerId?: string;
-  companyName: string;
-  contactPerson: string;
-  mobileNumber: string;
-  email: string;
-  serialNo: string;
-  prime: boolean;
-  blacklisted: boolean;
-  remark?: string;
-  adminCustomFields: Record<string, any>[];
-  address: Record<string, any>;
-  joiningDate: string; // ISO timestamp
-  hasReference: boolean;
-  status: boolean;
-  product: Product[];
-  createdAt: string; // ISO timestamp
-  updatedAt: string;
-  partner: PartnerData;
-}
+
 
 interface productDetailModalProps {
-  products: CustomerRow;
+  products: Customer;
   onClose: () => void;
 }
 
@@ -59,7 +38,7 @@ export const ProductDetailModal: React.FC<productDetailModalProps> = ({
   products,
   onClose,
 }) => {
-  console.log("products------>", products);
+  // console.log("products------>", products);
 
   return (
     <Modal
@@ -107,7 +86,11 @@ export const ProductDetailModal: React.FC<productDetailModalProps> = ({
         {/* Products Tab */}
         <Tabs.TabPane tab="Products & Services" key="2">
           <Row gutter={[16, 16]}>
-            {products.product?.map((product: any, index: any) => (
+            {(Array.isArray(products.product)
+              ? products.product
+              : [products.product]
+            )
+              .filter(Boolean).map((product: any, index: any) => (
               <Col span={24} key={product.id}>
                 <Card
                   key={index}

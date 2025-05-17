@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { PartnerData, PartnerResponse, PartnerState } from "../../APITypes";
+import {
+  Partner,
+  PartnerResponse,
+  PartnerState,
+} from "../../../types/partner.type";
 import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState: PartnerState = {
@@ -11,7 +15,7 @@ const initialState: PartnerState = {
 // Async thunk to create a partner member
 export const createPartner = createAsyncThunk(
   "partner/createPartner",
-  async (PartnerData: PartnerData, { rejectWithValue }) => {
+  async (PartnerData: Partner, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post<PartnerResponse>(
         "/auth/partner",
