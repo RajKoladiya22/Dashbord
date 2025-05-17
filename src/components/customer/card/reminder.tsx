@@ -43,8 +43,8 @@ import dayjs, { Dayjs } from "dayjs";
 import debounce from "lodash.debounce";
 import { useSelector } from "react-redux";
 import "./style.css";
-import { ReminderData } from "../../../redux/APITypes";
 import AutoDismissAlert from "../../Alert";
+import { ReminderData } from "../../../types/customer.type";
 
 const { Text } = Typography;
 

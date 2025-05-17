@@ -167,17 +167,17 @@ export const UserAccountLayout : React.FC = React.memo(() => {
     {
       key: "first-name",
       label: "First Name",
-      children: <span>{profile?.first_name}</span>,
+      children: <span>{profile?.firstName}</span>, 
     },
     {
       key: "last-name",
       label: "Last Name",
-      children: <span>{profile?.last_name}</span>,
+      children: <span>{profile?.lastName}</span>,
     },
     {
       key: "company_name",
       label: "Company Name",
-      children: <span>{profile?.company_name}</span>,
+      children: <span>{profile?.companyName}</span>,
     },
     {
       key: "email",
@@ -188,15 +188,15 @@ export const UserAccountLayout : React.FC = React.memo(() => {
       key: "telephone",
       label: "Phone",
       children: (
-        <Link href={`tel:${profile?.contact_number}`}>
-          {profile?.contact_number}
+        <Link href={`tel:${profile?.contactNumber}`}>
+          {profile?.contactNumber}
         </Link>
       ),
     },
     {
       key: "plan",
       label: "Plan Status",
-      children: <span>{profile?.plan_status}</span>,
+      children: <span>{profile?.status}</span>,
     },
     {
       key: "street",
