@@ -1,6 +1,5 @@
-import { Card, Col, Row, Space } from "antd";
 import { Helmet } from "react-helmet-async";
-import { PageHeader, TeamList, AddInTeamButton } from "../../components";
+import { PageHeader, TeamList } from "../../components";
 import React from "react";
 
 export const TeamPage: React.FC = React.memo(() => {
