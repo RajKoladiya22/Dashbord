@@ -46,6 +46,12 @@ export const CustomerList: React.FC = () => {
   const { customers, meta, loading, error } = useSelector(
     (state: RootState) => state.customer
   );
+  console.log("customers----->", customers);
+  console.log("meta----->", meta);
+  console.log("loading----->", loading);
+  console.log("error----->", error);
+  
+
   const customersData = customers;
 
   const [page, setPage] = useState<number>(1);
