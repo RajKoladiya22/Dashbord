@@ -1,17 +1,9 @@
-import {  Card, Col, Row, Space } from 'antd';
-import {
-  PageHeader,
-  PartnerList,
-  AddPartnerButton
-} from '../../components';
+import { PageHeader, PartnerList } from "../../components";
 
-import { Helmet } from 'react-helmet-async';
-import React from 'react';
+import { Helmet } from "react-helmet-async";
+import React from "react";
 
-
-export const PartnerPage : React.FC = React.memo(() =>{
-
-
+export const PartnerPage: React.FC = React.memo(() => {
   return (
     <div>
       <Helmet>
@@ -20,41 +12,20 @@ export const PartnerPage : React.FC = React.memo(() =>{
       <PageHeader
         title="Our Partners"
         breadcrumbs={[
-
           {
             title: (
               <>
                 <span>Partner-Team</span>
               </>
             ),
-          
           },
           {
-            title: 'Partner',
+            title: "Partner",
           },
         ]}
       />
-      <Row
-        gutter={[
-          { xs: 8, sm: 16, md: 24, lg: 32 },
-          { xs: 8, sm: 16, md: 24, lg: 32 },
-        ]}
-      >
-       
-        <Col span={24}>
-                <Card
-                  title="Partner Members"
-                  extra={
-                    <Space>
-                      {/* <Button icon={<CloudUploadOutlined />}>Import</Button> */}
-                      <AddPartnerButton />
-                    </Space>
-                  }
-                >
-                     <PartnerList />
-                </Card>
-              </Col>
-      </Row>
+
+      <PartnerList />
     </div>
   );
 });

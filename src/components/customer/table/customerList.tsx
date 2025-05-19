@@ -6,6 +6,7 @@ import {
   EditOutlined,
   // CheckCircleOutlined,
   InfoCircleOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import type { TableColumnsType } from "antd";
 import {
@@ -19,6 +20,7 @@ import {
   Switch,
   Input,
   Tooltip,
+  Typography,
 } from "antd";
 
 import { useAppDispatch } from "../../../hooks";
@@ -36,7 +38,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import AutoDismissAlert from "../../Alert";
 import { Customer } from "../../../types/customer.type";
-
+import { Link } from "react-router-dom";
+const { Text } = Typography;
 
 export const CustomerList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -55,9 +58,7 @@ export const CustomerList: React.FC = () => {
   const [tableData, setTableData] = useState<Customer[]>([]);
   const [viewCustomer, setViewCustomer] = useState<Customer | null>(null);
   const [viewProducts, setViewProducts] = useState<Customer | null>(null);
-  const [updateCustomer, setUpdateCustomer] = useState<Customer | null>(
-    null
-  );
+  const [updateCustomer, setUpdateCustomer] = useState<Customer | null>(null);
 
   // debounce search
   const searchRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -247,6 +248,28 @@ export const CustomerList: React.FC = () => {
           title="Customer Management"
           extra={
             <Space wrap style={{ width: "100%", justifyContent: "flex-end" }}>
+              <Link to="/customer/addcustomer">
+                <Button icon={<PlusOutlined />}>New Customer</Button>
+              </Link>
+            </Space>
+          }
+          bordered={false}
+          //  headStyle={{ borderBottom: '1px solid #f0f0f0' }}
+        >
+          <div className="filter-bar" style={{ marginBottom: 24 }}>
+            <Space size="middle" wrap>
+              <div className="status-filter">
+                <Text strong style={{ marginRight: 8 }}>
+                  Status:
+                </Text>
+                <Switch
+                  checkedChildren="Active"
+                  unCheckedChildren="Inactive"
+                  checked={status}
+                  onChange={setStatus}
+                />
+              </div>
+
               <Input
                 placeholder="Search..."
                 prefix={<SearchOutlined />}
@@ -261,33 +284,19 @@ export const CustomerList: React.FC = () => {
                   </Tooltip>
                 }
               />
-              {/* <Button icon={<CloudUploadOutlined />}>Import</Button> */}
-              <Switch
-                checkedChildren="Active"
-                unCheckedChildren="Inactive"
-                checked={status}
-                onChange={setStatus}
-              />
-
-              {/* <Link to="/customer/addcustomer">
-                <Button icon={<PlusOutlined />}>New Customer</Button>
-              </Link> */}
             </Space>
-          }
-          bordered={false}
-          //  headStyle={{ borderBottom: '1px solid #f0f0f0' }}
-        >
+          </div>
           {error && (
-                  <AutoDismissAlert
-                    message="Error"
-                    description={error}
-                    type="error"
-                    showIcon
-                    style={{ marginBottom: 16 }}
-                    onClose={() => null}
-                    durationMs={10000} // 10 seconds
-                  />
-                )}
+            <AutoDismissAlert
+              message="Error"
+              description={error}
+              type="error"
+              showIcon
+              style={{ marginBottom: 16 }}
+              onClose={() => null}
+              durationMs={10000} // 10 seconds
+            />
+          )}
           <Table<Customer>
             columns={columns}
             dataSource={tableData}
@@ -306,9 +315,8 @@ export const CustomerList: React.FC = () => {
                 setLimit(size);
               },
             }}
-            
             onRow={(record) => ({
-              onClick: () => setViewCustomer(record)
+              onClick: () => setViewCustomer(record),
             })}
             rowClassName={(record) => {
               if (record.prime) return "prime-row";

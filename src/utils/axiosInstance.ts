@@ -7,7 +7,6 @@ import axios, {
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import { logout } from "../redux/slice/auth/authSlice";
-// import { logout } from "../redux/slice/auth/loginSlice";
 
 interface DecodedToken {
   exp: number;
@@ -17,8 +16,8 @@ interface DecodedToken {
 const STATIC_API_KEY = "Q0@gZ@dY7[jGQ/GRc@D9KSCX#U2Yz";
 
 const axiosInstance = axios.create({
-  baseURL: "https://cpm.magicallysoft.com/api/v1",
-  // baseURL: "http://localhost:3000/api/v1",
+  // baseURL: "https://cpm.magicallysoft.com/api/v1",
+  baseURL: "http://localhost:3000/api/v1",
   withCredentials: true, // Ensures cookies are sent with requests if needed.
   headers: {
     "Content-Type": "application/json",

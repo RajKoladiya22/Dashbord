@@ -12,7 +12,7 @@ import {
   Switch,
   Tag,
   Button,
-  Divider,
+  // Divider,
   Descriptions,
   Space,
   Typography,
@@ -40,7 +40,8 @@ import { EditProductModal } from "./EditProductModal";
 import AutoDismissAlert from "../Alert";
 import dayjs from "dayjs";
 import { Product } from "../../types/product.type";
-const { Text } = Typography;
+import { AddProductButton } from "./AddProductButton";
+const { Text, Title } = Typography;
 
 const { Meta } = Card;
 
@@ -196,178 +197,248 @@ export const ProductList: React.FC = () => {
   );
 
   return (
-    <>
-      <Switch
-        checkedChildren="Active"
-        unCheckedChildren="Inactive"
-        checked={filterStatus}
-        onChange={(checked) => setFilterStatus(checked)}
-        style={{ marginBottom: 16 }}
-      />
-
-      <Input
-        placeholder="Search..."
-        prefix={<SearchOutlined />}
-        allowClear
-        aria-label="Search..."
-        value={searchQuery}
-        onChange={handleSearch}
-        style={{ width: 300, marginBottom: 16 }}
-      />
-      {error && (
-        <AutoDismissAlert
-          message="Error"
-          description={error}
-          type="error"
-          showIcon
-          style={{ marginBottom: 16 }}
-          onClose={() => null}
-          durationMs={10000} // 10 seconds
-        />
-      )}
-      <Row gutter={[16, 16]} justify="start">
-        {loading ? (
-          // Skeleton placeholders while loading
-          Array.from({ length: 8 }).map((_, idx) => (
-            <Col key={idx} xs={24} sm={12} md={8} lg={6} xl={4}>
-              <Card style={{ maxWidth: 300, margin: "auto" }}>
-                <Skeleton loading avatar active />
-              </Card>
-            </Col>
-          ))
-        ) : products.length === 0 ? (
-          // Empty state when no products
-          <Empty
-            description="No products available"
-            style={{ marginTop: 50, width: "100%" }}
-          />
-        ) : (
-          // Render memoized cards
-          products.map((product: any, index) => (
-            <Col key={index} xs={24} sm={12} md={8} lg={6} xl={4}>
-              <ProductCard
-                product={product}
-                onView={showModal}
-                onEdit={(p) => console.log("Edit", p)}
-                onDelete={(p) => console.log("Delete", p)}
-              />
-            </Col>
-          ))
-        )}
-      </Row>
-      <Modal
+    <Col span={24}>
+      <Card
         title={
-          <div className="modal-header">
-            <span>{selectedProduct?.productName}</span>
-            <Tag color={selectedProduct?.status ? "green" : "red"}>
-              {selectedProduct?.status ? "Active" : "Inactive"}
-            </Tag>
+          <div className="card-header">
+            <Space align="center">
+              <Title level={4} style={{ margin: 0 }}>
+                Products Management
+              </Title>
+              <Tag color="blue">{products.length} items</Tag>
+            </Space>
           </div>
         }
-        open={isModalVisible}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="close" onClick={handleCancel}>
-            Close
-          </Button>,
-          <Button
-            key="visit"
-            type="primary"
-            icon={<GlobalOutlined />}
-            onClick={() => window.open(selectedProduct?.productLink, "_blank")}
-          >
-            Visit Website
-          </Button>,
-        ]}
-        width={800}
-        className="product-detail-modal"
+        extra={
+          <Space>
+            <AddProductButton />
+          </Space>
+        }
+        bodyStyle={{ padding: "24px 16px" }}
       >
-        {selectedProduct && (
-          <div className="product-content">
-            <div className="product-media">
-              <Avatar
-                size={160}
-                src={
-                  selectedProduct.image ||
-                  `https://via.placeholder.com/150?text=${selectedProduct.productName[0]}`
-                }
-                className="product-image"
+        <div className="filter-bar" style={{ marginBottom: 24 }}>
+          <Space size="middle" wrap>
+            <div className="status-filter">
+              <Text strong style={{ marginRight: 8 }}>
+                Status:
+              </Text>
+              <Switch
+                checkedChildren="Active"
+                unCheckedChildren="Inactive"
+                checked={filterStatus}
+                onChange={setFilterStatus}
               />
             </div>
 
-            <Divider />
+            <Input
+              placeholder="Search products..."
+              prefix={<SearchOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+              allowClear
+              value={searchQuery}
+              onChange={handleSearch}
+              style={{ width: 280 }}
+              size="large"
+            />
+          </Space>
+        </div>
 
-            <Descriptions bordered column={2}>
-              <Descriptions.Item label="Price" span={2}>
-                <div className="price-display">
-                  ₹{selectedProduct.productPrice}
-                  <span className="price-period">/year</span>
-                </div>
-              </Descriptions.Item>
+        {error && (
+          // <Alert
+          //   message="Error"
+          //   description={error}
+          //   type="error"
+          //   showIcon
+          //   closable
+          //   style={{ marginBottom: 24 }}
+          // />
 
-              <Descriptions.Item label="Category">
-                <Space wrap>
-                  {selectedProduct.productCategory.map((cat: any) => (
-                    <Tag color="blue" key={cat}>
-                      {cat}
-                    </Tag>
-                  ))}
+          <AutoDismissAlert
+            message="Error"
+            description={error}
+            type="error"
+            showIcon
+            style={{ marginBottom: 16 }}
+            onClose={() => null}
+            durationMs={10000} // 10 seconds
+          />
+        )}
+
+        <Row gutter={[24, 24]} wrap >
+          {loading ? (
+            Array.from({ length: 8 }).map((_, idx) => (
+              <Col key={idx} xs={24} sm={12} md={8} lg={6} xl={6}>
+                <Card style={{ height: "100%" }} bodyStyle={{ padding: 16 }}>
+                  <Skeleton
+                    active
+                    avatar={{ shape: "square", size: "large" }}
+                    paragraph={{ rows: 3 }}
+                  />
+                </Card>
+              </Col>
+            ))
+          ) : products.length === 0 ? (
+            <Col span={24}>
+              <Empty
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                description={
+                  <Text type="secondary">
+                    No products found.{" "}
+                    {filterStatus && "Try adjusting your filters."}
+                  </Text>
+                }
+                style={{ margin: "40px 0" }}
+              >
+                <AddProductButton />
+              </Empty>
+            </Col>
+          ) : (
+            products.map((product, index) => (
+              <Col key={product.id} xs={24} sm={12} md={8} lg={6} xl={6}>
+                <ProductCard
+                  key={index}
+                  product={product}
+                  onView={showModal}
+                  onEdit={(p) => console.log("Edit", p)}
+                  onDelete={(p) => console.log("Delete", p)}
+                />
+              </Col>
+            ))
+          )}
+        </Row>
+
+        {/* Product Detail Modal */}
+        <Modal
+          open={isModalVisible}
+          onCancel={handleCancel}
+          footer={null}
+          width={800}
+          centered
+          className="product-detail-modal"
+          bodyStyle={{ padding: 0 }}
+        >
+          {selectedProduct && (
+            <div className="modal-content">
+              <div
+                className="modal-header"
+                style={{ padding: 24, borderBottom: "1px solid #f0f0f0" }}
+              >
+                <Space align="start">
+                  <Avatar
+                    size={64}
+                    shape="square"
+                    src={
+                      selectedProduct.image ||
+                      `https://via.placeholder.com/150?text=${selectedProduct.productName[0]}`
+                    }
+                    className="product-image"
+                  />
+                  <div>
+                    <Space align="center" size="small">
+                      <Title level={4} style={{ margin: 0 }}>
+                        {selectedProduct.productName}
+                      </Title>
+                      <Tag color={selectedProduct.status ? "green" : "red"}>
+                        {selectedProduct.status ? "Active" : "Inactive"}
+                      </Tag>
+                    </Space>
+                    <Text
+                      type="secondary"
+                      style={{ display: "block", marginTop: 4 }}
+                    >
+                      {selectedProduct.productCategory.join(" • ")}
+                    </Text>
+                  </div>
                 </Space>
-              </Descriptions.Item>
+              </div>
 
-              <Descriptions.Item label="Tags">
-                <Space wrap>
-                  {selectedProduct.tags?.map((tag) => (
-                    <Tag color="geekblue" key={tag}>
-                      {tag}
-                    </Tag>
-                  ))}
-                </Space>
-              </Descriptions.Item>
+              <div className="modal-body" style={{ padding: 24 }}>
+                <Row gutter={24}>
+                  <Col span={24} md={12}>
+                    <Descriptions column={1} size="small">
+                      <Descriptions.Item label="Price">
+                        <Text strong style={{ fontSize: 18 }}>
+                          ₹{selectedProduct.productPrice}
+                          <Text type="secondary" style={{ fontSize: 14 }}>
+                            {/* /year */}
+                          </Text>
+                        </Text>
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Tags">
+                        <Space wrap>
+                          {selectedProduct.tags?.map((tag) => (
+                            <Tag key={tag}>{tag}</Tag>
+                          ))}
+                        </Space>
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Description">
+                        <Text type="secondary">
+                          {selectedProduct.description ||
+                            "No description available"}
+                        </Text>
+                      </Descriptions.Item>
+                    </Descriptions>
+                  </Col>
 
-              <Descriptions.Item label="Description" span={2}>
-                <div className="product-description">
-                  {selectedProduct.description}
-                </div>
-              </Descriptions.Item>
+                  <Col span={24} md={12}>
+                    <div className="specifications-section">
+                      <Title level={5} style={{ marginBottom: 16 }}>
+                        Specifications
+                      </Title>
+                      <Row gutter={[8, 8]}>
+                        {Object.entries(
+                          selectedProduct.specifications || {}
+                        ).map(([key, value]) => (
+                          <Col span={12} key={key}>
+                            <div className="spec-item">
+                              <Text type="secondary">{key}:</Text>{" "}
+                              <Text strong>{value}</Text>
+                            </div>
+                          </Col>
+                        ))}
+                      </Row>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
 
-              <Descriptions.Item label="Specifications" span={2}>
-                <div className="spec-grid">
-                  {Object.entries(selectedProduct?.specifications ?? {}).map(
-                    ([key, value]) => (
-                      <div key={key} className="spec-item">
-                        <div className="spec-key">{key}:</div>
-                        <div className="spec-value">{value}</div>
-                      </div>
-                    )
-                  )}
-                </div>
-              </Descriptions.Item>
-            </Descriptions>
-
-            <Divider />
-
-            <div className="meta-info">
-              <Space>
+              <div
+                className="modal-footer"
+                style={{
+                  padding: 16,
+                  background: "#fafafa",
+                  borderTop: "1px solid #f0f0f0",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
                 <Text type="secondary">
                   Created:{" "}
                   {dayjs(selectedProduct.createdAt).format("MMM D, YYYY")}
                 </Text>
-                <Text type="secondary">
-                  Last Updated:{" "}
-                  {dayjs(selectedProduct.updatedAt).format("MMM D, YYYY")}
-                </Text>
-              </Space>
+                <Space>
+                  <Button onClick={handleCancel}>Close</Button>
+                  <Button
+                    type="primary"
+                    icon={<GlobalOutlined />}
+                    onClick={() =>
+                      window.open(selectedProduct.productLink, "_blank")
+                    }
+                  >
+                    Visit Website
+                  </Button>
+                </Space>
+              </div>
             </div>
-          </div>
-        )}
-      </Modal>
+          )}
+        </Modal>
 
-      <EditProductModal
-        visible={!!editing}
-        product={editing}
-        onCancel={() => setEditing(null)}
-      />
-    </>
+        <EditProductModal
+          visible={!!editing}
+          product={editing}
+          onCancel={() => setEditing(null)}
+        />
+      </Card>
+    </Col>
   );
 };

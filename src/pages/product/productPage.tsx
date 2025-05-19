@@ -1,10 +1,10 @@
-import { Card, Col, Row, Space } from "antd";
-import { PageHeader, ProductList, AddProductButton } from "../../components";
+import { Row } from "antd";
+import { PageHeader, ProductList } from "../../components";
 
 import { Helmet } from "react-helmet-async";
 import React from "react";
 
-export const ProductPage : React.FC = React.memo(() => {
+export const ProductPage: React.FC = React.memo(() => {
   return (
     <div>
       <Helmet>
@@ -31,18 +31,7 @@ export const ProductPage : React.FC = React.memo(() => {
           { xs: 8, sm: 16, md: 24, lg: 32 },
         ]}
       >
-        <Col span={24}>
-          <Card
-            title="Products List"
-            extra={
-              <Space>
-                <AddProductButton />
-              </Space>
-            }
-          >
-            <ProductList />
-          </Card>
-        </Col>
+        <ProductList />
       </Row>
     </div>
   );
