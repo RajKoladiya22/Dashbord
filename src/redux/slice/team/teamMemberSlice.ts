@@ -23,7 +23,7 @@ export const fetchTeamMembers = createAsyncThunk<
     }>("/team-members", {
       params: { status }, // ← HERE
     });
-    // console.log(response);
+    console.log(response);
 
     // Check for HTTP errors.
     if (response.status !== 200 || !response.data.success) {

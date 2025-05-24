@@ -25,7 +25,7 @@ export interface UserProfileResponse {
   success: boolean;
   message: string;
   data: {
-    user: User;
+    profile: User;
   };
 }
 
@@ -34,7 +34,6 @@ export interface UserProfileState {
   loading: boolean;
   error: string | null;
 }
-
 
 export interface LoginCredentials {
   identifier: string; // Can be email or username.
@@ -74,4 +73,10 @@ export interface SignUpData {
   };
   planStatus?: string; // e.g., 'active', 'inactive', 'free trial'
   role?: string; // e.g., 'admin'
+}
+
+// change password
+export interface ChangePassword {
+  oldPassword: string;
+  newPassword: string;
 }
