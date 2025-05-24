@@ -13,7 +13,7 @@ import {
   Divider,
   Timeline,
   Typography,
-  // Collapse,
+  Collapse,
 } from "antd";
 import {
   EditOutlined,
@@ -24,8 +24,10 @@ import {
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { Customer } from "../../../types/customer.type";
-// const { Panel } = Collapse;
+const { Panel } = Collapse;
 const { Text } = Typography;
+
+
 
 interface productDetailModalProps {
   products: Customer;
@@ -88,75 +90,97 @@ export const ProductDetailModal: React.FC<productDetailModalProps> = ({
               ? products.product
               : [products.product]
             )
-              .filter(Boolean)
-              .map((product: any, index: any) => (
-                <Col span={24} key={product.id}>
-                  <Card
-                    key={index}
-                    title={
-                      <Space>
-                        <ShoppingOutlined />
-                        <Text strong>{product.productDetails.productName}</Text>
-                        <Tag color={product.status ? "green" : "red"}>
-                          {product.status ? "Active" : "Inactive"}
-                        </Tag>
-                      </Space>
-                    }
-                    extra={
-                      <Text strong>₹{product.productDetails.productPrice}</Text>
-                    }
-                  >
-                    <Descriptions column={2}>
-                      <Descriptions.Item label="Purchase Date">
-                        {dayjs(product.purchaseDate).format("MMM D, YYYY")}
-                      </Descriptions.Item>
-                      <Descriptions.Item label="Renewal Period">
-                        {product.renewPeriod.replace("_", " ").toUpperCase()}
-                      </Descriptions.Item>
-                      <Descriptions.Item label="Expiry Date">
-                        {product.expiryDate
-                          ? dayjs(product.expiryDate).format("MMM D, YYYY")
-                          : "N/A"}
-                      </Descriptions.Item>
-                      <Descriptions.Item label="Auto Renewal">
-                        <Tag color={product.renewal ? "green" : "volcano"}>
-                          {product.renewal ? "Enabled" : "Disabled"}
-                        </Tag>
-                      </Descriptions.Item>
-                    </Descriptions>
-                    {/* history Line */}
-                    {product.history.length > 0 && (
-                      <>
-                        <Divider />
-                        <Timeline mode="left">
-                          {product.history.map((entry: any) => (
-                            <Timeline.Item
-                              key={entry.id}
-                              color={entry.expiryDate ? "green" : "gray"}
-                            >
-                              <Space direction="vertical">
-                                <Text strong>
-                                  {dayjs(entry.purchaseDate).format(
-                                    "MMM D, YYYY"
-                                  )}{" "}
-                                  {"Expired"}{" "}
-                                  {dayjs(entry.expiryDate).format(
-                                    "MMM D, YYYY"
-                                  )}
-                                </Text>
-                                <Text type="secondary">
-                                  Renewed At{" "}
-                                  {dayjs(entry.createdAt).format("MMM D, YYYY")}
-                                </Text>
-                              </Space>
-                            </Timeline.Item>
-                          ))}
-                        </Timeline>
-                      </>
-                    )}
-                  </Card>
-                </Col>
-              ))}
+              .filter(Boolean).map((product: any, index: any) => (
+              <Col span={24} key={product.id}>
+                <Card
+                  key={index}
+                  title={
+                    <Space>
+                      <ShoppingOutlined />
+                      <Text strong>{product.productDetails.productName}</Text>
+                      <Tag color={product.status ? "green" : "red"}>
+                        {product.status ? "Active" : "Inactive"}
+                      </Tag>
+                    </Space>
+                  }
+                  extra={
+                    <Text strong>₹{product.productDetails.productPrice}</Text>
+                  }
+                >
+                  <Descriptions column={2}>
+                    <Descriptions.Item label="Purchase Date">
+                      {dayjs(product.purchaseDate).format("MMM D, YYYY")}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Renewal Period">
+                      {product.renewPeriod.replace("_", " ").toUpperCase()}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Expiry Date">
+                      {product.expiryDate
+                        ? dayjs(product.expiryDate).format("MMM D, YYYY")
+                        : "N/A"}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Auto Renewal">
+                      <Tag color={product.renewal ? "green" : "volcano"}>
+                        {product.renewal ? "Enabled" : "Disabled"}
+                      </Tag>
+                    </Descriptions.Item>
+                  </Descriptions>
+                  {/* history Line */}
+                  
+                  {product.history.length > 0 && (
+                    <>
+                      <Divider />
+                      <Timeline mode="left">
+                        {product.history.map((entry: any) => (
+                          <Timeline.Item
+                            key={entry.id}
+                            color={entry.expiryDate ? "green" : "gray"}
+                          >
+                            <Space direction="vertical">
+                              <Text strong>
+                                {dayjs(entry.purchaseDate).format(
+                                  "MMM D, YYYY"
+                                )}{" "}
+                                {"Expired"}{" "}
+                                {dayjs(entry.expiryDate).format("MMM D, YYYY")}
+                              </Text>
+                              <Text type="secondary">
+                                Renewed At{" "}
+                                {dayjs(entry.createdAt).format("MMM D, YYYY")}
+                              </Text>
+                            </Space>
+                          </Timeline.Item>
+                        ))}
+                      </Timeline>
+                    </>
+                  )}
+
+
+                  <Collapse accordion>
+  {product.history.map((entry:any) => (
+    <Panel
+      key={entry.id}
+      header={
+        <Space>
+          <Text>
+            {dayjs(entry.purchaseDate).format('MMM D, YYYY')} →{' '}
+            {dayjs(entry.expiryDate).format('MMM D, YYYY')}
+          </Text>
+        </Space>
+      }
+    >
+      <Space direction="vertical">
+        <Text strong>Purchased: {dayjs(entry.purchaseDate).format('LL')}</Text>
+        <Text type="secondary">
+          Renewed on {dayjs(entry.createdAt).format('LL')}
+        </Text>
+      </Space>
+    </Panel>
+  ))}
+</Collapse>
+                </Card>
+              </Col>
+            ))}
           </Row>
         </Tabs.TabPane>
       </Tabs>
