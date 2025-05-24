@@ -28,7 +28,7 @@ import { useAppDispatch } from "../../../hooks";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { CustomFieldsModel } from "../model";
-import { updateCustomer } from "../../../redux/slice/customer/addcustomerSlice";
+import { listCustomers, updateCustomer } from "../../../redux/slice/customer/addcustomerSlice";
 import { Customer } from "../../../types/customer.type";
 import { Partner } from "../../../types/partner.type";
 
@@ -192,6 +192,7 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
 
         console.log("customer data--->", data);
         await dispatch(updateCustomer({ id: customer.id, data })).unwrap();
+        dispatch(listCustomers({status:true}))
         message.success("Customer updated successfully");
         onUpdate();
       } catch (e: any) {

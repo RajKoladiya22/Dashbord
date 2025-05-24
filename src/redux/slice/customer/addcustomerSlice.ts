@@ -80,7 +80,9 @@ export const updateCustomer = createAsyncThunk<
     );
 
     // console.log("CustomerState------>", response);
-    // console.log("response----customers------>", response.data.data.customer);
+    console.log("response----customers------>", response.data.data.customer);
+
+    
 
     // Cast the API’s array back to a single object
     const arr = response.data.data.customer;
