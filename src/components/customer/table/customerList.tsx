@@ -342,7 +342,7 @@ export const CustomerList: React.FC = () => {
       )}
       {viewProducts && (
         <ProductDetailModal
-          products={viewProducts}
+          customer={viewProducts}
           onClose={() => setViewProducts(null)}
         />
       )}
