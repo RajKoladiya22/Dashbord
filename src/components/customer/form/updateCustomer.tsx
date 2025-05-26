@@ -19,7 +19,7 @@ import {
 } from "antd";
 
 import { PlusOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
+// import dayjs from "dayjs";
 import { indianStates, indianCities } from "./data/indianLocations";
 import { fetchAdminCustomFields } from "../../../redux/slice/customer/customfieldSlice";
 import { fetchAllProducts } from "../../../redux/slice/products/productSlice";

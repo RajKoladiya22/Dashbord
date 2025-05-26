@@ -25,7 +25,6 @@ import {
 import dayjs from "dayjs";
 import { Customer } from "../../../types/customer.type";
 import { ProductUpdateModal } from "./updateProduct";
-import { Product } from "../../../types/product.type";
 // const { Panel } = Collapse;
 const { Text } = Typography;
 
@@ -39,9 +38,10 @@ export const ProductDetailModal: React.FC<productDetailModalProps> = ({
   onClose,
 }) => {
   // console.log("products------>", products);
-  const [viewProducts, setViewProducts] = useState<Record<string, any> | null>(
-    null
-  );
+  const [editingProduct, setEditingProduct] = useState<{
+    customerId: string;
+    product: any;
+  } | null>(null);
 
   return (
     <>
@@ -120,7 +120,7 @@ export const ProductDetailModal: React.FC<productDetailModalProps> = ({
                             icon={<EditOutlined />}
                             style={{ marginLeft: "10px" }}
                             onClick={() => {
-                              setViewProducts({
+                              setEditingProduct({
                                 customerId: customer.id,
                                 product,
                               });
@@ -189,14 +189,14 @@ export const ProductDetailModal: React.FC<productDetailModalProps> = ({
           </Tabs.TabPane>
         </Tabs>
       </Modal>
-      {viewProducts && (
+      {editingProduct && (
         <ProductUpdateModal
-          product={viewProducts}
+          product={editingProduct}
           open={true}
           // onClose={() => setUpdateCustomer(null)}
-          onClose={() => setViewProducts(null)}
-          customerId={viewProducts.customerId}
-          ProductId={viewProducts.product.id}
+          onClose={() => setEditingProduct(null)}
+          customerId={editingProduct.customerId}
+          ProductId={editingProduct.product.id}
         />
       )}
     </>

@@ -7,9 +7,7 @@ import {
   ListParams,
   UpdateArgs,
   CustomerState,
-  ProUpdateArgs,
 } from "../../../types/customer.type";
-import { Product, ProductResponse } from "../../../types/product.type";
 
 // 1) Create Customer thunk
 export const createCustomer = createAsyncThunk<
@@ -180,6 +178,9 @@ export const updateSingleProduct = createAsyncThunk(
         `/customer/product/update/${customerId}/${ProductId}`,
         data
       );
+
+      console.log("Response from updateSingleProduct:", response.data.customer);
+
       return response.data;
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.message || err.message);
@@ -258,6 +259,27 @@ const customerSlice = createSlice({
       state.loading = false;
       state.error = action.payload as string;
     });
+
+    // Update product
+    builder.addCase(updateSingleProduct.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(
+      updateSingleProduct.fulfilled,
+      (state, action: PayloadAction<Customer>) => {
+        state.loading = false;
+        const updated = action.payload;
+        state.customers = state.customers.map((c) =>
+          c.id === updated.id ? updated : c
+        );
+      }
+    );
+    builder.addCase(updateSingleProduct.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+
     builder.addCase(deleteCustomer.pending, (state) => {
       state.loading = true;
       state.error = null;

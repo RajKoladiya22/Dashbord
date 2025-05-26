@@ -1,5 +1,5 @@
 // src/components/Customer/UpdateCustomerForm.tsx
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Button,
   DatePicker,
@@ -13,14 +13,11 @@ import {
 } from "antd";
 
 import dayjs from "dayjs";
-import { fetchAdminCustomFields } from "../../../redux/slice/customer/customfieldSlice";
-import { fetchAllProducts } from "../../../redux/slice/products/productSlice";
-import { fetchPartners } from "../../../redux/slice/partner/partnerMemberSlice";
 import { useAppDispatch } from "../../../hooks";
 import {
+  listCustomers,
   updateSingleProduct,
 } from "../../../redux/slice/customer/addcustomerSlice";
-import { Product } from "../../../types/product.type";
 
 const { Option } = Select;
 
@@ -45,19 +42,12 @@ export const UpdateCustomerProduct: React.FC<UpdateCustomerFormProps> = ({
   ProductId,
   onUpdate,
 }) => {
-//   console.log("\n\ncustomerId-->", customerId);
-//   console.log("\n\n ProductId-->", ProductId);
+  //   console.log("\n\ncustomerId-->", customerId);
+  //   console.log("\n\n ProductId-->", ProductId);
 
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const [submitting, setSubmitting] = useState(false);
-
-  // fetch lookups on mount
-  useEffect(() => {
-    dispatch(fetchAdminCustomFields());
-    dispatch(fetchAllProducts({ status: true }));
-    dispatch(fetchPartners({ status: true }));
-  }, [dispatch]);
 
   // seed form values & dynamic list when `customer` arrives
   useEffect(() => {
@@ -134,7 +124,7 @@ export const UpdateCustomerProduct: React.FC<UpdateCustomerFormProps> = ({
             data: updatedPayload,
           })
         ).unwrap();
-
+        await dispatch(listCustomers({ status: true }));
         message.success("Product updated successfully");
         onUpdate();
       } catch (err: any) {
@@ -147,27 +137,18 @@ export const UpdateCustomerProduct: React.FC<UpdateCustomerFormProps> = ({
   );
 
   return (
-    <Form
+    <>
+      {/* <Form
       {...formItemLayout}
       form={form}
       onFinish={onFinish}
       scrollToFirstError
     >
       <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-        {/* Products */}
-        <Card title="Associated Products" bordered={false}>
-          <Form.Item
-            name="productId"
-            label="Product"
-            // rules={[{ required: true, message: "Product is required" }]}
-          >
-            <Select disabled>
-              <Option value={product.product.productId}>
-                {product.product.productDetails?.productName}
-              </Option>
-            </Select>
-          </Form.Item>
-
+        <Card
+          title={product.product.productDetails?.productName}
+          bordered={false}
+        >
           <Form.Item
             name="purchaseDate"
             label="Purchase Date"
@@ -210,18 +191,136 @@ export const UpdateCustomerProduct: React.FC<UpdateCustomerFormProps> = ({
         </Card>
 
         {/* Submit */}
-        <Form.Item {...tailFormItemLayout}>
+      {/* <Form.Item {...tailFormItemLayout}>
           <Button
             type="primary"
             htmlType="submit"
             loading={submitting}
             style={{ width: "100%" }}
           >
-            Update Customer
+            Update Product
           </Button>
         </Form.Item>
       </Space>
-    </Form>
+    </Form> 
+     */}
+
+      <Form
+        {...formItemLayout}
+        form={form}
+        onFinish={onFinish}
+        scrollToFirstError
+      >
+        <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+          <Card
+            title={product.product.productDetails?.productName}
+            bordered={false}
+          >
+            <Form.Item
+              name="purchaseDate"
+              label="Purchase Date"
+              rules={[{ required: true, message: "Purchase Date is required" }]}
+            >
+              <DatePicker style={{ width: "100%" }} />
+            </Form.Item>
+
+            <Form.Item
+              name="renewal"
+              label="Auto Renewal"
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+
+            {/* Conditional Rendering Based on 'renewal' */}
+            <Form.Item
+              shouldUpdate={(prevValues, currentValues) =>
+                prevValues.renewal !== currentValues.renewal
+              }
+            >
+              {({ getFieldValue }) =>
+                getFieldValue("renewal") ? (
+                  <>
+                    <Form.Item
+                      name="renewPeriod"
+                      label="Renewal Period"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Renewal Period is required",
+                        },
+                      ]}
+                    >
+                      <Select placeholder="Select Renewal Period">
+                        <Option value="monthly">Monthly</Option>
+                        <Option value="quarterly">Quarterly</Option>
+                        <Option value="yearly">Yearly</Option>
+                        <Option value="custom">Custom</Option>
+                      </Select>
+                    </Form.Item>
+
+                    {/* Conditional Rendering Based on 'renewPeriod' */}
+                    <Form.Item
+                      shouldUpdate={(prevValues, currentValues) =>
+                        prevValues.renewPeriod !== currentValues.renewPeriod
+                      }
+                    >
+                      {({ getFieldValue }) =>
+                        getFieldValue("renewPeriod") === "custom" ? (
+                          <>
+                            <Form.Item
+                              name="expiryDate"
+                              label="Expiry Date"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Expiry Date is required",
+                                },
+                              ]}
+                            >
+                              <DatePicker style={{ width: "100%" }} />
+                            </Form.Item>
+
+                            <Form.Item
+                              name="renewalDate"
+                              label="Next Renewal Date"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Next Renewal Date is required",
+                                },
+                              ]}
+                            >
+                              <DatePicker style={{ width: "100%" }} />
+                            </Form.Item>
+                          </>
+                        ) : null
+                      }
+                    </Form.Item>
+                  </>
+                ) : null
+              }
+            </Form.Item>
+
+            <Form.Item name="details" label="Product Notes">
+              <Input.TextArea rows={3} />
+            </Form.Item>
+          </Card>
+
+          {/* Submit */}
+          <Form.Item {...tailFormItemLayout}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={submitting}
+              style={{ width: "100%" }}
+            >
+              Update Product
+            </Button>
+          </Form.Item>
+        </Space>
+      </Form>
+    </>
   );
 };
 

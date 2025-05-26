@@ -156,11 +156,9 @@ export const CustomerList: React.FC = () => {
                   color="geekblue"
                   variant="outlined"
                   icon={<ProductOutlined />}
-                  // icon={<EyeOutlined />}
                   onClick={() => setViewProducts(record)}
                 >
                   Products
-                  {/* View */}
                 </Button>
                 <Button
                   color="gold"

@@ -3,7 +3,6 @@ import { Modal } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import UpdateCustomerProduct from "../form/updateCustomerProduct";
 
-
 interface UpdateCustomerProps {
   customerId: string;
   ProductId: string;
@@ -20,8 +19,6 @@ export const ProductUpdateModal: React.FC<UpdateCustomerProps> = ({
   product, // Pass the full customer data for update
 }) => {
   const handleUpdate = () => {
-  //  console.log("Updated payload:", updatedPayload);
-    // You can add additional logic here, like API calls, then close the modal.
     onClose();
   };
 
@@ -29,7 +26,7 @@ export const ProductUpdateModal: React.FC<UpdateCustomerProps> = ({
     <Modal
       title={
         <>
-          <EditOutlined /> Update Customer
+          <EditOutlined />
         </>
       }
       open={open}
@@ -45,7 +42,12 @@ export const ProductUpdateModal: React.FC<UpdateCustomerProps> = ({
         xxl: "40%",
       }}
     >
-      <UpdateCustomerProduct product={product}  customerId={customerId} ProductId={ProductId} onUpdate={handleUpdate} />
+      <UpdateCustomerProduct
+        product={product}
+        customerId={customerId}
+        ProductId={ProductId}
+        onUpdate={handleUpdate}
+      />
     </Modal>
   );
 };
