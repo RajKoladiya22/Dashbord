@@ -92,21 +92,21 @@ export const GuestLayout = () => {
           {!isMobile ? (
             <>
               <Flex gap="small">
-                <Link to={PATH_DOCS.productRoadmap} target="_blank">
+                {/* <Link to={PATH_DOCS.productRoadmap} target="_blank">
                   <Button icon={<ProductOutlined />} type="link">
                     Product Roadmap
                   </Button>
-                </Link>
-                <Link to={PATH_DOCS.components} target="_blank">
+                </Link> */}
+                {/* <Link to={PATH_DOCS.components} target="_blank">
                   <Button icon={<AppstoreAddOutlined />} type="link">
                     Components
                   </Button>
-                </Link>
-                <Link to={PATH_GITHUB.repo} target="_blank">
+                </Link> */}
+                {/* <Link to={PATH_GITHUB.repo} target="_blank">
                   <Button icon={<GithubOutlined />} type="link">
                     Give us a star
                   </Button>
-                </Link>
+                </Link> */}
                 <Link to={PATH_AUTH.signin}>
                   <Button icon={<LoginOutlined />} type="primary">
                     Live Preview

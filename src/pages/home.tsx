@@ -5,7 +5,7 @@ import {
   PATH_CORPORATE,
   PATH_DASHBOARD,
   PATH_ERROR,
-  PATH_GITHUB,
+  // PATH_GITHUB,
   PATH_USER_PROFILE,
 } from '../constants';
 import { Link } from 'react-router-dom';
@@ -17,7 +17,7 @@ import {
   EditOutlined,
   FileOutlined,
   FormatPainterOutlined,
-  GithubOutlined,
+  // GithubOutlined,
   LoginOutlined,
   MergeCellsOutlined,
   PieChartOutlined,
@@ -205,15 +205,14 @@ export const HomePage = () => {
                 }}
               >
                 A dynamic and versatile multipurpose{' '}
-                <span className="text-highlight">dashboard</span> template built
+                <span className="text-highlight">dashboard</span> built
                 using <span className="text-highlight">React</span>,{' '}
                 <span className="text-highlight">Vite</span>,{' '}
                 <span className="text-highlight">Ant Design</span>, and{' '}
                 <span className="text-highlight">Storybook</span>{' '}
               </Title>
               <Text style={{ fontSize: 20, marginBottom: '1.5rem' }}>
-                <span className="text-highlight fw-bolder">60+</span> ready made
-                components to use.
+                <span className="text-highlight fw-bolder">60+</span> features.
               </Text>
               <Flex
                 gap="middle"
@@ -230,7 +229,7 @@ export const HomePage = () => {
                     Live preview
                   </Button>
                 </Link>
-                <Link to={PATH_GITHUB.repo}>
+                {/* <Link to={PATH_GITHUB.repo}>
                   <Button
                     icon={<GithubOutlined />}
                     type="default"
@@ -239,7 +238,7 @@ export const HomePage = () => {
                   >
                     Give us a star
                   </Button>
-                </Link>
+                </Link> */}
               </Flex>
             </Col>
             {!isTablet && (
@@ -334,7 +333,7 @@ export const HomePage = () => {
           ))}
         </Row>
       </Container>
-      <Card
+      {/* <Card
         style={{
           width: isMobile ? '95%' : 500,
           margin: '0 auto',
@@ -355,7 +354,7 @@ export const HomePage = () => {
             Submit an issue
           </Button>
         </Flex>
-      </Card>
+      </Card> */}
     </div>
   );
 };
