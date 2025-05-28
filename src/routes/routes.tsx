@@ -26,7 +26,6 @@ import {
   CustomFieldsListPage,
 } from "../pages";
 import ProtectedRoute from "../utils/ProtectedRoute";
-import { PlanLayout } from "../pages/plan";
 
 // Custom scroll restoration function
 export const ScrollToTop: React.FC = () => {
@@ -132,7 +131,7 @@ const router = createBrowserRouter([
   },
   // ProtectedRoute : admin
   {
-    element: <ProtectedRoute allowedRoles={["admin","super_admin"]} />,
+    element: <ProtectedRoute allowedRoles={["admin"]} />,
     children: [
       // Partner Team
       {
@@ -162,24 +161,12 @@ const router = createBrowserRouter([
           },
         ],
       },
-      // Plan SuperAdmin
-      {
-        path: "/plan",
-        element: <PageWrapper children={<DashboardLayout />} />,
-        errorElement: <ErrorPage />,
-        children: [
-          {
-            path: "",
-            element: <PlanLayout />,
-          },
-        ],
-      },
     ],
   },
   // ProtectedRoute : admin, partner, team_member
   {
     element: (
-      <ProtectedRoute allowedRoles={["admin", "partner", "team_member", "super_admin"]} />
+      <ProtectedRoute allowedRoles={["admin", "partner", "team_member"]} />
     ),
     children: [
       // dashboards
