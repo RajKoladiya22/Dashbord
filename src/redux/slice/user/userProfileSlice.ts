@@ -2,7 +2,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance";
 import {
-  ChangePassword,
   User,
   UserProfileResponse,
   UserProfileState,
@@ -14,10 +13,8 @@ export const fetchUserProfile = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get<UserProfileResponse>(
-        "/auth/profile"
+        "/users/profile"
       );
-      // console.log(response.data);
-
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
@@ -32,8 +29,8 @@ export const updateUserProfile = createAsyncThunk(
   "userProfile/updateUserProfile",
   async (payload: Partial<User>, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.patch<UserProfileResponse>(
-        "/auth/profile",
+      const response = await axiosInstance.put<UserProfileResponse>(
+        "/users/update-profile",
         payload
       );
       return response.data;
@@ -62,28 +59,6 @@ export const deleteUserProfile = createAsyncThunk(
   }
 );
 
-
-
-// Change Password
-export const changePassword = createAsyncThunk<
-ChangePassword,
-ChangePassword
->("userProfile/changePassword", async (payload, { rejectWithValue }) => {
-  try {
-    const response = await axiosInstance.post<ChangePassword>(
-      "/auth/reset-password",
-      payload
-    );
-    // console.log(response);
-
-    return response.data;
-  } catch (error: any) {
-    return rejectWithValue(
-      error.response?.data?.message || "Failed to change password"
-    );
-  }
-});
-
 const initialState: UserProfileState = {
   profile: null,
   loading: false,
@@ -104,7 +79,7 @@ const userProfileSlice = createSlice({
       fetchUserProfile.fulfilled,
       (state, action: PayloadAction<UserProfileResponse>) => {
         state.loading = false;
-        state.profile = action.payload.data.profile;
+        state.profile = action.payload.data.user;
       }
     );
     builder.addCase(fetchUserProfile.rejected, (state, action) => {
@@ -121,7 +96,7 @@ const userProfileSlice = createSlice({
       updateUserProfile.fulfilled,
       (state, action: PayloadAction<UserProfileResponse>) => {
         state.loading = false;
-        state.profile = action.payload.data.profile;
+        state.profile = action.payload.data.user;
       }
     );
     builder.addCase(updateUserProfile.rejected, (state, action) => {
@@ -139,20 +114,6 @@ const userProfileSlice = createSlice({
       state.profile = null;
     });
     builder.addCase(deleteUserProfile.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
-
-    // Change password
-    builder.addCase(changePassword.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(changePassword.fulfilled, (state) => {
-      state.loading = false;
-      state.profile = null;
-    });
-    builder.addCase(changePassword.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });

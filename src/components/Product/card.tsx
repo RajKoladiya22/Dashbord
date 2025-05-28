@@ -71,7 +71,7 @@ export const ProductList: React.FC = () => {
     }, 300); // debounce to reduce calls
 
     return () => clearTimeout(delayDebounce);
-  }, [dispatch, filterStatus, searchQuery]);  
+  }, [dispatch, filterStatus, searchQuery]);
 
   // console.log("products-->", products);
 
