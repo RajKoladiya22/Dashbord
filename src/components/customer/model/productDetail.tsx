@@ -30,15 +30,15 @@ const { Text } = Typography;
 
 
 interface productDetailModalProps {
-  customer: Customer;
+  products: Customer;
   onClose: () => void;
 }
 
 export const ProductDetailModal: React.FC<productDetailModalProps> = ({
-  customer,
+  products,
   onClose,
 }) => {
-  // console.log("products------>", products);
+  console.log("products------>", products);
   const [editingProduct, setEditingProduct] = useState<{
     customerId: string;
     product: any;
