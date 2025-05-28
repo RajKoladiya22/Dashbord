@@ -24,8 +24,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     (state: RootState) => state.auth?.currentUser?.data?.user ?? null
   );
   // console.log("user--->", user);
+  // console.log("token--->", token);
+  
 
   const isAuthenticated = Boolean(token);
+
+  // console.log("isAuthenticated-->", isAuthenticated);
+  
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user }}>

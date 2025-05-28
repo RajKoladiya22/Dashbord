@@ -7,6 +7,7 @@ import {
   // CheckCircleOutlined,
   InfoCircleOutlined,
   PlusOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 import type { TableColumnsType } from "antd";
 import {
@@ -21,6 +22,7 @@ import {
   Input,
   Tooltip,
   Typography,
+  Upload,
 } from "antd";
 
 import { useAppDispatch } from "../../../hooks";
@@ -46,11 +48,19 @@ export const CustomerList: React.FC = () => {
   const { customers, meta, loading, error } = useSelector(
     (state: RootState) => state.customer
   );
+
+  console.log("customers----->", customers);
+  console.log("meta----->", meta);
+  console.log("loading----->", loading);
+  console.log("error----->", error);
+
+=======
   // console.log("customers----->", customers);
   // console.log("meta----->", meta);
   // console.log("loading----->", loading);
   // console.log("error----->", error);
   
+
 
   const customersData = customers;
 
@@ -174,9 +184,8 @@ export const CustomerList: React.FC = () => {
             )}
 
             <Popconfirm
-              title={`Change status to ${
-                record.status ? "Inactive" : "Active"
-              }?`}
+              title={`Change status to ${record.status ? "Inactive" : "Active"
+                }?`}
               // description={`Are you sure to Inactive ${record.companyName}?`}
               onConfirm={() => handleToggleStatus(record)}
               okText="Confirm"
@@ -255,10 +264,17 @@ export const CustomerList: React.FC = () => {
               <Link to="/customer/addcustomer">
                 <Button icon={<PlusOutlined />}>New Customer</Button>
               </Link>
+              {/* <Form.Item label="Upload" valuePropName="fileList" getValueFromEvent={normFile}> */}
+              <Upload action="/upload.do" listType="picture">
+                <Button icon={<UploadOutlined />}>
+                  CSV or XL File
+                </Button>
+              </Upload>
+              {/* </Form.Item> */}
             </Space>
           }
           bordered={false}
-          //  headStyle={{ borderBottom: '1px solid #f0f0f0' }}
+        //  headStyle={{ borderBottom: '1px solid #f0f0f0' }}
         >
           <div className="filter-bar" style={{ marginBottom: 24 }}>
             <Space size="middle" wrap>

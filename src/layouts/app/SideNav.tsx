@@ -22,6 +22,7 @@ import {
   ShoppingOutlined,
   PicCenterOutlined,
   UsergroupAddOutlined,
+  MoneyCollectOutlined,
 } from "@ant-design/icons";
 
 import { Logo } from "../../components";
@@ -43,6 +44,7 @@ import {
 } from "../../constants";
 import { COLOR } from "../../App.tsx";
 import { useAuth } from "../../context";
+import { PATH_PLAN } from "../../constants/routes.ts";
 
 const { Sider } = Layout;
 
@@ -153,7 +155,7 @@ const SideNav: React.FC<SiderProps> = React.memo(({ ...others }) => {
       );
     }
 
-    if (user?.role === "admin") {
+    if (user?.role === "admin" || user?.role === "super_admin") {
       items.push(
         getItem("Admin", "Admin", null, [], "group"),
         getItem(
@@ -164,11 +166,16 @@ const SideNav: React.FC<SiderProps> = React.memo(({ ...others }) => {
         getItem("Partner/Team", "partner-team", <UsergroupAddOutlined />, [
           getItem(<Link to={PATH_PARTNER_TEAM.team}>Team</Link>, "team", null),
           getItem(
-            <Link to={PATH_PARTNER_TEAM.partner}>Partner</Link>,
+            <Link to={PATH_PARTNER_TEAM.partner}>Partner</Link>,         
             "partner",
             null
           ),
-        ])
+        ]),
+        getItem(
+          <Link to={PATH_PLAN.root}>Plan</Link>,
+          "plan",
+          <MoneyCollectOutlined />
+        )
       );
     }
 
@@ -285,7 +292,7 @@ const SideNav: React.FC<SiderProps> = React.memo(({ ...others }) => {
     [openKeys]
   );
 
-  const onMenuClick = useCallback((e:any) => {
+  const onMenuClick = useCallback((e: any) => {
     setCurrent(e.key);
   }, []);
 
