@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Plan } from '../../types/plan.type';
-import { useAppDispatch } from '../../hooks';
-import { Button, Card, Col, DatePicker, Form, Input, InputNumber, message, Modal, Row, Select } from 'antd';
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
+// import { useAppDispatch } from '../../hooks';
+import { Button, Card, Col, DatePicker, Form, Input, InputNumber, message, Modal, Row, 
+    // Select
+ } from 'antd';
+import { MinusCircleOutlined, 
+    // PlusOutlined
+ } from '@ant-design/icons'
 
 interface EditPlanModalProps {
     visible: boolean;
@@ -16,8 +20,10 @@ export const EditPlanModel: React.FC<EditPlanModalProps> = ({
     onCancel,
 }) => {
     const [form] = Form.useForm();
-    const dispatch = useAppDispatch();
-    const [loading, setLoading] = useState(false);
+    // const dispatch = useAppDispatch();
+    const [loading, 
+        // setLoading
+    ] = useState(false);
 
     useEffect(() => {
         if (plan) {

@@ -164,7 +164,7 @@ export const UserAccountLayout: React.FC = React.memo(() => {
   const [isPasswordRight, setIsPasswordRight] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [form] = Form.useForm();
-  // console.log(profile);
+  console.log(isPasswordRight, "isPasswordRight");
 
   // Handlers wrapped in useCallback to avoid re-creating on every render 
   const showModal = useCallback(() => {

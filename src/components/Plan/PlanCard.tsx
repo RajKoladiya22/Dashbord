@@ -8,7 +8,7 @@ import { deletePlan, fetchAllPlans, togglePlanStatus } from '../../redux/slice/p
 import { CheckCircleTwoTone, DeleteOutlined, EditOutlined, SearchOutlined, StopTwoTone } from '@ant-design/icons'
 import AutoDismissAlert from '../Alert';
 import { Plan } from '../../types/plan.type';
-import { EditPlanModel } from './EditPlanModel';
+// import { EditPlanModel } from './EditPlanModel';
 import dayjs from 'dayjs';
 
 const { Text, Title } = Typography;
@@ -22,7 +22,7 @@ export const PlanCard: React.FC = () => {
     const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
     const [editing, setEditing] = useState<Plan | null>(null);
 
-    // console.log(plans);
+    console.log(editing, "editing plan");
 
     const showModal = useCallback((plan: Plan) => {
         setSelectedPlan(plan);
