@@ -124,18 +124,15 @@ import {
   message,
   theme,
   Typography,
-  Space,
-  Modal,
 } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { Card } from "../../components";
 import { useStylesContext } from "../../context";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useAppDispatch } from "../../hooks";
 import {
-  changePassword,
   fetchUserProfile,
   updateUserProfile,
 } from "../../redux/slice/user/userProfileSlice";
@@ -144,38 +141,19 @@ const { Link } = Typography;
 
 import "./styles.css";
 
-type ChangePassword = {
-  currentPassword: string,
-  newPassword: string
-}
-
-export const UserAccountLayout: React.FC = React.memo(() => {
+export const UserAccountLayout : React.FC = React.memo(() => {
   const {
     token: { borderRadius },
   } = theme.useToken();
   const dispatch = useAppDispatch();
-  const { profile, loading,
+  const { profile, loading, 
     // error
-  } = useSelector(
+   } = useSelector(
     (state: RootState) => state.profile || {}
   );
   const stylesContext = useStylesContext();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isPasswordRight, setIsPasswordRight] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [form] = Form.useForm();
-  // console.log(profile);
-
-  // Handlers wrapped in useCallback to avoid re-creating on every render 
-  const showModal = useCallback(() => {
-    setIsModalVisible(true);
-  }, []);
-
-  const handleCancel = useCallback(() => {
-    setIsModalVisible(false);
-    setIsPasswordRight(false);
-    form.resetFields();
-  }, [form]);
 
   useEffect(() => {
     if (!profile) {
@@ -185,12 +163,11 @@ export const UserAccountLayout: React.FC = React.memo(() => {
     }
   }, [dispatch, profile, form]);
 
-
   const DESCRIPTION_ITEMS: DescriptionsProps["items"] = [
     {
       key: "first-name",
       label: "First Name",
-      children: <span>{profile?.firstName}</span>,
+      children: <span>{profile?.firstName}</span>, 
     },
     {
       key: "last-name",
@@ -211,8 +188,8 @@ export const UserAccountLayout: React.FC = React.memo(() => {
       key: "telephone",
       label: "Phone",
       children: (
-        <Link href={`tel:${profile?.contactInfo?.contactNumber}`}>
-          {profile?.contactInfo?.contactNumber}
+        <Link href={`tel:${profile?.contactNumber}`}>
+          {profile?.contactNumber}
         </Link>
       ),
     },
@@ -255,35 +232,14 @@ export const UserAccountLayout: React.FC = React.memo(() => {
     }
   };
 
-  // handleChangePassword wrapped in useCallback to keep referential integrity 
-  const handleChangePassword = useCallback(
-    async (values: ChangePassword) => {
-      const payload = {
-        oldPassword: values.currentPassword,
-        newPassword: values.newPassword
-      }
-      // console.log('payload ---------> ' + payload);
-      try {
-        await dispatch(changePassword(payload)).unwrap(); // dispatch thunk
-        message.success("Password Changed successfully!");
-        form.resetFields();
-        setIsModalVisible(false);
-      } catch (err: any) {
-        console.error(err);
-        message.error("Failed to Change Password");
-      }
-    },
-    [dispatch, form]
-  );
-
   return (
     <Card className="user-profile-card-nav card"
-      actions={[
-        <div style={{ padding: "5px", textAlign: "end" }}>
-          <Typography.Text type="danger" strong>
-            delete account?
-          </Typography.Text>
-          {/* <Button
+    actions={[
+      <div style={{ padding: "5px", textAlign: "end" }}>
+        <Typography.Text type="danger" strong>
+          delete account?
+        </Typography.Text>
+        {/* <Button
           type="default"
           danger
           // onClick={handleDelete}
@@ -291,9 +247,9 @@ export const UserAccountLayout: React.FC = React.memo(() => {
         >
           Delete
         </Button> */}
-        </div>
-      ]
-      }
+      </div>
+    ]
+    }
     >
       <Row {...stylesContext?.rowProps}>
         <Col xs={24} sm={8} lg={4}>
@@ -315,23 +271,23 @@ export const UserAccountLayout: React.FC = React.memo(() => {
               // initialValues={profile}
               onFinish={handleSubmit}
             >
-              <Form.Item name="firstName" label="First Name" rules={[{ required: true, message: 'Please input the First Name' }]}>
+              <Form.Item name="first_name" label="First Name">
                 <Input />
               </Form.Item>
-              <Form.Item name="lastName" label="Last Name" rules={[{ required: true, message: 'Please input the Last Name' }]}>
+              <Form.Item name="last_name" label="Last Name">
                 <Input />
               </Form.Item>
-              <Form.Item name="companyName" label="Company Name" rules={[{ required: true, message: 'Please input the Company Name' }]}>
+              <Form.Item name="company_name" label="Company Name">
                 <Input />
               </Form.Item>
-              <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Please input the Email' }]}>
+              <Form.Item name="email" label="Email">
                 <Input />
               </Form.Item>
-              <Form.Item name={["contactInfo", "contactNumber"]} label="Phone" rules={[{ required: true, message: 'Please input the Phone Number' }]}>
+              <Form.Item name="contact_number" label="Phone">
                 <Input />
               </Form.Item>
               <Form.Item
-                name="planStatus"
+                name="plan_status"
                 label="Plan Status (ONLY AT TESTING MODE)"
               >
                 <Input />
@@ -365,164 +321,23 @@ export const UserAccountLayout: React.FC = React.memo(() => {
                 items={DESCRIPTION_ITEMS}
                 column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 4 }}
                 extra={
-                  <Space>
-                    <Button
-                      color="gold"
-                      variant="outlined"
-                      icon={<EditOutlined />}
-                      onClick={toggleEditMode}
-                      loading={loading}
-                    >
-                      Edit Profile
-                    </Button>
-                    <Button
-                      color="orange"
-                      variant="outlined"
-                      icon={<EditOutlined />}
-                      onClick={showModal}
-                      loading={loading}
-                    >
-                      Change Password
-                    </Button>
-                    <Modal
-                      title="Change Password"
-                      open={isModalVisible}
-                      onCancel={handleCancel}
-                      footer={null}
-                      destroyOnClose
-                      width={500}
-                    >
-                      {/* <Form
-                        form={form}
-                        layout="vertical"
-                        onFinish={checkCurrentPassword}
-                        autoComplete="off"
-                        requiredMark={false}
-                      >
-                        <Form.Item
-                          label="Current Password"
-                          name="currentPassword"
-                          rules={[{ required: true, message: "Please input the Current Password!" }]}
-                        >
-                          <Input.Password placeholder="Current Password" disabled={isPasswordRight ? true : false} />
-                        </Form.Item>
-                        {!isPasswordRight && (
-                          <Form.Item>
-                            <Button type="primary" htmlType="submit" loading={loading} block>
-                              Check Password
-                            </Button>
-                          </Form.Item>
-                        )}
-                      </Form>
-                      {isPasswordRight && (
-                        <>
-                          <Form
-                            form={form}
-                            layout="vertical"
-                            // onFinish={updatePassword}
-                            autoComplete="off"
-                            requiredMark={false}
-                          >
-                            <Form.Item
-                              label="New Password"
-                              name="newPassword"
-                              rules={[{ required: true, message: "Please input the New Password!" }]}
-                              hasFeedback
-                            >
-                              <Input.Password placeholder="New Password" />
-                            </Form.Item>
-                            <Form.Item
-                              label="Confirm Password"
-                              name="confirmPassword"
-                              rules={[
-                                { required: true, message: "Please input the Confirm Password!" },
-                                ({ getFieldValue }) => ({
-                                  validator(_, value) {
-                                    if (!value || getFieldValue("newPassword") === value) {
-                                      return Promise.resolve();
-                                    }
-                                    return Promise.reject(
-                                      new Error('Passwords do not match!')
-                                    )
-                                  }
-                                })
-                              ]}
-                              hasFeedback
-                            >
-                              <Input.Password placeholder="Confirm Password" />
-                            </Form.Item>
-                            <Button
-                              type="primary"
-                              htmlType="submit"
-                              loading={loading}
-                              block
-                            >
-                              Update Password
-                            </Button>
-                          </Form>
-                        </>
-                      )} */}
-                      <Form
-                        form={form}
-                        layout="vertical"
-                        onFinish={handleChangePassword}
-                        autoComplete="off"
-                        requiredMark={false}
-                      >
-                        <Form.Item
-                          label="Current Password"
-                          name="currentPassword"
-                          rules={[{ required: true, message: "Please input the Current Password!" }]}
-                        >
-                          <Input.Password placeholder="Current Password" />
-                        </Form.Item>
-                        <Form.Item
-                          label="New Password"
-                          name="newPassword"
-                          rules={[{ required: true, message: "Please input the New Password!" }]}
-                          hasFeedback
-                        >
-                          <Input.Password placeholder="New Password" />
-                        </Form.Item>
-                        <Form.Item
-                          label="Confirm Password"
-                          name="confirmPassword"
-                          rules={[
-                            { required: true, message: "Please input the Confirm Password!" },
-                            ({ getFieldValue }) => ({
-                              validator(_, value) {
-                                if (!value || getFieldValue("newPassword") === value) {
-                                  return Promise.resolve();
-                                }
-                                return Promise.reject(
-                                  new Error('Passwords do not match!')
-                                )
-                              }
-                            })
-                          ]}
-                          hasFeedback
-                        >
-                          <Input.Password placeholder="Confirm Password" />
-                        </Form.Item>
-                        <Button
-                          type="primary"
-                          htmlType="submit"
-                          loading={loading}
-                          block
-                        >
-                          Change Password
-                        </Button>
-                      </Form>
-                    </Modal>
-                  </Space>
+                  <Button
+                    color="gold"
+                    variant="outlined"
+                    icon={<EditOutlined />}
+                    onClick={toggleEditMode}
+                    loading={loading}
+                  >
+                    Edit Profile
+                  </Button>
                 }
-
+                
               />
             </>
           )}
         </Col>
       </Row>
-    </Card >
+    </Card>
   );
 });
 

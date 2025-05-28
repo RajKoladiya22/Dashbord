@@ -18,7 +18,6 @@ const STATIC_API_KEY = "Q0@gZ@dY7[jGQ/GRc@D9KSCX#U2Yz";
 const axiosInstance = axios.create({
   baseURL: "https://cpm.magicallysoft.com/api/v1",
   // baseURL: "http://localhost:3000/api/v1",
-  // baseURL: "https://7102-49-36-80-107.ngrok-free.app/api/v1",
   withCredentials: true, // Ensures cookies are sent with requests if needed.
   headers: {
     "Content-Type": "application/json",

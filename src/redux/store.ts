@@ -1,18 +1,17 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import themeReducer, { ThemeState } from "./theme/themeSlice";
-import { persistReducer, persistStore, PersistConfig } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import authReducer from "./slice/auth/authSlice";
-import customerReducer from "./slice/customer/addcustomerSlice";
-import userReducer from "./slice/user/userProfileSlice";
-import teamReducer from "./slice/auth/teamRegisterSlice";
-import teamMemberReducer from "./slice/team/teamMemberSlice";
-import partnerMemberReducer from "./slice/partner/partnerMemberSlice";
-import partnerReducer from "./slice/auth/partnerRegisterSlice";
-import customFieldsReducer from "./slice/customer/customfieldSlice";
-import productsReducer from "./slice/products/productSlice";
-import reminderReducer from "./slice/products/reminder.slice";
-import planReducer from "./slice/plan/planSlice";
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import themeReducer, { ThemeState } from './theme/themeSlice';
+import { persistReducer, persistStore, PersistConfig } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import authReducer from './slice/auth/authSlice';
+import customerReducer from './slice/customer/addcustomerSlice';
+import userReducer from './slice/user/userProfileSlice';
+import teamReducer from './slice/auth/teamRegisterSlice';
+import teamMemberReducer from './slice/team/teamMemberSlice'
+import partnerMemberReducer from './slice/partner/partnerMemberSlice'
+import partnerReducer from './slice/auth/partnerRegisterSlice';
+import customFieldsReducer from './slice/customer/customfieldSlice'
+import productsReducer from './slice/products/productSlice'
+import reminderReducer from './slice/products/reminder.slice'
 
 // Define the state shape
 interface RootState {
@@ -20,14 +19,13 @@ interface RootState {
   customer: ReturnType<typeof customerReducer>;
   auth: ReturnType<typeof authReducer>;
   profile: ReturnType<typeof userReducer>;
-  team: ReturnType<typeof teamReducer>;
-  teamMember: ReturnType<typeof teamMemberReducer>;
-  partner: ReturnType<typeof partnerReducer>;
-  partnerMember: ReturnType<typeof partnerMemberReducer>;
+  team: ReturnType<typeof teamReducer>; 
+  teamMember : ReturnType<typeof teamMemberReducer>
+  partner: ReturnType<typeof partnerReducer>; 
+  partnerMember: ReturnType<typeof partnerMemberReducer>; 
   customFields: ReturnType<typeof customFieldsReducer>;
   products: ReturnType<typeof productsReducer>;
   reminders: ReturnType<typeof reminderReducer>;
-  plans: ReturnType<typeof planReducer>;
 }
 
 // Combine reducers
@@ -36,22 +34,21 @@ const rootReducer = combineReducers({
   customer: customerReducer,
   auth: authReducer,
   profile: userReducer,
-  team: teamReducer,
+  team: teamReducer, 
   teamMember: teamMemberReducer,
-  partner: partnerReducer,
-  partnerMember: partnerMemberReducer,
+  partner: partnerReducer, 
+  partnerMember: partnerMemberReducer, 
   customFields: customFieldsReducer,
   products: productsReducer,
   reminders: reminderReducer,
-  plans: planReducer,
 });
 
 // Persist config with RootState
 const persistConfig: PersistConfig<RootState> = {
-  key: "root",
+  key: 'root',
   storage,
   version: 1,
-  whitelist: ["auth", "team", "partner"],
+  whitelist: ['auth', 'team', 'partner']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -65,7 +62,7 @@ export const store = configureStore({
       // Faster dev experience without full disable
       // ignoredActions: ['persist/PERSIST'],
     }),
-  // devTools: process.env.NODE_ENV !== 'production',
+    // devTools: process.env.NODE_ENV !== 'production',
 });
 
 // Persistor
@@ -75,3 +72,4 @@ export const persistor = persistStore(store);
 export type { RootState };
 
 export type AppDispatch = typeof store.dispatch;
+
