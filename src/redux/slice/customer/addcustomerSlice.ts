@@ -1,7 +1,13 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance";
-import { Customer, ListCustomerResponse, CustomerResponse, ListParams, UpdateArgs, CustomerState } from "../../../types/customer.type";
-
+import {
+  Customer,
+  ListCustomerResponse,
+  CustomerResponse,
+  ListParams,
+  UpdateArgs,
+  CustomerState,
+} from "../../../types/customer.type";
 
 // 1) Create Customer thunk
 export const createCustomer = createAsyncThunk<
@@ -28,44 +34,44 @@ export const createCustomer = createAsyncThunk<
 
 // 2) List Customers thunk
 export const listCustomers = createAsyncThunk<
-  { customers: Customer[]; meta: { total: number; page: number; limit: number; pages: number } },
+  {
+    customers: Customer[];
+    meta: { total: number; page: number; limit: number; pages: number };
+  },
   ListParams,
   { rejectValue: string }
->(
-  "customers/listCustomers",
-  async (params, { rejectWithValue }) => {
-    try {
-      const {
-        page = 1,
-        limit = 10,
-        q = '',
-        status = true,
-        sortBy = 'companyName',
-        sortOrder = 'asc',
-      } = params || {};
+>("customers/listCustomers", async (params, { rejectWithValue }) => {
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      q = "",
+      status = true,
+      sortBy = "companyName",
+      sortOrder = "asc",
+    } = params || {};
 
-      const query = new URLSearchParams({
-        page: page.toString(),
-        limit: limit.toString(),
-        q,
-        status: String(status),
-        sortBy,
-        sortOrder,
-      });
+    const query = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      q,
+      status: String(status),
+      sortBy,
+      sortOrder,
+    });
 
-      const response = await axiosInstance.get<ListCustomerResponse>(
-        `/customer/list?${query.toString()}`
-      );
+    const response = await axiosInstance.get<ListCustomerResponse>(
+      `/customer/list?${query.toString()}`
+    );
 
-      const { customers, meta } = response.data.data;
-      return { customers, meta };
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || "Failed to fetch customers"
-      );
-    }
+    const { customers, meta } = response.data.data;
+    return { customers, meta };
+  } catch (err: any) {
+    return rejectWithValue(
+      err.response?.data?.message || "Failed to fetch customers"
+    );
   }
-);
+});
 
 // 3) Update Customer thunk
 export const updateCustomer = createAsyncThunk<
@@ -116,7 +122,10 @@ export const toggleCustomerStatus = createAsyncThunk<
   { rejectValue: string }
 >("customers/toggleStatus", async ({ id, status }, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.patch<CustomerResponse>(`/customer/status/${id}`, { status });
+    const response = await axiosInstance.patch<CustomerResponse>(
+      `/customer/status/${id}`,
+      { status }
+    );
     if (response.status !== 200 || !response.data.success) {
       throw new Error("Failed to update team status");
     }
@@ -127,6 +136,57 @@ export const toggleCustomerStatus = createAsyncThunk<
     return rejectWithValue(err.response?.data?.message || err.message);
   }
 });
+
+// 6) Customer Product Update thunk
+// export const updateCustomerProduct = createAsyncThunk<
+//   Product, // return type is a single customer
+//   ProUpdateArgs, // { customerId, ProductId, data }
+//   { rejectValue: string }
+// >("customers/updateCustomer", async ({ customerId,ProductId, data }, { rejectWithValue }) => {
+//   try {
+//     const response = await axiosInstance.patch<CustomerResponse>(
+//       `/customer/product/update/${customerId}/${ProductId}`,
+//       data
+//     );
+
+//     // console.log("CustomerState------>", response);
+//     // console.log("response----customers------>", response.data.data.customer);
+
+//     // Cast the API’s array back to a single object
+//     const arr = response.data.data.customer;
+//     return Array.isArray(arr) ? arr[0] : (arr as Customer);
+//   } catch (err: any) {
+//     return rejectWithValue(
+//       err.response?.data?.message || "Failed to update customer"
+//     );
+//   }
+// });
+export const updateSingleProduct = createAsyncThunk(
+  "customer/updateSingleProduct",
+  async (
+    {
+      customerId,
+      ProductId,
+      data,
+    }: { customerId: string; ProductId: string; data: any },
+    { rejectWithValue }
+  ) => {
+    try {
+      console.log(customerId, ProductId);
+
+      const response = await axiosInstance.patch(
+        `/customer/product/update/${customerId}/${ProductId}`,
+        data
+      );
+
+      console.log("Response from updateSingleProduct:", response.data.customer);
+
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
 
 const initialState: CustomerState = {
   customers: [],
@@ -164,7 +224,13 @@ const customerSlice = createSlice({
     });
     builder.addCase(
       listCustomers.fulfilled,
-      (state, action: PayloadAction<{ customers: Customer[]; meta: { total: number; page: number; limit: number; pages: number } }>) => {
+      (
+        state,
+        action: PayloadAction<{
+          customers: Customer[];
+          meta: { total: number; page: number; limit: number; pages: number };
+        }>
+      ) => {
         state.loading = false;
         state.customers = action.payload.customers;
         state.meta = action.payload.meta;
@@ -193,6 +259,27 @@ const customerSlice = createSlice({
       state.loading = false;
       state.error = action.payload as string;
     });
+
+    // Update product
+    builder.addCase(updateSingleProduct.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(
+      updateSingleProduct.fulfilled,
+      (state, action: PayloadAction<Customer>) => {
+        state.loading = false;
+        const updated = action.payload;
+        state.customers = state.customers.map((c) =>
+          c.id === updated.id ? updated : c
+        );
+      }
+    );
+    builder.addCase(updateSingleProduct.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+
     builder.addCase(deleteCustomer.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -211,21 +298,21 @@ const customerSlice = createSlice({
       state.error = action.payload as string;
     });
 
-        // toggleProductStatus handlers
-        builder.addCase(toggleCustomerStatus.pending, (state) => {
-          state.loading = true;
-          state.error = null;
-        });
-        builder.addCase(toggleCustomerStatus.fulfilled, (state, action: any) => {
-          state.loading = false;
-          state.customers = state.customers?.filter(
-            (p: any) => p.id !== action.payload.id
-          );
-        });
-        builder.addCase(toggleCustomerStatus.rejected, (state, action) => {
-          state.loading = false;
-          state.error = action.payload || "Could not toggle status";
-        });
+    // toggleProductStatus handlers
+    builder.addCase(toggleCustomerStatus.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(toggleCustomerStatus.fulfilled, (state, action: any) => {
+      state.loading = false;
+      state.customers = state.customers?.filter(
+        (p: any) => p.id !== action.payload.id
+      );
+    });
+    builder.addCase(toggleCustomerStatus.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload || "Could not toggle status";
+    });
   },
 });
 

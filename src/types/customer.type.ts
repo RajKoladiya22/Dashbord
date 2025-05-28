@@ -54,6 +54,13 @@ export interface UpdateArgs {
   id: string;
   data: Partial<Customer>;
 }
+export interface ProUpdateArgs {
+  customerId: string;
+  ProductId: string;
+  data: Partial<Product>;
+}
+
+
 
 export interface ListParams {
   page?: number;

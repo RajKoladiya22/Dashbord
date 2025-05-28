@@ -48,10 +48,18 @@ export const CustomerList: React.FC = () => {
   const { customers, meta, loading, error } = useSelector(
     (state: RootState) => state.customer
   );
+
   console.log("customers----->", customers);
   console.log("meta----->", meta);
   console.log("loading----->", loading);
   console.log("error----->", error);
+
+=======
+  // console.log("customers----->", customers);
+  // console.log("meta----->", meta);
+  // console.log("loading----->", loading);
+  // console.log("error----->", error);
+  
 
 
   const customersData = customers;
@@ -158,11 +166,9 @@ export const CustomerList: React.FC = () => {
                   color="geekblue"
                   variant="outlined"
                   icon={<ProductOutlined />}
-                  // icon={<EyeOutlined />}
                   onClick={() => setViewProducts(record)}
                 >
                   Products
-                  {/* View */}
                 </Button>
                 <Button
                   color="gold"
@@ -350,7 +356,7 @@ export const CustomerList: React.FC = () => {
       )}
       {viewProducts && (
         <ProductDetailModal
-          products={viewProducts}
+          customer={viewProducts}
           onClose={() => setViewProducts(null)}
         />
       )}

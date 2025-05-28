@@ -28,7 +28,10 @@ import { useAppDispatch } from "../../../hooks";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { CustomFieldsModel } from "../model";
-import { updateCustomer } from "../../../redux/slice/customer/addcustomerSlice";
+import {
+  listCustomers,
+  updateCustomer,
+} from "../../../redux/slice/customer/addcustomerSlice";
 import { Customer } from "../../../types/customer.type";
 import { Partner } from "../../../types/partner.type";
 
@@ -105,7 +108,7 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
 
   // seed form values & dynamic list when `customer` arrives
   useEffect(() => {
-    // console.log("customer--------->", customer);
+    console.log("customer--------->", customer);
 
     form.setFieldsValue({
       company: customer.companyName,
@@ -121,16 +124,17 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
       area: customer.address?.area,
       address: customer.address?.street,
       adminCustomFields: customer.adminCustomFields || {},
-      // product:
-      //   customer.product?.map((pr) => ({
-      //     productId: pr.productId,
-      //     purchaseDate: dayjs(pr.purchaseDate),
-      //     renewal: pr.renewal,
-      //     renewPeriod: pr.renewPeriod,
-      //     expiryDate: pr.expiryDate ? dayjs(pr.expiryDate) : undefined,
-      //     renewalDate: pr.renewalDate ? dayjs(pr.renewalDate) : undefined,
-      //     details: pr.details,
-      //   })) || [],
+      // product: Array.isArray(customer.product)
+      //   ? customer.product.map((pr: any) => ({
+      //       productId: pr.productId ?? pr.id,
+      //       purchaseDate: dayjs(pr.purchaseDate),
+      //       renewal: pr.renewal,
+      //       renewPeriod: pr.renewPeriod,
+      //       expiryDate: pr.expiryDate ? dayjs(pr.expiryDate) : undefined,
+      //       renewalDate: pr.renewalDate ? dayjs(pr.renewalDate) : undefined,
+      //       details: pr.details,
+      //     }))
+      //   : [],
     });
     setSelectedState(customer.address?.state);
   }, [customer, form]);
@@ -192,6 +196,7 @@ export const UpdateCustomerForm: React.FC<UpdateCustomerFormProps> = ({
 
         console.log("customer data--->", data);
         await dispatch(updateCustomer({ id: customer.id, data })).unwrap();
+        dispatch(listCustomers({ status: true }));
         message.success("Customer updated successfully");
         onUpdate();
       } catch (e: any) {
