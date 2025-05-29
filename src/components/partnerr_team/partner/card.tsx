@@ -32,6 +32,8 @@ import {
   StopTwoTone,
   // TeamOutlined,
 } from "@ant-design/icons";
+// const { Meta } = Card;
+
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
@@ -91,8 +93,8 @@ export const PartnerList = () => {
     <>
       <Row
         gutter={[
-          { xs: 16, sm: 24, md: 32, lg: 32 },
-          { xs: 16, sm: 24, md: 32, lg: 32 },
+          { xs: 8, sm: 16, md: 24, lg: 32 },
+          { xs: 8, sm: 16, md: 24, lg: 32 },
         ]}
       >
         <Col span={24}>

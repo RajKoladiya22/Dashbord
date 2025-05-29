@@ -42,7 +42,7 @@ import { TeamMember } from "../../../types/team.type";
 import { AddInTeamButton } from "./AddInTeamButton";
 const { Text, Title } = Typography;
 
-const { Meta } = Card;
+// const { Meta } = Card;
 
 export const TeamList: React.FC = () => {
   const { teamMember, loading, error } = useSelector(
@@ -199,7 +199,7 @@ export const TeamList: React.FC = () => {
                         </span>,
                       ]}
                     >
-                      <Meta
+                      <Card.Meta
                         avatar={
                           <Avatar
                             src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
