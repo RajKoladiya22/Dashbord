@@ -22,7 +22,7 @@ export const PlanCard: React.FC = () => {
     const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
     const [editing, setEditing] = useState<Plan | null>(null);
 
-    console.log(editing, "editing plan");
+    console.log(editing, "editing" );
 
     const showModal = useCallback((plan: Plan) => {
         setSelectedPlan(plan);
@@ -95,7 +95,7 @@ export const PlanCard: React.FC = () => {
                     />,
 
                     // Delete icon — shown only if plan is inactive
-                    !plan.status && (
+                    !plan?.status && (
                         <DeleteOutlined
                             key="delete"
                             onClick={(e: any) => {
@@ -137,7 +137,7 @@ export const PlanCard: React.FC = () => {
             >
                 <Meta
                     title={plan.name}
-                    description={plan.id}
+                    description={plan.price}
                 />
             </Card>
         ),
@@ -219,8 +219,8 @@ export const PlanCard: React.FC = () => {
                             </Empty>
                         </Col>
                     ) : (
-                        plans.map((plan, index) => (
-                            <Col key={plan.id} xs={24} sm={12} md={8} lg={6} xl={6}>
+                        plans?.map((plan, index) => (
+                            <Col key={index} xs={24} sm={12} md={8} lg={6} xl={6}>
                                 <PlanUICard
                                     key={index}
                                     plan={plan}
@@ -230,7 +230,9 @@ export const PlanCard: React.FC = () => {
                                 />
                             </Col>
                         ))
-                    )}
+                    )
+                    
+                    }
                 </Row>
 
                 {/* Plan Detail Modal */}

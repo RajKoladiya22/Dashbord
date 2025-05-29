@@ -28,6 +28,14 @@ export interface PlanResponse {
     plan: Plan | Plan[];
   };
 }
+export interface PlanResponse2 {
+  status?: number;
+  success?: boolean;
+  message?: string;
+  data: {
+    plans: Plan | Plan[];
+  };
+}
 
 export interface PlanState {
   plans: Plan[];

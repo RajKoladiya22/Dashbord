@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../../utils/axiosInstance";
-import { Plan, PlanResponse, PlanState } from "../../../types/plan.type";
+import { Plan, PlanResponse, PlanResponse2, PlanState } from "../../../types/plan.type";
 
 // 1) Create a new plan
 export const createPlan = createAsyncThunk(
@@ -21,17 +21,17 @@ export const createPlan = createAsyncThunk(
 
 // 2) Fetch all plans
 export const fetchAllPlans = createAsyncThunk<
-  PlanResponse, // Return type: an array of plan.
+  PlanResponse2, // Return type: an array of plan.
   { status?: boolean; page?: number; limit?: number },
   { rejectValue: string }
 >(
   "plan/fetchAllPlans",
   async ({ status, page, limit }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get<PlanResponse>("/plan", {
+      const response = await axiosInstance.get("/plan", {
         params: { status, page, limit },
       });
-      // console.log(response.data);
+      console.log("PLAN RESPONCE",response.data);
 
       return response.data;
     } catch (error: any) {
@@ -113,13 +113,13 @@ const planSlice = createSlice({
     });
     builder.addCase(
       fetchAllPlans.fulfilled,
-      (state, action: PayloadAction<PlanResponse>) => {
-        // console.log(action);
+      (state, action: PayloadAction<PlanResponse2>) => {
+        // console.log(action.payload);
 
         state.loading = false;
-        state.plans = Array.isArray(action.payload.data.plan)
-          ? action.payload.data.plan
-          : [action.payload.data.plan];
+        state.plans = Array.isArray(action.payload.data.plans)
+          ? action.payload.data.plans
+          : [action.payload.data.plans];
       }
     );
     builder.addCase(fetchAllPlans.rejected, (state, action) => {
